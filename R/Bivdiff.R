@@ -434,7 +434,7 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, plot_title=NULL, vari
 #'                                    data=FALSE)
 #' bivar_comp
 #' 
-#' @importFrom jtools svycor
+# #' @importFrom jtools svycor
 #' @export
 
 biv_compare<-function (dfs, benchmarks, variables=NULL, data = FALSE,

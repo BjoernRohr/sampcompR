@@ -1,13 +1,13 @@
-###########################################################################
-###
-### 		Subject:	R-script zur Pforr und Dannwolf Funktion
-### 		Date: 		May 2023
-### 		Author: 	Bjoern Rohr
-### 	Version:  	1.00
-###
-### 		Bugfix:   	/
-###
-###########################################################################
+########################################################
+###                                                  ###
+### 		Subject:	Uni Compare Function               ###
+### 		Date: 		May 2023                           ###
+### 		Author: 	Bjoern Rohr                        ###
+### 	Version:  	1.00                               ###
+###                                                  ###
+### 		Bugfix:   	/                                ###
+###                                                  ###
+########################################################
 
 
 #################################
@@ -164,14 +164,6 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
                         plot_title = NULL, name_dfs=NULL, name_benchmarks=NULL,
                         summet_size=4, ci_type="perc", silence=T, conf_level=0.95, 
                         conf_adjustment=NULL, R_variables=NULL, response_identificator=NULL) {
-  # retach <- NULL
-  # ### Detatch psych if active ###
-  # #if (("psych" %in% (.packages()))) {
-  # #  detach("package:psych", unload = TRUE)
-  # #  retach <- TRUE
-  # #}
-
-
 
 
   ##################################
@@ -515,10 +507,6 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
 
   alpha<-1- conf_level
 
-
-
-
-
   #########################
   ### Calculate Results ###
   #########################
@@ -613,8 +601,6 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
     
   }
 
-
-
    ############################################################################
    ### add results and everything else together to create an results object ###
    ############################################################################
@@ -669,20 +655,9 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
 }
 
 
-#########################
-### Load Subfunctions ###
-#########################
-
 ##########################################
 ### Pregenerated Calculation Functions ###
 ##########################################
-
-# write some functions for the bootstrap
-
-# # relative difference poposed by Dannwolf & Pforr
-# REL_MEAN <- function(x, y, i) {
-#   (mean(x[i], na.rm = TRUE) - mean(y, na.rm = TRUE)) / mean(y, na.rm = TRUE)
-# }
 
 ABS_REL_MEAN<-function(x,y,i){
   xi<-x[i,]
@@ -795,15 +770,6 @@ ABS_PERC_MODECOUNT <- function(x, y, i) {
 }
 
 
-
-### Percental Difference in Mode Categorie ###
-#PROP_DIFF <- function(x, y, i) {
-#  a <- as.vector(table(x[i][x[i] == 1])) / NROW(stats::na.omit(x[i]))
-#  b <- as.vector(table(y[y == 1])) / NROW(stats::na.omit(y))
-#  c <- b - a
-#  return(c)
-#}
-
 PROP_DIFF <- function(x, i, y) {
   xi<-x[i,]
   a <- as.numeric(as.data.frame(xi) %>%
@@ -825,96 +791,22 @@ ABS_PROP_DIFF <- function(x, i, y) {
 }
 
 
-
-# ### Mean of Percental Difference in all Cathegories ###
-# MEAN_PERC_DIST <- function(x, y, i) {
-#   help1 <- sort(unique(stats::na.omit(x)))
-#   help2 <- sort(unique(stats::na.omit(y)))
-#
-#   a <- as.vector(table(x[i][x[i] == help1[1]])) / NROW(stats::na.omit(x[i]))
-#   b <- as.vector(table(y[y == help2[1]])) / NROW(stats::na.omit(y))
-#   c <- b - a
-#
-#   for (n in 2:length(unique(stats::na.omit(x)))) {
-#     a <- as.vector(table(x[i][x[i] == help1[n]])) / NROW(stats::na.omit(x[i]))
-#     b <- as.vector(table(y[y == help2[n]])) / NROW(stats::na.omit(y))
-#     c <- c + (b - a)
-#   }
-#
-#   c <- c / length(unique(stats::na.omit(x)))
-#   return(c)
-# }
-
-# ### Mean of Absolute Percental Difference in all Categories ###
-# Mean_ABS_PERC_DIST <- function(x = x, y = y, i) {
-#   help1 <- sort(unique(stats::na.omit(x)))
-#   help2 <- sort(unique(stats::na.omit(x)))
-#
-#   a <- as.vector(table(stats::na.omit(x[i][x[i] == help1[1]]))) / NROW(stats::na.omit(x[i]))
-#   b <- as.vector(table(stats::na.omit(y[y == help2[1]]))) / NROW(stats::na.omit(y))
-#   c <- abs(b - a)
-#
-#   for (n in 2:length(unique(stats::na.omit(x)))) {
-#     a <- as.vector(table(stats::na.omit(x[i][x[i] == help1[n]]))) / NROW(stats::na.omit(x[i]))
-#     b <- as.vector(table(stats::na.omit(y[y == help2[n]]))) / NROW(stats::na.omit(y))
-#     c <- c + abs(b - a)
-#   }
-#
-#   c <- c / length(unique(stats::na.omit(x)))
-#   return(c)
-# }
-
-### Measure used by Blom et al. 2017 ###
-### Mean of Ratio of the Percental Difference in all Cathegories ###
-### and the percent of the categorie in y ###
-
-BLOM_RATIO_DIST <- function(x = x, y = y, i) {
-  help1 <- sort(unique(stats::na.omit(x)))
-  help2 <- sort(unique(stats::na.omit(y)))
-
-
-  a <- as.vector(table(x[i][x[i] == help1[1]]))
-  b <- as.vector(table(y[y == help2[1]]))
-  c <- (a - b) / b
-
-  for (n in 2:length(unique(stats::na.omit(x)))) {
-    a <- as.vector(table(x[i][x[i] == help1[n]]))
-    b <- as.vector(table(y[y == help2[n]]))
-    c <- c + ((a - b) / b)
-  }
-
-  c <- c / length(unique(stats::na.omit(x)))
-  return(c)
-}
-
-
-
 ################################
 ### Subfunction to bootstrap ###
 ################################
 
-
 subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
                                 func_name="none", ci_type="perc", alpha=0.05, conf_adjustment=NULL) {
-
-  # Build a list for the results
-  #bootlist <- rep(list(), ncol(x)) ### Build a List of Lists for the Results
-
 
 
   #######################################################
   ### loop to bootstrap for every Variable in data frame ###
   #######################################################
-
-
   boot <- boot(data = as.data.frame(x), y = as.data.frame(y), statistic = get(func[1]), R = nboots, ncpus = parallel::detectCores(), parallel = "multicore")
-
-
 
   ### Make data to a data frame ###
   #t_vec <- getoutboot(bootlist, value = "t0")
   t_vec<-as.numeric(boot$t0)
-  
 
   #########################
   ### Bootstrap CI & SE ###
@@ -948,9 +840,6 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
   lower_ci_adjusted<- cis[,(ncol(cis)-1)]
   upper_ci_adjusted<- cis[,(ncol(cis))]
 
-  #se_vect<-sd(boot$t)/sqrt(length(boot$t))
-
-  #se_vect<- (upper_ci -t_vec)/ qnorm(1-alpha/2)
   se_vect<- as.numeric(sub(".*\\s", "", utils::capture.output(boot)[12:(11+length(x))]))
 
   }
@@ -973,8 +862,9 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
       upper_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "upper_ci", abs=F, method="d_mean")
     }
 
-    if (func_name=="ad_mean" |
-        func_name=="ad_prop") {
+    if (func_name== "ad_mean" |
+        func_name== "ad_prop" |
+        func_name== "ad_median") {
 
       lower_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "lower_ci", abs=T, method="d_mean")
       upper_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "upper_ci", abs=T, method="d_mean")
@@ -1022,13 +912,7 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
       lower_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "lower_ci", abs=F, method="ks")
       upper_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "upper_ci", abs=F, method="ks")
     }
-
-
-
   }
-
-
-
 
   ########################
   ### weitere schritte ###
@@ -1046,15 +930,11 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
     data$ci_lower_adjusted<-lower_ci_adjusted
     data$ci_upper_adjusted<-upper_ci_adjusted
     data$ci_level_adjusted<- 1-alpha_adjusted
-
-
-  }
+    }
 
 
   data$n_df<-as.vector(sapply(x,length))
   data$n_bench<-as.vector(sapply(y,length))
-
-
 
 
   if (is.null(conf_adjustment)){
@@ -1088,7 +968,6 @@ final_data<-function(data, name_dfs, name_benchmarks, summetric=NULL, colors=NUL
 
   data_list<-list()
 
-
   #######################
   ### get a summetric ###
   #######################
@@ -1099,7 +978,6 @@ final_data<-function(data, name_dfs, name_benchmarks, summetric=NULL, colors=NUL
                           funct = funct)
 
   if (is.null(summetric) == T) label_summet=NULL
-
 
   #####################
   ### Decide colors ###
@@ -1727,14 +1605,10 @@ chi_square_df<- function(dfs,benchmarks, name_dfs=NULL, name_benchmarks=NULL, va
   if (is.null(names)==F) name_dfs[1:(length(names))] <- names
 
 
-
-
   if (is.null(name_benchmarks)==F) names<-name_benchmarks else names=NULL
   name_benchmarks<-benchmarks
 
   if (is.null(names)==F) name_benchmarks[1:(length(names))] <- names
-
-
 
   ##########################
   ### save dfs in a list ###
@@ -1995,13 +1869,6 @@ R_indicator<-function(dfs,response_identificators,variables,
                                  weight=weight[i],strata=strata[i])
     
   }
-  
-  # results<-mapply(R_indicator_func,dfs=dfs_list,
-  #                 response_identificator=response_identificators,
-  #                 variables=variables,
-  #                 id=id,
-  #                 weight=weight,
-  #                 strata=strata)
   
   names(results)<-dfs
   results
