@@ -1,14 +1,14 @@
-####################################################################################
-###
-### 		Subject:	R-script zum Kreieren eines Synthetischen Datensatzes aus Tabellen
-###             (Nur fuer Univariate Analysen nuetzlich, z.B. in Pforr & Dannwolf Plot)
-### 		Date: 		November 2021
-### 		Author: 	Bjoern Rohr
-### 	Version:  	1.00
-###
-### 		Bugfix:   	/
-###
-###################################################################################
+######################################################################
+###                                                                ###
+### 		Subject:	Turn Tables to a synthetic Data frame without    ###
+###               usable correlations                              ###
+### 		Date: 		May 2023                                         ###
+### 		Author: 	Bjoern Rohr                                      ###
+### 	Version:  	1.00                                             ###
+###                                                                ###
+### 		Bugfix:   	/                                              ###
+###                                                                ###
+######################################################################
 
 ##################
 #### Functions ###
