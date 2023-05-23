@@ -36,8 +36,6 @@ reduce_df_glm <- function (df, formula_list, rm_na="pairwise",
   return(df_list)
 }
 
-
-
 ######################################################
 ### 1.5 function to combine both data frames to one ###
 ######################################################
@@ -175,9 +173,6 @@ run_glm<-function(df_comb,formula_list, design_list=NULL, family=stats::gaussian
   glm_list
 }
 
-
-
-
 ###################################################################
 ### Function to extract interactions for the interaction models ###
 ###################################################################
@@ -212,9 +207,6 @@ extract_interaction_results<-function(glm_model, robust_se=F){
   # Print the results
   as.matrix(results)
 }
-
-
-
 
 
 ##############################################
@@ -588,11 +580,7 @@ multi_compare2<-function(df,benchmark,formula_list,rm_na="pairwise", out_output_
                        weight=weight,weight_bench=weight_bench,
                        strata=strata,strata_bench=strata_bench)
   
-  # df_comb2<-combine_dfs_glm(benchmark,df,formula_list,id=id_bench,id_bench=id,
-  #                       combine_dfs_glmweight=weight_bench,weight_bench=weight,
-  #                       strata=strata_bench,strata_bench=strata)
-  
-  # calculate survey deisgns if weighted
+
   
   if (is.null(weight)==F | is.null(weight_bench)==F) {
     design_list<-list()
@@ -602,13 +590,7 @@ multi_compare2<-function(df,benchmark,formula_list,rm_na="pairwise", out_output_
     
   } else {design_list = list(NULL,NULL,NULL)}
   
-  # if (is.null(weight)==F | is.null(weight_bench)==F) {
-  #   design_list2<-list()
-  #   design_list2[[1]] <- weighted_design_glm(df_comb2,formula_list,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact")
-  #   design_list2[[2]] <- weighted_design_glm(df_comb2,formula_list,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1")
-  #   design_list2[[3]] <- weighted_design_glm(df_comb2,formula_list,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="bench")
-  # } else {design_list2 = list(NULL,NULL,NULL)}
-  # 
+
   
   ### 2 get a list with ols results for both data frames ###
 
