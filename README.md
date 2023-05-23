@@ -2,18 +2,16 @@ Introduction to the SampcompR Package
 ================
 Bjoern Rohr (<bjoern.rohr@gesis.org>)
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # sampcompR
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of sampcompR is to compare the similarity of one or more data
-frames with one or more benchmark data frames. This is done on a
-univariate, bivariate, and multivariate level. The main intention of the
-package was to compare surveys to benchmark surveys, although other
-comparisons are also viable. (e.g., mode - comparisons)  
+SampcompR aims to compare the similarity of one or more data frames with
+one or more benchmark data frames. This is done on a univariate,
+bivariate, and multivariate level. The main intention of the package was
+to compare surveys to benchmark surveys, although other comparisons are
+also viable. (e.g., mode-comparisons)  
 
 - On the univariate level, the variables with the same name in data
   frames and benchmarks are compared using one of the different
@@ -55,7 +53,9 @@ if the same questions were used in the respective surveys for the
 variables of comparison.
 
 In our example, we will use the `card` data frame from the `wooldrige`
-package as a base and split it into different sub-data frames.
+package as a base and split it into different sub-data frames. To keep
+our examples simple, we will not use design weights, although design
+weights can make a huge difference.
 
 ``` r
 # install and load some additional packages for this readme
@@ -85,12 +85,11 @@ white<-card[card$black==0,] # only white respondets.
 ```
 
 Splitting the data frame into subgroups allows us to compare if the
-subgroups differ from each other, for example, if the respondents living
-in the `north` are different from those living in the `south` or if
-`black` respondents are different from `white`. This could be useful,
-for example, as a robustness check, if we fear that the estimates we
-found in our study based on the whole data frame might differ for
-certain sub-groups.
+subgroups differ, for example, if the respondents living in the `North`
+are different from those living in the `South` or if `black` respondents
+are different from `white`. This could be useful, for example, as a
+robustness check, if we fear that the estimates we found in our study
+based on the whole data frame might differ for specific sub-groups.
 
 ### Univariate Comparison
 
@@ -99,10 +98,6 @@ similarly, we will start with a univariate comparison.
 
 ``` r
 library(sampcompR)
-#> Registered S3 methods overwritten by 'broom':
-#>   method            from  
-#>   tidy.glht         jtools
-#>   tidy.summary.glht jtools
 
 univar_data<-sampcompR::uni_compare(dfs = c("north","black"),
                                     benchmarks = c("south","white"),
@@ -111,7 +106,7 @@ univar_data<-sampcompR::uni_compare(dfs = c("north","black"),
                                     funct = "rel_mean",
                                     nboots=100,
                                     summetric="avg",
-                                    data=T)
+                                    data=T,type = "comparison")
 sampcompR::plot_uni_compare(univar_data)
 ```
 
@@ -134,9 +129,9 @@ should return a `uni_compare_object` which can be used in other package
 functions (e.g., plot_uni_compare).
 
 Also, the difference can be shown in a table that can be helpful to
-document the results. By adding resulting table to other functions
-(e.g., the `kable()` function in RMarkdown), we can easily get a good
-result table.
+document the results. We can easily get a good result table by adding
+the resulting table to other functions (e.g., the kable() function in
+RMarkdown).
 
 ``` r
 uni_output_table<-sampcompR::uni_compare_table(univar_data)
@@ -144,29 +139,29 @@ uni_output_table<-sampcompR::uni_compare_table(univar_data)
 
 **Table 1**
 
-| variables     |     north      |      black       |
-|:--------------|:--------------:|:----------------:|
-| age           |     0.006      |      -0.012      |
-|               |  (\>0, 0.011)  | (-0.021, -0.003) |
-| educ          |     0.087      |      -0.125      |
-|               | (0.077, 0.097) |  (-0.14, -0.11)  |
-| fatheduc      |     0.186      |      -0.304      |
-|               | (0.161, 0.209) | (-0.342, -0.259) |
-| motheduc      |     0.149      |      -0.23       |
-|               | (0.134, 0.164) | (-0.256, -0.203) |
-| wage          |     0.276      |      -0.273      |
-|               |  (0.253, 0.3)  | (-0.299, -0.251) |
-| IQ            |     0.065      |      -0.177      |
-|               | (0.056, 0.075) | (-0.192, -0.155) |
-| Average Error |     0.128      |      0.187       |
-| RANK          |       1        |        2         |
-| N             |      1795      |       703        |
+| variables     |      north      |      black       |
+|:--------------|:---------------:|:----------------:|
+| age           |      0.006      |      -0.012      |
+|               | (-0.001, 0.012) | (-0.02, -0.005)  |
+| educ          |      0.087      |      -0.125      |
+|               | (0.078, 0.095)  | (-0.141, -0.113) |
+| fatheduc      |      0.186      |      -0.304      |
+|               | (0.164, 0.204)  | (-0.345, -0.264) |
+| motheduc      |      0.149      |      -0.23       |
+|               |  (0.13, 0.164)  | (-0.257, -0.202) |
+| wage          |      0.276      |      -0.273      |
+|               | (0.251, 0.305)  | (-0.294, -0.252) |
+| IQ            |      0.065      |      -0.177      |
+|               |  (0.055, 0.07)  |  (-0.19, -0.16)  |
+| Average Error |      0.128      |      0.187       |
+| RANK          |        1        |        2         |
+| N             |      1795       |       703        |
 
 Difference in Relative Means off different Survey Groups
 
-The table displays the difference of all variables, the confidence
-intervals, and the summary metric specified when creating the
-`uni_compare_object` for every comparison.
+The table displays the difference between dfs and benchmarks for all
+variables, the confidence intervals, and the summary metric specified
+when creating the `uni_compare_object` for every comparison.
 
 ### Bivariate Comparison
 
@@ -201,7 +196,7 @@ positive, while the other is negative). Second, it could be that one of
 them is double the size of the other.
 
 In our example, we can see on the left that the respondents living in
-the `north` are very different from those living in the `south`
+the `North` are very different from those living in the `South`
 regarding the investigated bivariate correlations. Only 33.3% of all
 correlations are similar between both groups (`Same`) and would lead to
 similar interpretations measured with either group of the survey. 46,7%
@@ -237,15 +232,15 @@ Using `"diff"` for the `type` parameter and `1` in `comparison_number`
 gives us a matrix for the difference in Pearson’s r between the surveys.
 Here we can again see what correlations significantly differ between the
 surveys and to what extent. However, to know why the colors are as they
-are in the plot, we also need to look at the individual correlation
-matrices for both surveys. Here we only look on the tables for the
-comparison of north versus south respondents, as an example.
+are in the plot, we must also look at the individual correlation
+matrices for both surveys. Here we only look at the tables for comparing
+north versus south respondents as an example.
 
 ``` r
-# north correlation matrix of the first comparison
+# North correlation matrix of the first comparison
 table_biv2<-sampcompR::biv_compare_table(biv_data,type = "dfs",comparison_number=1) 
 
-# south correlation matrix of the first comparison
+# South correlation matrix of the first comparison
 table_biv3<-sampcompR::biv_compare_table(biv_data,type = "benchmarks",comparison_number=1) 
 ```
 
@@ -277,29 +272,29 @@ Pearson’s r correlation matrix for the South Sample
 
 This shows us the whole picture. Looking at the correlation between age
 and education, for example, we can see that the correlations in both
-surveys are small. Additionally, we see that the correlation is positive
-and insignificant in the north group, while it is negative and
-significant in the south group. Here, in addition to the conditions for
-a slight difference, both conditions for a `Large Diff` are true.
-However, looking at the correlations between wage and the father’s
-education, as well as the mother’s education, we see that only the
-difference in size was the reason for the `Large Diff` category.
-Nonetheless, we would come to very different conclusions measuring those
-correlations for either group.
+surveys are small. Additionally, the correlation is positive and
+insignificant in the north group, while it is negative and significant
+in the south group. Here, in addition to the conditions for a slight
+difference, both conditions for a `Large Diff` are true. However,
+looking at the correlations between wage and the father’s education, as
+well as the mother’s education, we see that only the difference in size
+was the reason for the `Large Diff` category. Nonetheless, we would come
+to very different conclusions measuring those correlations for either
+group.
 
 ### Multivariate Comparison
 
 When you want to know how different certain data frames or sub-data
 frames are, it may also be interesting to see if those differences exist
 in multivariate comparisons. For this, the first step is to choose the
-multivariate models we want to compare. This function we show here is
-restricted to `ols` and `logit` regressions, without interactions.
-However there is another function `multi_compare2()` that is able to
-compare any model commutable with `glm()` (without weighting) or
-`svyglm()` (when weights are provided). In this example
-`multi_compare()` will be enough, as we want to see if there are
-differences between the groups when looking at the regression of `age`,
-`father's education`, `mother's education`, and `IQ` on wage and
+multivariate models we want to compare. This function
+`(multi_compare())` is restricted to `ols` and `logit` regressions,
+without interactions. However, there is another function,
+`multi_compare2(),` that can compare any model commutable with `glm()`
+(without weighting) or `svyglm()` (when weights are provided). In this
+example, `multi_compare()` will be enough, as we want to see if there
+are differences between the groups when looking at the regression of
+`age`, `father's education`, `mother's education`, and `IQ` on wage and
 education.
 
 After choosing independent and dependent variables, all information can
@@ -378,9 +373,9 @@ As we can see here in those models, there are fewer differences than
 before in the bivariate comparison, especially in the models based on
 the black comparison between the black and the white sub-data frames, at
 least for those models compared. Also, we can see that the differences
-on the wage variable we found in previous comparisons is not present in
-the multivariate model. However, education seems more prone to group
-differences, even in multivariate regression.
+on the wage variable we found in previous comparisons are not present in
+the multivariate model. However, even in multivariate regression,
+education seems more prone to group differences.
 
 In addition to the models, we can answer with an ols regression, it
 would also be interesting to add a model estimating a marriage model.
@@ -547,11 +542,11 @@ similar effect on both groups.
 
 Overall the comparison shows differences between the sub-groups in some
 cases. Suppose those cases play a role in the overall analyses of a
-research project. In that case, splitting the data and reporting
-different results depending on the group could make sense. On the other
-hand, if we only want to look at the `wage` model, there seem to be
-fewer differences in our example, and splitting the data frame into
-different groups might be unnecessary.
+research project. Splitting the data and reporting different results
+depending on the group could make sense in that case. On the other hand,
+if we only want to look at the `wage` model, there seem to be fewer
+differences in our example, and splitting the data frame into different
+groups might be unnecessary.
 
 ## Further Use-Cases
 
@@ -569,7 +564,7 @@ and probability surveys against a benchmark survey.
 
 ## Components of the package
 
-In general, the functions of the package can be ordered into one of four
+In general, the package’s functions can be ordered into one of four
 categories. When using the functions of the package, it also makes sense
 to take a look into the help section, as most include optional
 parameters, for example, to weight the data or include a p_value
@@ -582,11 +577,16 @@ multiple comparisons.
   object usable in the other univariate comparison functions or plot the
   results directly.
 
+- `uni_compare2()` is similar to uni_compare() but better suited for
+  weighted comparisons.
+
 - `plot_uni_compare()` can be used to plot the results of the
   `uni_compare()` function.
 
 - `uni_compare_table()` can be used to get a table for the results of
   the `uni_compare()` function.
+
+- `R_indicator` calculates the R-Indicator of a Survey.
 
 ### Bivariate Comparison Functions
 
@@ -602,9 +602,13 @@ multiple comparisons.
 
 ### Multivariate Comparison Functions
 
-- `multi_compare()` can be used to make a bivariate comparison and get
-  an object usable in the other bivariate comparison functions or plot
-  the results directly.
+- `multi_compare()` can be used to make a multivariate comparison and
+  get an object usable in the other bivariate comparison functions or
+  plot the results directly.
+
+- `multi_compare2()` needs a slightly more complicated input, however,
+  it is suitable to compare any glm() model between the data frame and
+  the benchmark.
 
 - `plot_multi_compare()` can be used to plot the results of the
   `multi_compare()` function.
