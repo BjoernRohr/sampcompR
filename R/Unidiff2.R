@@ -151,15 +151,6 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
                         summet_size=4, ci_type="perc", silence=T, conf_level=0.95, conf_adjustment=NULL,
                         weight =NULL, id=NULL, strata=NULL, weight_bench=NULL,id_bench=NULL, strata_bench=NULL,
                         R_variables=NULL,response_identificator=NULL) {
-  retach <- NULL
-  ### Detatch psych if active ###
-  #if (("psych" %in% (.packages()))) {
-  #  detach("package:psych", unload = TRUE)
-  #  retach <- TRUE
-  #}
-
-
-
 
   ##################################
   ### Errors if inputs are wrong ###
@@ -318,53 +309,7 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
     
   }
 
-  # for (i in 1:length(dfs)){
-  #   df_list[[i]]<-get(dfs[i])
-  # 
-  #   if (is.null(weight)==F) {
-  #     if (is.na(weight[i])==F) {
-  #     
-  #     ### check if the vector has length=1 ###
-  #     if(length(weight)==1){
-  #       weight<-rep(weight,length(benchmarks))
-  #     }
-  #     
-  #     ### check for current weight var bench ###
-  #     if (is.na(weight[i])==F) {curr_weight<-weight[i]}
-  #     if (is.na(weight[i])) curr_weight<-NULL
-  # 
-  #     ### check for current id var bench ###
-  #     if(is.null(id)==F){
-  #       
-  #       ### check if the vector has length=1 ###
-  #       if(length(id)==1){
-  #         id<-rep(id,length(benchmarks))
-  #       }
-  #       
-  #       if (is.na(id[i])==F) curr_id<-id[i]
-  #       if (is.na(id[i])) curr_id<-NULL}
-  #     if (is.null(id)) {
-  #       curr_id<-NULL}
-  # 
-  #     ### check for current strata var bench ###
-  #     if(is.null(strata)==F){
-  #       
-  #       ### check if the vector has length=1 ###
-  #       if(length(strata)==1){
-  #         strata<-rep(strata,length(benchmarks))
-  #       }
-  #       
-  #       if (is.na(strata[i])==F) curr_strata<-strata[i]
-  #       if (is.na(strata[i])) curr_strata<-NULL}
-  #     if (is.null(strata)) {
-  #       curr_strata<-NULL}
-  #     if (is.null(variables)==F) df_list[[i]]<-df_list[[i]][,c(colnames(df_list[[i]][colnames(df_list[[i]])%in%variables]),curr_weight,curr_id,curr_strata),drop=F]
-  #     if (is.null(variables)) df_list[[i]]<-df_list[[i]][,c(colnames(df_list[[i]][colnames(df_list[[i]])%in% colnames(get(benchmarks[i]))]),curr_weight,curr_id,curr_strata),drop=F]
-  # 
-  #     if(is.null(curr_weight)==F) df_list[[i]]<-tables_to_df(df=df_list[[i]] ,weights = curr_weight, ID= curr_id, strata = curr_strata)
-  #     }
-  #   }
-  # }
+
   ### prepare weights ###
   
   if(is.null(id)==F) if(length(id)>=1 & length(id)<length(dfs)) id<-rep(id,length(dfs))
@@ -386,60 +331,7 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
     
   }
 
-  # for (i in 1:length(benchmarks)){
-  #   # check if benchmark is a list
-  #   if(inherits(get(benchmarks[i]),"data.frame")){bench_list[[i]]<-get(benchmarks[i])}
-  #   if(inherits(get(benchmarks[i]),"list")){
-  #     bench_list[[i]]<-tables_to_df_unweighted(tables=names(get(benchmarks[i])), 
-  #                                              varnames=names(get(benchmarks[i])),
-  #                                              tablist=get(benchmarks[i]) )}
-  #   
-  # 
-  #   if (is.null(weight_bench)==F){
-  #     if (is.na(weight_bench[i])==F) {
-  #     ### check if the vector has length=1 ###
-  #     if(length(weight_bench)==1){
-  #       weight_bench<-rep(weight_bench,length(benchmarks))
-  #     }
-  #     ### check for current weight var bench ###
-  #     if (is.na(weight_bench[i])==F) curr_weight_bench<-weight_bench[i]
-  #     if (is.na(weight_bench[i])) curr_weight_bench<-NULL
-  # 
-  #     ### check for current id var bench ###
-  #     if(is.null(id_bench)==F){
-  #       
-  #       ### check if the vector has length=1 ###
-  #       if(length(id_bench)==1){
-  #         id_bench<-rep(id_bench,length(benchmarks))
-  #       }
-  #       ### get curr id 
-  #       if (is.na(id_bench[i])==F) curr_id_bench<-id_bench[i]
-  #       if (is.na(id_bench[i])) curr_id_bench<-NULL}
-  #     if (is.null(id_bench)) {
-  #       curr_id_bench<-NULL}
-  # 
-  #     ### check for current strata var bench ###
-  #     if(is.null(strata_bench)==F){
-  #       ### check if the vector has length=1 ###
-  #       if(length(strata_bench)==1){
-  #         strata_bench<-rep(strata_bench,length(benchmarks))
-  #       }
-  #       
-  #       if (is.na(strata_bench[i])==F) curr_strata_bench<-strata_bench[i]
-  #       if (is.na(strata_bench[i])) curr_strata_bench<-NULL}
-  #     if (is.null(strata_bench)) {
-  #       curr_strata_bench<-NULL}
-  #     
-  #     
-  #     if (is.null(variables)==F) bench_list[[i]]<-bench_list[[i]][,c(colnames(bench_list[[i]][colnames(bench_list[[i]])%in%variables]),curr_weight_bench,curr_id_bench,curr_strata_bench),drop=F]
-  #     if (is.null(variables)) bench_list[[i]]<-bench_list[[i]][,c(colnames(bench_list[[i]][colnames(bench_list[[i]])%in%colnames(df_list[[i]])]),curr_weight_bench,curr_id_bench,curr_strata_bench),drop=F]
-  # 
-  #     bench_list[[i]]<-tables_to_df(df=bench_list[[i]] ,weights = curr_weight_bench, ID= curr_id_bench, strata = curr_strata_bench)
-  #     }
-  #   }
-  # }
-
-
+ 
   ###################################
   ### equalize data to benchmarks ###
   ###################################
@@ -512,42 +404,12 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
         
       }}
 
-  #if (is.character(funct) == FALSE) {
-  #  func <- deparse(substitute(funct))}
 
-  ### if a list of variables is given, a function can be declaired fore every variable ###
-
-  # if (is.null(variables)==F) {
-  #   if (length(func)>1) func_matrix<- as.data.frame(cbind (variables, func))
-  #   if (length(func)==1) func_matrix<- as.data.frame(cbind (variables, rep(func, length(variables))))
-  # }
-
-  #####################
-  ### Function list ###
-  #####################
-
-  ### Build a list for each data frame, that declaires the function unsed for each variable)
-
-
-  # func_list<-list()
-  # 
-  # if (is.null(variables)==F) {
-  #   for (i in 1:length(dfs)) {
-  #     func_list[[i]]<-func_matrix[,2][func_matrix[,1] %in% colnames(df_list[[i]])]
-  #   }}
-  # 
-  # if (is.null(variables)==T) {
-  #   for (i in 1:length(dfs)) {
-  #     func_list[[i]]<-rep (func, ncol(df_list[[i]]))
-  #   }}
-
-  ### alpha ###
-
+  #######################
+  ### calculate alpha ###
+  #######################
+  
   alpha<-1-conf_level
-
-
-
-
 
   #########################
   ### Calculate Results ###
@@ -564,8 +426,7 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
                                   ids=id[i], weights = weight[i], strata = strata[i],
                                   ids_bench = id_bench[i], weights_bench = weight_bench[i],
                                   strata_bench = strata_bench[i])
-    #return(results)
-
+    
     } 
 
 
@@ -610,7 +471,6 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
 
   if(length(funct)==1) results$funct<-funct
 
-
   ############################################################################################
   ### Calculate a SumMETRIC to DATA, that Makes the whole data frame compairable with another ###
   ### RMSE & MSE                                                                           ###
@@ -652,8 +512,6 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
     
   }
 
-
-
    ############################################################################
    ### add results and everything else together to create an results object ###
    ############################################################################
@@ -663,8 +521,6 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
                       summet_size=summet_size, plot_title=plot_title, funct=funct,type = type)
 
   if (isTRUE(data)) return(results)
-
-
 
   #####################
   ### Edit varnames ###
@@ -701,230 +557,7 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
   }
   if (is.null(results$plot_title) == FALSE) Plot <- Plot + ggplot2::ggtitle(results$plot_title)
 
-
-
-
   return(Plot)
-}
-
-
-#########################
-### Load Subfunctions ###
-#########################
-
-##########################################
-### Pregenerated Calculation Functions ###
-##########################################
-
-# write some functions for the bootstrap
-
-# # relative difference poposed by Dannwolf & Pforr
-# REL_MEAN <- function(x, y, i) {
-#   (mean(x[i], na.rm = TRUE) - mean(y, na.rm = TRUE)) / mean(y, na.rm = TRUE)
-# }
-
-ABS_REL_MEAN<-function(x,y,i){
-  xi<-x[i,]
-  a <- as.numeric(as.data.frame(xi) %>%
-                    dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) mean(x, na.rm = TRUE))))
-  b <- as.numeric(y %>%
-                    dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) mean(x, na.rm = TRUE))))
-  c <- (abs(a - b)/abs(b))
-  return(c)
-
-}
-
-REL_MEAN<-function(x,y,i){
-  xi<-x[i,]
-  a <- as.numeric(as.data.frame(xi) %>%
-                    dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) mean(x, na.rm = TRUE))))
-  b <- as.numeric(y %>%
-                    dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) mean(x, na.rm = TRUE))))
-  c <- (a - b)/(b)
-  return(c)
-
-}
-
-# Absolute Difference in Mean
-AD_MEAN <- function(x, y, i) {
-  abs(mean(stats::na.omit(x[i]), na.rm = TRUE) - mean(stats::na.omit(y), na.rm = TRUE))
-}
-
-# Absolute Difference in Mean
-D_MEAN <- function(x, y, i) {
-  mean(x[i], na.rm = TRUE) - mean(y, na.rm = TRUE)
-}
-
-# Absolute Difference in Median
-# AD_MED <- function(x, y, i) {
-#   # abs(stats::median(x[i,], na.rm = TRUE) - stats::median(y, na.rm = TRUE))
-#   # 
-#   xi<-x[i,]
-#   a <- as.numeric(as.data.frame(xi) %>%
-#                     dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) median(x, na.rm = TRUE))))
-#   b <- as.numeric(y %>%
-#                     dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) median(x, na.rm = TRUE))))
-#   c <- a - b
-#   return(c)
-# }
-
-
-
-# Absolute Difference in Mode
-Mode <- function(x) {
-  ux <- unique(stats::na.omit(x))
-  ux[which.max(tabulate(match(x, ux)))]
-}
-
-
-
-AD_MODE <- function(x, y, i) {
-  xi<-x[i,]
-  
-  a <- as.numeric(as.data.frame(xi) %>%
-                    dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) Mode(x))))
-  b <- as.numeric(y %>%
-                    dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) Mode(x))))
-
-  c <- abs(a - b)
-}
-
-
-
-# Function for KS
-KS<- function(x, i ,y){
-
-  sub_x<-x[i,]
-
-  ks_var<-function(x,y) {
-    ks<-stats::ks.test(x,y)
-    return(ks$statistic)}
-
-  mapply(ks_var, x=sub_x, y=y)
-
-
-}
-
-### Percental Difference in Mode Categorie ###
-PERC_MODECOUNT <- function(x, y, i) {
-
-  sub_x<-x[i,]
-
-  perc_modecount_var<-function(x,y,i){
-  a <- as.vector(table(x[x == Mode(y)])) / NROW(stats::na.omit(x))
-  b <- as.vector(table(y[y == Mode(y)])) / NROW(stats::na.omit(y))
-  c <- a - b
-  return(c)}
-
-  mapply(perc_modecount_var, x=sub_x, y=y)
-
-}
-
-### Absolute Percental Difference in Mode Categorie ###
-ABS_PERC_MODECOUNT <- function(x, y, i) {
-
-  sub_x<-x[i,]
-
-  abs_perc_modecount_var<-function(x,y){
-  a <- as.vector(table(x[x == Mode(y)])) / NROW(stats::na.omit(x))
-  b <- as.vector(table(y[y == Mode(y)])) / NROW(stats::na.omit(y))
-  c <- abs(a - b)
-  return(c)}
-
-  mapply(abs_perc_modecount_var, x=sub_x, y=y)
-}
-
-
-
-### Percental Difference in Mode Categorie ###
-#PROP_DIFF <- function(x, y, i) {
-#  a <- as.vector(table(x[i][x[i] == 1])) / NROW(stats::na.omit(x[i]))
-#  b <- as.vector(table(y[y == 1])) / NROW(stats::na.omit(y))
-#  c <- b - a
-#  return(c)
-#}
-
-PROP_DIFF <- function(x, i, y) {
-  xi<-x[i,]
-  a <- as.numeric(as.data.frame(xi) %>%
-                    dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) mean(x, na.rm = TRUE))))
-  b <- as.numeric(y %>%
-                    dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) mean(x, na.rm = TRUE))))
-  c <- a - b
-  return(c)
-}
-
-ABS_PROP_DIFF <- function(x, i, y) {
-  xi<-x[i,]
-  a <- as.numeric(as.data.frame(xi) %>%
-                    dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) mean(x, na.rm = TRUE))))
-  b <- as.numeric(y %>%
-                    dplyr::summarise(dplyr::across(tidyselect::everything(), \(x) mean(x, na.rm = TRUE))))
-  c <- abs(a - b)
-  return(c)
-}
-
-
-
-# ### Mean of Percental Difference in all Cathegories ###
-# MEAN_PERC_DIST <- function(x, y, i) {
-#   help1 <- sort(unique(stats::na.omit(x)))
-#   help2 <- sort(unique(stats::na.omit(y)))
-#
-#   a <- as.vector(table(x[i][x[i] == help1[1]])) / NROW(stats::na.omit(x[i]))
-#   b <- as.vector(table(y[y == help2[1]])) / NROW(stats::na.omit(y))
-#   c <- b - a
-#
-#   for (n in 2:length(unique(stats::na.omit(x)))) {
-#     a <- as.vector(table(x[i][x[i] == help1[n]])) / NROW(stats::na.omit(x[i]))
-#     b <- as.vector(table(y[y == help2[n]])) / NROW(stats::na.omit(y))
-#     c <- c + (b - a)
-#   }
-#
-#   c <- c / length(unique(stats::na.omit(x)))
-#   return(c)
-# }
-
-# ### Mean of Absolute Percental Difference in all Categories ###
-# Mean_ABS_PERC_DIST <- function(x = x, y = y, i) {
-#   help1 <- sort(unique(stats::na.omit(x)))
-#   help2 <- sort(unique(stats::na.omit(x)))
-#
-#   a <- as.vector(table(stats::na.omit(x[i][x[i] == help1[1]]))) / NROW(stats::na.omit(x[i]))
-#   b <- as.vector(table(stats::na.omit(y[y == help2[1]]))) / NROW(stats::na.omit(y))
-#   c <- abs(b - a)
-#
-#   for (n in 2:length(unique(stats::na.omit(x)))) {
-#     a <- as.vector(table(stats::na.omit(x[i][x[i] == help1[n]]))) / NROW(stats::na.omit(x[i]))
-#     b <- as.vector(table(stats::na.omit(y[y == help2[n]]))) / NROW(stats::na.omit(y))
-#     c <- c + abs(b - a)
-#   }
-#
-#   c <- c / length(unique(stats::na.omit(x)))
-#   return(c)
-# }
-
-### Measure used by Blom et al. 2017 ###
-### Mean of Ratio of the Percental Difference in all Cathegories ###
-### and the percent of the categorie in y ###
-
-BLOM_RATIO_DIST <- function(x = x, y = y, i) {
-  help1 <- sort(unique(stats::na.omit(x)))
-  help2 <- sort(unique(stats::na.omit(y)))
-
-
-  a <- as.vector(table(x[i][x[i] == help1[1]]))
-  b <- as.vector(table(y[y == help2[1]]))
-  c <- (a - b) / b
-
-  for (n in 2:length(unique(stats::na.omit(x)))) {
-    a <- as.vector(table(x[i][x[i] == help1[n]]))
-    b <- as.vector(table(y[y == help2[n]]))
-    c <- c + ((a - b) / b)
-  }
-
-  c <- c / length(unique(stats::na.omit(x)))
-  return(c)
 }
 
 
@@ -940,14 +573,9 @@ subfunc_diffplotter2 <- function(x, y, samp = 1, nboots = nboots, func = func, v
                                 ids_bench = ids_bench,weights_bench = weights_bench,
                                 strata_bench = strata_bench) {
 
-  # Build a list for the results
-  #bootlist <- rep(list(), ncol(x)) ### Build a List of Lists for the Results
-
-
-
-  #######################################################
+  ##########################################################
   ### loop to bootstrap for every Variable in data frame ###
-  #######################################################
+  ##########################################################
 
   variables<-colnames(x)
   if(is.null(ids)==F) {if(is.na(ids)==F) variables<-variables[!variables %in% ids]}
@@ -967,8 +595,7 @@ subfunc_diffplotter2 <- function(x, y, samp = 1, nboots = nboots, func = func, v
                                id = ids_bench,weight = weights_bench,strata = strata_bench,func=func)
   
   ### Make data to a data frame ###
-  #t_vec <- getoutboot(bootlist, value = "t0")
-  
+
   alpha_adjusted<-alpha/length(x)
   
   
@@ -980,124 +607,6 @@ subfunc_diffplotter2 <- function(x, y, samp = 1, nboots = nboots, func = func, v
   upper_ci_adjusted<-measure_function(svy_boot,means_bench,func = func,out = "upper_ci",alpha=alpha_adjusted)  
   
   
-  ### get SE
-  
-  
-  
-
-  # #########################
-  # ### Bootstrap CI & SE ###
-  # #########################
-  # getCI <- function(x,w,ci_type, varnames, alpha) {
-  #   suppressWarnings(b1 <- boot::boot.ci(x,type = ci_type, conf = (1-alpha),index=w))
-  #   ## extract info for all CI types
-  #   tab <- t(sapply(b1[-(1:3)],function(x) utils::tail(c(x),2)))
-  #   ## combine with metadata: CI method, index
-  #   tab <- cbind(w,rownames(tab),as.data.frame(tab))
-  #   if (ci_type=="norm") colnames(tab) <- c("index","method","lwr","upr")
-  #   if (ci_type=="perc") colnames(tab) <- c("index","method","lwr","upr")
-  #   tab
-  # }
-  # 
-  # ### function to get boot.cis ###
-  # if (nboots>=2) {
-  # 
-  # 
-  # ## do it for both parameters
-  # 
-  # if(ci_type=="norm") cis<-do.call(rbind,lapply(1:ncol(x),getCI,x=boot, ci_type="norm", alpha=alpha, varnames= colnames(x)))
-  # if(ci_type=="perc") cis<-do.call(rbind,lapply(1:ncol(x),getCI,x=boot, ci_type="perc", alpha=alpha,varnames= colnames(x)))
-  # lower_ci<- cis[,(ncol(cis)-1)]
-  # upper_ci<- cis[,(ncol(cis))]
-  # 
-  # alpha_adjusted<-alpha/length(x)
-  # 
-  # if(ci_type=="norm") cis<-do.call(rbind,lapply(1:ncol(x),getCI,x=boot, ci_type="norm", alpha=alpha_adjusted, varnames= colnames(x)))
-  # if(ci_type=="perc") cis<-do.call(rbind,lapply(1:ncol(x),getCI,x=boot, ci_type="perc", alpha=alpha_adjusted, varnames= colnames(x)))
-  # lower_ci_adjusted<- cis[,(ncol(cis)-1)]
-  # upper_ci_adjusted<- cis[,(ncol(cis))]
-  # 
-  # #se_vect<-sd(boot$t)/sqrt(length(boot$t))
-  # 
-  # #se_vect<- (upper_ci -t_vec)/ qnorm(1-alpha/2)
-  # se_vect<- as.numeric(sub(".*\\s", "", utils::capture.output(boot)[12:(11+length(x))]))
-  # 
-  # }
-  
-  # ############################
-  # ### Analytical CI and Se ###
-  # ############################
-  # 
-  # if (nboots == 0){
-  # 
-  #   alpha_adjusted<-alpha/length(x)
-  # 
-  #   if (func_name=="d_mean" |
-  #       func_name=="d_prop") {
-  # 
-  #     lower_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "lower_ci", abs=F, method="d_mean")
-  #     upper_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "upper_ci", abs=F, method="d_mean")
-  #     se_vect<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "SE", abs=F, method="d_mean")
-  #     lower_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "lower_ci", abs=F, method="d_mean")
-  #     upper_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "upper_ci", abs=F, method="d_mean")
-  #   }
-  # 
-  #   if (func_name=="ad_mean" |
-  #       func_name=="ad_prop") {
-  # 
-  #     lower_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "lower_ci", abs=T, method="d_mean")
-  #     upper_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "upper_ci", abs=T, method="d_mean")
-  #     se_vect<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "SE", abs=T, method="d_mean")
-  #     lower_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "lower_ci", abs=T, method="d_mean")
-  #     upper_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "upper_ci", abs=T, method="d_mean")
-  #   }
-  # 
-  #   if (func_name=="prop_modecat"){
-  #   lower_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "lower_ci", abs=F, method="mode_prop")
-  #   upper_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "upper_ci", abs=F, method="mode_prop")
-  #   se_vect<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "SE", abs=F, method="mode_prop")
-  #   lower_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "lower_ci", abs=F, method="mode_prop")
-  #   upper_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "upper_ci", abs=F, method="mode_prop")
-  #   }
-  # 
-  #   if (func_name=="abs_prop_modecat"){
-  #     lower_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "lower_ci", abs=T, method="mode_prop")
-  #     upper_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "upper_ci", abs=T, method="mode_prop")
-  #     se_vect<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "SE", abs=T, method="mode_prop")
-  #     lower_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "lower_ci", abs=T, method="mode_prop")
-  #     upper_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "upper_ci", abs=T, method="mode_prop")
-  #   }
-  # 
-  #   if (func_name=="rel_mean"| func_name=="rel_prop"){
-  #     lower_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "lower_ci", abs=F, method="rel_mean")
-  #     upper_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "upper_ci", abs=F, method="rel_mean")
-  #     se_vect<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "SE", abs=F, method="rel_mean")
-  #     lower_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "lower_ci", abs=F, method="rel_mean")
-  #     upper_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "upper_ci", abs=F, method="rel_mean")
-  #   }
-  # 
-  #   if (func_name=="abs_rel_mean" | func_name=="abs_rel_prop"){
-  #     lower_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "lower_ci", abs=T, method="rel_mean")
-  #     upper_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "upper_ci", abs=T, method="rel_mean")
-  #     se_vect<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "SE", abs=T, method="rel_mean")
-  #     lower_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "lower_ci", abs=T, method="rel_mean")
-  #     upper_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "upper_ci", abs=T, method="rel_mean")
-  #   }
-  # 
-  #   if (func_name=="ks" ){
-  #     lower_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "lower_ci", abs=F, method="ks")
-  #     upper_ci<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "upper_ci", abs=F, method="ks")
-  #     se_vect<- se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha),value = "SE", abs=F, method="ks")
-  #     lower_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "lower_ci", abs=F, method="ks")
-  #     upper_ci_adjusted<-se_mean_diff(as.data.frame(x),as.data.frame(y), conf_level=(1-alpha_adjusted),value = "upper_ci", abs=F, method="ks")
-  #   }
-  # 
-  # 
-  # 
-  # }
-
-
-
 
   ########################
   ### weitere schritte ###
@@ -1116,16 +625,10 @@ subfunc_diffplotter2 <- function(x, y, samp = 1, nboots = nboots, func = func, v
     data$ci_lower_adjusted<-lower_ci_adjusted
     data$ci_upper_adjusted<-upper_ci_adjusted
     data$ci_level_adjusted<- 1-alpha_adjusted
-
-
   }
 
-  
   data$n_df<-as.vector(sapply(x[,names],length))
   data$n_bench<-as.vector(sapply(y[,names],length))
-
-
-
 
   if (is.null(conf_adjustment)){
     names(data) <- c("t_vec", "se_vec", "varnames","ci_lower","ci_upper","ci_level","n_df","n_bench")}
@@ -1135,15 +638,11 @@ subfunc_diffplotter2 <- function(x, y, samp = 1, nboots = nboots, func = func, v
                      "ci_upper_adjusted","adjusted_ci_level","n_df","n_bench")}
 
 
-
   data$se_vec <- as.numeric(data$se_vec)
 
   data$sample <- samp
   return(data)
 }
-
-
-
 
 
 
@@ -1210,8 +709,6 @@ final_data2<-function(data, name_dfs, name_benchmarks, summetric=NULL, colors=NU
 
     if (is.null(def_leglabels)==F) def_leglabels<-c(def_leglabels,label)
     if (is.null(def_leglabels)==T) def_leglabels<-label
-
-
   }
 
   if (is.null(legendlabels) == FALSE) {
@@ -1279,21 +776,8 @@ final_data2<-function(data, name_dfs, name_benchmarks, summetric=NULL, colors=NU
                       "legendtitle","label_x","label_y","measure","summet","summet_size",
                       "plot_title","name_dfs","name_benchmarks")
 
-
-
    return(data_list)
-
-
-
 }
-
-
-
-
-
-
-
-
 
 
 ### function to calculate bootstrap means for the dataframe ###
@@ -1333,10 +817,6 @@ boot_svy_mean<-function(data,variables, nboots=2000,
 }
 
 
-
-
-
-
 ### function to calculate survey means for the benchmark ###
 mean_bench_func<-function(data,variables, 
                           id=NULL, weight=NULL, strata=NULL,func=func){
@@ -1350,10 +830,7 @@ mean_bench_func<-function(data,variables,
   if(is.null(strata)==F) strata<-data[,strata]
   if(is.null(strata)==F) {if(is.na(strata)==F) strata<-data[,strata]}
   
-  
-  
-  
-  data_design <- survey::svydesign(data = data, ids = ~ id,weights = ~weight, strata=strata)
+    data_design <- survey::svydesign(data = data, ids = ~ id,weights = ~weight, strata=strata)
   
   
   final_boot_svy_mean<-function(variable,design,func){
