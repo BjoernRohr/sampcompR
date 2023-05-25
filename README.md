@@ -32,13 +32,17 @@ also viable. (e.g., mode-comparisons)
 You can install the development version of sampcompR like so:
 
     ### Install the dependencies
+    install.packages("devtools")
+
     install.packages(c("boot", "data.table", "dplyr", "ggplot2", "Hmisc", "jtools",
                        "lmtest", "magrittr", "margins", "parallel", "psych", "reshape2",
                        "readr", "svrep", "sandwich", "stats", "survey", "tidyselect", 
                        "utils","weights", "wooldridge"))
 
     ### Install the package
-    install.packages("C:/Directory_where_the_package_is_saved/sampcompR_Beta_1/sampcompR", type = "source", repos = NULL)
+    devtools::install_github("BjoernRohr/sampcompR")
+
+    library(sampcompR)
 
 ## Example
 
