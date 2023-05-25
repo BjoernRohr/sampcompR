@@ -73,7 +73,7 @@ variables.
 \item \code{"prop_modecat"}, \code{"abs_prop_modecat"} A function to calculate the (absolute) difference in
 proportions of the variables in dfs and benchmarks with the same name. Only applicable for
 variables with a limited number of categories.
-\item \code{"avg_prop_diff"}, \code{"avg_abs_prop_diff"} A function to calculate the average (absolute) difference in
+\item \code{"avg_abs_prop_diff"} A function to calculate the average absolute difference in
 proportions of all categories in a variables in dfs and benchmarks with the same name.
 Only applicable for variables with the same number of categories.
 \item \code{"rel_mean"}, \code{"abs_rel_mean"} A function to calculate the (absolute) relative difference in mean of
@@ -82,9 +82,7 @@ metric variables
 \item \code{"rel_prop"}, \code{"abs_rel_prop"} A function to calculate the (absolute) relative difference in proportions of
 the variables in dfs and benchmarks with the same name. Only applicable for dummy
 variables.
-\item \code{"ad_median"} A function to calculate the (absolute) relative difference in median of
-the variables in dfs and benchmarks with the same name.
-\item \code{"ad_mode"} A function to calculate the (absolute) relative difference in mode category of
+\item \code{"d_median"} \code{"ad_median"} A function to calculate the (absolute) relative difference in median of
 the variables in dfs and benchmarks with the same name.
 }}
 
@@ -166,8 +164,9 @@ Returns a plot or data showing the difference of two or more
 data frames The differences are calculated on the base of
 differing metrics, chosen in the funct argument. All used data frames must
 contain at least one column named equal in all data frames, that has equal
-values. For a comparison of weighted data, uni_compare 2 is more accurate, as it's
-bootstrap technique is based on the \link[survey]{svydesign} package.
+values. For a comparison of weighted data in bootstrapping, uni_compare 2 is
+faster and more accurate, as it's bootstrap technique is based on the
+\link[survey]{svydesign} package.
 }
 \examples{
 
@@ -184,7 +183,7 @@ univar_comp<-sampcompR::uni_compare(dfs = c("north","white"),
                                     benchmarks = c("south","black"),
                                     variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
                                     funct = "abs_rel_mean",
-                                    nboots=200,
+                                    nboots=0,
                                     summetric="rmse2",
                                     data=FALSE)
 

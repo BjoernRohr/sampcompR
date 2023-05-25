@@ -30,9 +30,9 @@ local_test_data_uni1 <- function(env = parent.frame()) {
 
 
 
-
-
-
+# uni_compare_table(uni_data)
+# uni_compare_table(uni_data2)
+# uni_compare_table(uni_data3)
 
 
 local_test_data_uni2 <- function(env = parent.frame()) {

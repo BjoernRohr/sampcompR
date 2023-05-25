@@ -37,7 +37,7 @@ univar_data<-sampcompR::uni_compare(dfs = c("north","white"),
                                     benchmarks = c("south","black"),
                                     variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
                                     funct = "abs_rel_mean",
-                                    nboots=200,
+                                    nboots=0,
                                     summetric="rmse2",
                                     data=TRUE)
 
