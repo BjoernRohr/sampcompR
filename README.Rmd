@@ -90,7 +90,7 @@ univar_data<-sampcompR::uni_compare(dfs = c("north","black"),
                                     variables=c("age","educ","fatheduc",
                                                 "motheduc","wage","IQ"),
                                     funct = "rel_mean",
-                                    nboots=100,
+                                    nboots=0,
                                     summetric="avg",
                                     data=T,type = "comparison")
 sampcompR::plot_uni_compare(univar_data)

@@ -104,7 +104,7 @@ univar_data<-sampcompR::uni_compare(dfs = c("north","black"),
                                     variables=c("age","educ","fatheduc",
                                                 "motheduc","wage","IQ"),
                                     funct = "rel_mean",
-                                    nboots=100,
+                                    nboots=0,
                                     summetric="avg",
                                     data=T,type = "comparison")
 sampcompR::plot_uni_compare(univar_data)
@@ -139,23 +139,23 @@ uni_output_table<-sampcompR::uni_compare_table(univar_data)
 
 **Table 1**
 
-| variables     |      north      |      black       |
-|:--------------|:---------------:|:----------------:|
-| age           |      0.006      |      -0.012      |
-|               | (-0.001, 0.012) | (-0.02, -0.005)  |
-| educ          |      0.087      |      -0.125      |
-|               | (0.078, 0.095)  | (-0.141, -0.113) |
-| fatheduc      |      0.186      |      -0.304      |
-|               | (0.164, 0.204)  | (-0.345, -0.264) |
-| motheduc      |      0.149      |      -0.23       |
-|               |  (0.13, 0.164)  | (-0.257, -0.202) |
-| wage          |      0.276      |      -0.273      |
-|               | (0.251, 0.305)  | (-0.294, -0.252) |
-| IQ            |      0.065      |      -0.177      |
-|               |  (0.055, 0.07)  |  (-0.19, -0.16)  |
-| Average Error |      0.128      |      0.187       |
-| RANK          |        1        |        2         |
-| N             |      1795       |       703        |
+| variables     |     north      |      black       |
+|:--------------|:--------------:|:----------------:|
+| age           |     0.006      |      -0.012      |
+|               |  (\>0, 0.011)  | (-0.02, -0.004)  |
+| educ          |     0.087      |      -0.125      |
+|               | (0.078, 0.096) | (-0.139, -0.111) |
+| fatheduc      |     0.186      |      -0.304      |
+|               | (0.168, 0.205) | (-0.341, -0.267) |
+| motheduc      |     0.149      |      -0.23       |
+|               | (0.135, 0.163) | (-0.256, -0.204) |
+| wage          |     0.276      |      -0.273      |
+|               | (0.251, 0.301) | (-0.296, -0.25)  |
+| IQ            |     0.065      |      -0.177      |
+|               | (0.057, 0.073) | (-0.193, -0.161) |
+| Average Error |     0.128      |      0.187       |
+| RANK          |       1        |        2         |
+| N             |      1795      |       703        |
 
 Difference in Relative Means off different Survey Groups
 
