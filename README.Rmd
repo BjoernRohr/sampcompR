@@ -419,6 +419,7 @@ In general, the package's functions can be ordered into one of four categories. 
 -   `plot_uni_compare()` can be used to plot the results of the `uni_compare()` function.
 
 -   `uni_compare_table()` can be used to get a table for the results of the `uni_compare()` function.
+
 -   `R_indicator` calculates the R-Indicator of a Survey.
 
 ### Bivariate Comparison Functions
@@ -433,7 +434,7 @@ In general, the package's functions can be ordered into one of four categories. 
 
 -   `multi_compare()` can be used to make a multivariate comparison and get an object usable in the other bivariate comparison functions or plot the results directly.
 
--   `multi_compare2()` needs a slightly more complicated input, however, it is suitable to compare any glm() model between the data frame and the benchmark. 
+-   `multi_compare2()` needs a slightly more complicated input, however, it is suitable to compare any glm() model between the data frame and the benchmark.
 
 -   `plot_multi_compare()` can be used to plot the results of the `multi_compare()` function.
 
