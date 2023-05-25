@@ -28,9 +28,7 @@ Imports:
     stats,
     survey,
     svrep,
-    tidyselect,
     utils,
-    weights,
     wooldridge
 Suggests: 
     testthat (>= 3.0.0)

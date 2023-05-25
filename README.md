@@ -2,6 +2,12 @@ Introduction to the SampcompR Package
 ================
 Bjoern Rohr (<bjoern.rohr@gesis.org>)
 
+# Disclaimer:
+
+sampcompR is still in development and may contain bugs. If you use the
+package and a bug crosses your way, feel free to contact the Author
+(<bjoern.rohr@gesis.org>).
+
 # sampcompR
 
 <!-- badges: start -->
@@ -34,10 +40,10 @@ You can install the development version of sampcompR like so:
     ### Install the dependencies
     install.packages("devtools")
 
-    install.packages(c("boot", "data.table", "dplyr", "ggplot2", "Hmisc", "jtools",
-                       "lmtest", "magrittr", "margins", "parallel", "psych", "reshape2",
-                       "readr", "svrep", "sandwich", "stats", "survey", "tidyselect", 
-                       "utils","weights", "wooldridge"))
+    # install.packages(c("boot", "data.table", "dplyr", "ggplot2", "Hmisc", "jtools",
+    #                    "lmtest", "magrittr", "margins", "parallel", "psych", "reshape2",
+    #                    "readr", "svrep", "sandwich", "stats", "survey", "tidyselect", 
+    #                    "utils","weights", "wooldridge"))
 
     ### Install the package
     devtools::install_github("BjoernRohr/sampcompR")

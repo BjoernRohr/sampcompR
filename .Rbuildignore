@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^\.gitlab-ci\.yml$
+style_table.css
+README.docx
+README.html
