@@ -106,7 +106,7 @@ sampcompR::plot_uni_compare(univar_data)
 
 ```
 
-Here we can see a plot showing the difference in mean for several variables (indicated in the `variables` parameter) in the data frames. The first data frame, named as a character in `dfs`, is compared to the first data frame in `benchmarks`, while the second is compared to the second, and so forth. Another important parameter is `nboots`. It indicates the number of bootstraps to calculate the confidence intervals. We recommend using at least 2000 to 10000 bootstraps, although this may take a while. To make this ´readme´ more accessible, we lower the number of bootstraps for this example. It is also possible to set `nboots==0`. In this case, the confidence intervals will be calculated analytically. The upper right corner of the plot shows the average relative difference in mean, which is chosen by using `summetric=="avg"`. Last, the parameter data indicates if the function should return a `uni_compare_object` which can be used in other package functions (e.g., plot_uni_compare).
+Here we can see a plot showing the difference in mean for several variables (indicated in the `variables` parameter) in the data frames. The first data frame, named as a character in `dfs`, is compared to the first data frame in `benchmarks`, while the second is compared to the second, and so forth. Another important parameter is `nboots`. It indicates the number of bootstraps to calculate the confidence intervals. We recommend using at least 2000 to 10000 bootstraps, although this may take a while. It is also possible to set `nboots==0`, as we did in this example. In this case, the confidence intervals will be calculated analytically. The upper right corner of the plot shows the average relative difference in mean, which is chosen by using `summetric=="avg"`. Last, the parameter data indicates if the function should return a `uni_compare_object` which can be used in other package functions (e.g., `plot_uni_compare`).
 
 Also, the difference can be shown in a table that can be helpful to document the results. We can easily get a good result table by adding the resulting table to other functions (e.g., the kable() function in RMarkdown).
 
@@ -190,7 +190,7 @@ table2
 
 ```
 
-Using `"diff"` for the `type` parameter and `1` in `comparison_number` gives us a matrix for the difference in Pearson's r between the surveys. Here we can again see what correlations significantly differ between the surveys and to what extent. However, to know why the colors are as they are in the plot, we must also look at the individual correlation matrices for both surveys. Here we only look at the tables for comparing north versus south respondents as an example.
+Using `type = diff` and `comparison_number = 1` gives us a matrix for the difference in Pearson's r between the surveys. Here we can again see what correlations significantly differ between the surveys and to what extent. However, to know why the colors are as they are in the plot, we must also look at the individual correlation matrices for both surveys. Here we only look at the tables for comparing north versus south respondents as an example.
 
 ```{r correlation matrices of comparison 1}
 # North correlation matrix of the first comparison
@@ -282,11 +282,11 @@ sampcompR::plot_multi_compare(c("multi_data1_ols","multi_data2_ols"),
 
 ```
 
-The plot looks very similar, except that every row shows a coefficient while every column shows a model. Here the green color (Same) indicates that a coefficient is not significantly different in any of the models performed with the individual surveys or that the interaction effect in the model on the pooled data frames is not significant. Similarly, yellow (Small Diff) or red (Large Diff) indicates that the coefficient is significant in one of the base models, and the interaction effect is significant in the pooled models. If those conditions are true, it is red (Large Diff) if the coefficients differ in direction or one is the size of the other and yellow (Small Diff) otherwise.
+The plot looks very similar to that of the bivariate comparison, except that every row shows a coefficient while every column shows a model. Here the green color (Same) indicates that a coefficient is not significantly different in any of the models performed with the individual surveys or that the interaction effect in the model on the pooled data frames is not significant. Similarly, yellow (Small Diff) or red (Large Diff) indicates that the coefficient is significant in one of the base models, and the interaction effect is significant in the pooled models. If those conditions are true, it is red (Large Diff) if the coefficients differ in direction or one is the size of the other and yellow (Small Diff) otherwise.
 
-As we can see here in those models, there are fewer differences than before in the bivariate comparison, especially in the models based on the black comparison between the black and the white sub-data frames, at least for those models compared. Also, we can see that the differences on the wage variable we found in previous comparisons are not present in the multivariate model. However, even in multivariate regression, education seems more prone to group differences.
+As we can see here in those models, there are fewer differences than before in the bivariate comparison, especially in the models based on the comparison between the black and the white sub-data frames, at least for those models compared. Also, we can see that the differences on the wage variable we found in previous comparisons are not present in the multivariate model. However, even in multivariate regression, education seems more prone to group differences.
 
-In addition to the models, we can answer with an ols regression, it would also be interesting to add a model estimating a marriage model. However, for this, we need a logit regression, which now follows.
+In addition to the models, we can answer with an ols regression, it would also be interesting to add a model estimating the effect of the coefficients on the probability of marriage. However, for this, we need a logit regression, which now follows.
 
 ```{r adding_logit_models}
 
@@ -323,7 +323,7 @@ sampcompR::plot_multi_compare(c("final_multi1","final_multi2"),
                              plots_label=c("north","black"))
 ```
 
-After performing the same comparison with the `method = logit`, and with the new dependent variable, it would still be interesting two plot all models together. This can be done with the function `multi_compare_merge`, which adds multi_compare_objects together and use the newly created objects for the plot. This shows us that in addition to the education model, in the marriage model, one coefficient is different for black respondents than for white respondents.
+After performing the same comparison with the `method = logit`, and with the new dependent variable, it would still be interesting to plot all models together. This can be done with the function `multi_compare_merge`, which adds multi_compare_objects together and use the newly created objects for the plot. This shows us that in addition to the education model, in the marriage model, one coefficient is different for black respondents than for white respondents.
 
 We also add the objects into the provided table function to look at the differences closer.
 
