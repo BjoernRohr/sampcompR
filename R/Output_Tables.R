@@ -477,3 +477,129 @@ multi_compare_table<-function(multi_compare_objects,type="diff",names=NULL){
 
 
 
+
+
+
+
+
+descript_table_sub<-function(df, variables, varlabels=NULL, weight=NULL,strata=NULL,id=NULL, value="mean", digits=NULL){
+  
+    design <- survey::svydesign(ids = id, weights = weight, strata = strata, data=df)
+    
+    if (value=="mean"){
+      output<-sapply(variables,
+                     function(variable,design){survey::svymean(stats::reformulate(variable),design,na.rm=T)}, 
+                     design, simplify = T)
+      
+      output<-matrix(output,ncol=1)
+    }
+    
+    if (value=="percent"){
+      output<-sapply(variables,
+                     function(variable,design){survey::svymean(stats::reformulate(variable),design,na.rm=T)}, 
+                     design, simplify = T)
+      
+      output<-paste(round((output*100), digits = digits),"%", sep="")
+      
+      output<-matrix(output,ncol=1)
+    }
+    
+    if (value=="total"){
+      output<-sapply(variables,
+                     function(variable,design){survey::svytotal(stats::reformulate(variable),design,na.rm=T)}, 
+                     design, simplify = T)
+      
+      output<-matrix(output,ncol=1)
+      
+    }
+    
+    if (value=="total_percent"){
+      output1<-sapply(variables,
+                     function(variable,design){survey::svytotal(stats::reformulate(variable),design,na.rm=T)}, 
+                     design, simplify = T)
+      
+      output2<-sapply(variables,
+                     function(variable,design){survey::svymean(stats::reformulate(variable),design,na.rm=T)}, 
+                     design, simplify = T)
+      
+      output <- paste(round(output1,digits = digits)," (",round((output2*100),digits = digits),"%)",sep="" )
+      output<-matrix(output,ncol=1)
+      
+      
+    }
+   
+  
+  
+  if(is.null(varlabels)) rownames(output)<- variables else rownames(output)<- varlabels
+  
+  output
+}
+
+
+#' Get a Descriptive Table for Every Data Frame
+#'
+#' Get a Descriptive Table for every Data Frame, to easy document your Data
+#' 
+#' @param dfs A character vector, containing the names of the data frames.
+#' @param variables A character vector containing the variables in the data frame 
+#' that should be described.
+#' @param varlabels A character containing the Labels for every variable in variables.
+#' @param weight A character vector, containing either the name of a weight in the 
+#' respective data frame, or NA, if no weighting should be performed for this data frame.
+#' @param id A character vector, containing either the name of a id in the 
+#' respective data frame, or NA, if every row is unique for this data frame.
+#' @param strata A character vector, containing either the name of a strata in the 
+#' respective data frame, or NA, if no strata  should be used when weighting this 
+#' data frame.
+#' @param value A character vector indicating what descriptive value should be displayed
+#' for the data frame. It can either be "mean", "percent", "total", or "total_percent".
+#' @param digits A numeric value indicating the number of digits that the Descriptive table 
+#' should be rounded to.
+#' 
+#' @returns Returns a matrix of Descriptive information. Output depends on value.
+#' 
+#' 
+#'
+#'@export
+descriptive_table<-function(dfs,variables,varlabels=NULL, weight=NULL,
+                            strata=NULL,id=NULL, value="mean", digits=3){
+  
+  table<-NULL
+  
+  if(length(value)==1) value<-c(rep(value,length(dfs)))
+  
+  for (i in 1:length(dfs)){
+    
+    ### look if weight_var is there ###
+    if(is.null(weight)) weights<-get(dfs[i])[,weight[i]]
+    if(is.null(strata)) stratas<-NULL
+    if(is.null(id)) ids<-c(1:nrow(get(dfs[i])))
+    
+    if(is.null(weight)==F) {
+      if(is.na(weight[i])==F) weights<-get(dfs[i])[,weight[i]]/(sum(get(dfs[i])[,weight[i]])/nrow(get(dfs[i])))
+      if(is.na(weight[i])==T) weights<-rep(1,nrow(get(dfs[i])))}
+    if(is.null(strata)==F) {
+      if(is.na(strata[i])==F) stratas<-get(dfs[i])[,strata[i]]
+      if(is.na(strata[i])==T) stratas<-NULL}
+    if(is.null(id)==F) {
+      if(is.na(id[i])==F) ids<-get(dfs[i])[,id[i]]
+      if(is.na(id[i])==T) ids<-c(1:nrow(get(dfs[i])))}
+    
+    
+    help<-descript_table_sub(df=get(dfs[i]), variables=variables, varlabels = varlabels,
+                            weight=weights,strata=stratas,id=ids, value=value[i],digits=digits)
+    
+   
+    
+    
+    if(is.null(table)){
+      table<-help
+    }
+    else table<-cbind(table,help)
+  }
+  
+  
+  colnames(table)<-dfs
+  return(table)
+}
+
