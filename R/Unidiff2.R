@@ -54,13 +54,16 @@
 #' the variables in dfs and benchmarks with the same name. Only applicable for dummy
 #' variables.
 #'
-#' * \code{"rel_mean"}, \code{"abs_rel_mean"} A function to calculate the (absolute) relative difference in mean of
-#' the variables in dfs and benchmarks with the same name.Only applicable for
-#' metric variables
+#' * \code{"rel_mean"}, \code{"abs_rel_mean"} A function to calculate the (absolute) 
+#' relative difference in mean of the variables in dfs and benchmarks with the same name.
+#' #' For more information on the formula for difference and analytic variance, see Felderer 
+#' et al. (2019). Only applicable for metric variables
 #'
-#' * \code{"rel_prop"}, \code{"abs_rel_prop"} A function to calculate the (absolute) relative difference in proportions of
-#' the variables in dfs and benchmarks with the same name. Only applicable for dummy
-#' variables.
+#' * \code{"rel_prop"}, \code{"abs_rel_prop"} A function to calculate the (absolute) 
+#' relative difference in proportions of the variables in dfs and benchmarks with 
+#' the same name. it is calculated similar to the relative difference in mean 
+#' (see Felderer et al., 2019), however the default label for the plot is different. 
+#' Only applicable for dummy variables.
 #'
 #' * \code{"ad_median"} A function to calculate the (absolute) relative difference in median of
 #' the variables in dfs and benchmarks with the same name.
@@ -113,10 +116,15 @@
 #' response identificators should indicate if respondents are part of the sample (respondents=1) 
 #' or not part of the sample (non-respondents=0).
 #' @param type Define the type of comparison. Can either be "comparison" or "nonrespnse".
+#' 
 #' @return A plot based on [ggplot2::ggplot2()] (or data frame if data==TRUE)
 #' which shows the difference between two or more data frames on predetermined variables,
 #' named identical in both samples.
 #' 
+#' @references 
+#' Felderer, B., Kirchner, A., & Kreuter, F. (2019). The Effect of Survey Mode on Data 
+#' Quality: Disentangling Nonresponse and Measurement Error Bias. Journal of Official 
+#' Statistics, 35(1), 93–115. https://doi.org/10.2478/jos-2019-0005
 #' 
 #' @export
 #' @importFrom magrittr %>%

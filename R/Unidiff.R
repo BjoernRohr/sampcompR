@@ -63,13 +63,16 @@
 #' proportions of all categories in a variables in dfs and benchmarks with the same name.
 #' Only applicable for variables with the same number of categories.
 #'
-#' * \code{"rel_mean"}, \code{"abs_rel_mean"} A function to calculate the (absolute) relative difference in mean of
-#' the variables in dfs and benchmarks with the same name.Only applicable for
-#' metric variables
+#' * \code{"rel_mean"}, \code{"abs_rel_mean"} A function to calculate the (absolute) 
+#' relative difference in mean of the variables in dfs and benchmarks with the same name. 
+#' For more information on the formula for difference and analytic variance, see Felderer 
+#' et al. (2019). Only applicable for metric variables. 
 #'
-#' * \code{"rel_prop"}, \code{"abs_rel_prop"} A function to calculate the (absolute) relative difference in proportions of
-#' the variables in dfs and benchmarks with the same name. Only applicable for dummy
-#' variables.
+#' * \code{"rel_prop"}, \code{"abs_rel_prop"} A function to calculate the (absolute) 
+#' relative difference in proportions of the variables in dfs and benchmarks with 
+#' the same name. it is calculated similar to the relative difference in mean 
+#' (see Felderer et al., 2019), however the default label for the plot is different. 
+#' Only applicable for dummy variables.
 #'
 #' * \code{"d_median"} \code{"ad_median"} A function to calculate the (absolute) relative difference in median of
 #' the variables in dfs and benchmarks with the same name.
@@ -125,6 +128,11 @@
 #' @return A plot based on [ggplot2::ggplot2()] (or data frame if data==TRUE)
 #' which shows the difference between two or more data frames on predetermined variables,
 #' named identical in both samples.
+#' 
+#' @references 
+#' Felderer, B., Kirchner, A., & Kreuter, F. (2019). The Effect of Survey Mode on Data 
+#' Quality: Disentangling Nonresponse and Measurement Error Bias. Journal of Official 
+#' Statistics, 35(1), 93–115. https://doi.org/10.2478/jos-2019-0005
 #' 
 #' 
 #' @export
@@ -2172,13 +2180,19 @@ R_indicator<-function(dfs,response_identificators,variables,
     if(length(strata)<length(dfs)) strata<-c(rep(strata[1],length(dfs)))
   }
   
-  dfs_list<-mapply(get,dfs,SIMPLIFY = F)
+  # dfs_list<-list()
+  # for (i in 1:length(dfs)){
+  #   
+  #   dfs_list[[i]]<-get(dfs[i])
+  #   
+  # }
+  #dfs_list<-lapply(dfs,get,pos = -1)
   
   
   results<-list()
   for (i in 1:length(dfs)){
     
-    results[[i]]<-R_indicator_func(df=dfs_list[[i]],
+    results[[i]]<-R_indicator_func(df=get(dfs[i]),
                                    response_identificator=response_identificators[i],
                                    variables=variables,
                                    id=id[i],

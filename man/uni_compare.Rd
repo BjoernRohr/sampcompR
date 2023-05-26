@@ -76,12 +76,15 @@ variables with a limited number of categories.
 \item \code{"avg_abs_prop_diff"} A function to calculate the average absolute difference in
 proportions of all categories in a variables in dfs and benchmarks with the same name.
 Only applicable for variables with the same number of categories.
-\item \code{"rel_mean"}, \code{"abs_rel_mean"} A function to calculate the (absolute) relative difference in mean of
-the variables in dfs and benchmarks with the same name.Only applicable for
-metric variables
-\item \code{"rel_prop"}, \code{"abs_rel_prop"} A function to calculate the (absolute) relative difference in proportions of
-the variables in dfs and benchmarks with the same name. Only applicable for dummy
-variables.
+\item \code{"rel_mean"}, \code{"abs_rel_mean"} A function to calculate the (absolute)
+relative difference in mean of the variables in dfs and benchmarks with the same name.
+For more information on the formula for difference and analytic variance, see Felderer
+et al. (2019). Only applicable for metric variables.
+\item \code{"rel_prop"}, \code{"abs_rel_prop"} A function to calculate the (absolute)
+relative difference in proportions of the variables in dfs and benchmarks with
+the same name. it is calculated similar to the relative difference in mean
+(see Felderer et al., 2019), however the default label for the plot is different.
+Only applicable for dummy variables.
 \item \code{"d_median"} \code{"ad_median"} A function to calculate the (absolute) relative difference in median of
 the variables in dfs and benchmarks with the same name.
 }}
@@ -189,4 +192,9 @@ univar_comp<-sampcompR::uni_compare(dfs = c("north","white"),
 
  univar_comp
  
+}
+\references{
+Felderer, B., Kirchner, A., & Kreuter, F. (2019). The Effect of Survey Mode on Data
+Quality: Disentangling Nonresponse and Measurement Error Bias. Journal of Official
+Statistics, 35(1), 93–115. https://doi.org/10.2478/jos-2019-0005
 }
