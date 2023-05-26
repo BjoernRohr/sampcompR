@@ -1,5 +1,6 @@
 
-local_test_data_uni1 <- function(env = parent.frame()) {
+local_test_data_uni1 <- function(env = parent.frame(), summet="avg",
+                                 nboots=20, funct="rel_mean") {
   
   list.of.packages <- c("wooldridge")
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -15,11 +16,11 @@ local_test_data_uni1 <- function(env = parent.frame()) {
   ### analyze data ###
   uni_data<-uni_compare(dfs = c("north","black"),
                         benchmarks = c("south","white"),
-                        nboots = 20,
+                        nboots = nboots,
                         variables = c("age","educ"),
-                        funct = "rel_mean",
+                        funct = funct,
                         data=T,
-                        summetric = "avg",
+                        summetric = summet,
                         weight = c("weight",NA),
                         id = c("id",NA),
                         weight_bench = c("weight",NA),
@@ -66,6 +67,23 @@ local_test_data_uni2 <- function(env = parent.frame()) {
 }
 
 
-#uni_compare_table(local_test_data2())
+local_test_data_uni3 <- function(env = parent.frame()) {
+  
+  list.of.packages <- c("wooldridge")
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) install.packages(new.packages)
+  
+  card1<<-wooldridge::card
+  card2<<-wooldridge::card
+  
+  ### analyze data ###
+  sampcompR::R_indicator(dfs= c("card1","card2"),
+                        response_identificators = c("south","black"),
+                        variables=c("age","educ","fatheduc","motheduc","IQ","wage"),
+                        id=c("id",NA),
+                        weight=c("weight",NA))
+  
+}
+
 
 
