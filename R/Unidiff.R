@@ -123,7 +123,9 @@
 #' @param response_identificator A character vector, naming response identificators for every df.
 #' response identificators should indicate if respondents are part of the sample (respondents=1) 
 #' or not part of the sample (non-respondents=0).
-#' @param type Define the type of comparison. Can either be "comparison" or "nonrespnse".
+#' @param type Define the type of comparison. Can either be "comparison" for a comparison between two surveys,
+#' "benchmark" for a comparison between a survey and a benchmark to estimate bias in the survey, 
+#' or "nonrespnse", when the function is used to measure nonresponse bias.
 #'
 #' @return A plot based on [ggplot2::ggplot2()] (or data frame if data==TRUE)
 #' which shows the difference between two or more data frames on predetermined variables,
@@ -568,7 +570,7 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
                       shapes=shapes, legendlabels=legendlabels, legendtitle=legendtitle , label_x=label_x, label_y=label_y,
                       summet_size=summet_size, plot_title=plot_title, funct=funct,type=type)
 
-  if (isTRUE(data)) return(results)
+  
 
 
 
@@ -579,6 +581,16 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
   if (length(varlabels) >= length(unique(results$data$varnames))){varlabels<-varlabels[1:length(unique(results$data$varnames))]}
   if (length(varlabels) < length(unique(results$data$varnames))) varlabels<-c(varlabels,unique(results$data$varnames)[(length(varlabels)+1):length(unique(results$data$varnames))])
 
+  
+  ### rename variables according to varlabels
+  variables<-(unique(results$data$varnames))
+  
+  for (i in 1:length(variables)){
+    results$data$varnames[results$data$varnames==variables[i]]<-varlabels[i]
+  }
+  
+  if (isTRUE(data)) return(results)
+  
   ################
   ### Plotting ###
   ################
@@ -1243,7 +1255,7 @@ final_data<-function(data, name_dfs, name_benchmarks, summetric=NULL, colors=NUL
   ### label AXIS ###
   ### label X-Axis
   if (is.null(label_x)) (if (is.character(funct)){
-    if(type=="comparison"){
+    if(type=="benchmark"){
     if (funct=="d_mean") label_x <- "Bias: Difference in Mean"
     if (funct=="ad_mean") label_x <- "Bias: Absolute Difference in Mean"
     if (funct=="d_prop") label_x <- "Bias: Difference in Proportions"
@@ -1272,6 +1284,21 @@ final_data<-function(data, name_dfs, name_benchmarks, summetric=NULL, colors=NUL
       if (funct=="abs_rel_prop") label_x <- "Nonresponse Bias:\n Absolute Relative Difference in Proportions"
       if (funct=="ad_median") label_x <- "Nonresponse Bias:\n Absolute Relative Difference in Median"
       if (funct=="KS") label_x <- "Nonresponse Bias:\n KS-Test"
+    }
+    if(type=="comparison"){
+      if (funct=="d_mean") label_x <- "Difference in Mean"
+      if (funct=="ad_mean") label_x <- "Absolute Difference in Mean"
+      if (funct=="d_prop") label_x <- "Difference in Proportions"
+      if (funct=="ad_prop") label_x <- "Absolute Difference in Proportions"
+      if (funct=="prop_modecat") label_x <- "Difference in Mode Category"
+      if (funct=="abs_prop_modecat") label_x <- "Absolute Difference in Mode Category"
+      if (funct=="avg_abs_prop_diff") label_x <- "Average Absolute Difference in All variable Categories"
+      if (funct=="rel_mean") label_x <- "Relative Difference in Mean"
+      if (funct=="abs_rel_mean") label_x <- "Absolute Relative Difference in Mean"
+      if (funct=="rel_prop") label_x <- "Relative Difference in Proportions"
+      if (funct=="abs_rel_prop") label_x <- "Absolute Relative Difference in Proportions"
+      if (funct=="ad_median") label_x <- "Absolute Relative Difference in Median"
+      if (funct=="KS") label_x <- "KS-Test"
     }
     
   }  else label_x <- "Difference-Metric")
@@ -2180,13 +2207,7 @@ R_indicator<-function(dfs,response_identificators,variables,
     if(length(strata)<length(dfs)) strata<-c(rep(strata[1],length(dfs)))
   }
   
-  # dfs_list<-list()
-  # for (i in 1:length(dfs)){
-  #   
-  #   dfs_list[[i]]<-get(dfs[i])
-  #   
-  # }
-  #dfs_list<-lapply(dfs,get,pos = -1)
+
   
   
   results<-list()
@@ -2212,35 +2233,50 @@ R_indicator_func<-function(df,response_identificator,variables,
   
   
   
+  ### turn df into data.frame
+  df<-as.data.frame(df)
+  
   ### Null if na
   if(is.null(id)==F) {if(is.na(id)) id<-NULL}
   if(is.null(weight)==F) {if(is.na(weight)) weight<-NULL}
   if(is.null(strata)==F) {if(is.na(strata)) strata<-NULL}
   
+  if(is.null(id)==F & is.null(weight)==F & is.null(strata)==F) df<-stats::na.omit(df[,c(variables, weight,id,strata, response_identificator)])
+  if(is.null(id)==F & is.null(weight)==F & is.null(strata)==T) df<-stats::na.omit(df[,c(variables, weight,id, response_identificator)])
+  if(is.null(id)==F & is.null(weight)==T & is.null(strata)==F) df<-stats::na.omit(df[,c(variables,id,strata, response_identificator)])
+  if(is.null(id)==T & is.null(weight)==F & is.null(strata)==F) df<-stats::na.omit(df[,c(variables, weight,strata, response_identificator)])
+  if(is.null(id)==T & is.null(weight)==T & is.null(strata)==F) df<-stats::na.omit(df[,c(variables, strata, response_identificator)])
+  if(is.null(id)==F & is.null(weight)==T & is.null(strata)==T) df<-stats::na.omit(df[,c(variables, id, response_identificator)])
+  if(is.null(id)==T & is.null(weight)==F & is.null(strata)==T) df<-stats::na.omit(df[,c(variables, weight, response_identificator)])
+  if(is.null(id)==T & is.null(weight)==T & is.null(strata)==T) df<-stats::na.omit(df[,c(variables, response_identificator)])
+  
   
   
   ### normalize weights ###
-  if(is.null(weight)==F) df$weights<-df[,weight]/(sum(df[,weight])/nrow(df))
-  if(is.null(weight)) df$weights <-1
+  if(is.null(weight)==F) weights<-df[,weight]/(sum(df[,weight])/nrow(df))
+  if(is.null(weight)) weights <-rep(1,nrow(df))
   
-  if(is.null(id)==F) df$id <- df[,id]
-  if(is.null(id)) df$id <- 1:nrow(df)
-  if(is.null(strata)==F) df$strata <- df[,strata]
+  if(is.null(id)==F) id <- df[,id]
+  if(is.null(id)) id <- 1:nrow(df)
+  if(is.null(strata)==F) strata <- df[,strata]
   df$insample<-df[,response_identificator]
   
-  df<-df[stats::complete.cases(df[,variables]),]
+  #df<-df[stats::complete.cases(df[,c(variables,"insample")]),]
+ 
   
   df_design <- survey::svydesign(
     data = df,
-    id = df$id, weights = ~df$weights
+    id = id,
+    weights = weights,
+    strata = strata
   )
   
   formula<-stats::as.formula(paste("insample ~",paste(variables, collapse = " + ")))
   
-  suppressWarnings(model<-survey::svyglm(design=df_design, formula =formula,family = stats::binomial("logit")))
+  model<-survey::svyglm(design=df_design, formula =formula,family = stats::quasibinomial("logit"))
   
   
-  Response_propensity = stats::predict(model,type = "response")
+  Response_propensity <- stats::predict(model,type = "response")
   
   
   estimated_pop_variance<- survey::svyvar(x= Response_propensity, design=df_design)
@@ -2313,7 +2349,7 @@ R_indicator_func2<-function(df,benchmark,variables,
   
   comp_design <- survey::svydesign(
     data = comp_sample,
-    id = comp_sample$id, weights = ~comp_sample$weights
+    id = comp_sample$id, weights = comp_sample$weights
   )
   
   formula<-stats::as.formula(paste("insample ~",paste(variables, collapse = " + ")))

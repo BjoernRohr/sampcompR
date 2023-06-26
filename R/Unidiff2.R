@@ -794,12 +794,15 @@ boot_svy_mean<-function(data,variables, nboots=2000,
   
   if(is.null(id)) data$id<-1:nrow(data)
   if(is.null(id)==F) {if(is.na(id)) data$id<-1:nrow(data)}
+  if(is.null(id)==F) {if (is.na(id)==F) data$id<-data[,id]}
   
   if(is.null(weight)) data$weight<-1
   if(is.null(weight)==F) {if(is.na(weight)) data$weight<-1}
+  if(is.null(weight)==F) {if (is.na(weight)==F) data$weight<-data[,weight]}
   
-  if(is.null(strata)==F) strata<-data[,strata]
   if(is.null(strata)==F) {if(is.na(strata)==F) strata<-data[,strata]}
+  #if(is.null(strata)==F) strata<-data[,strata]
+  
   
   
   
@@ -829,14 +832,17 @@ boot_svy_mean<-function(data,variables, nboots=2000,
 mean_bench_func<-function(data,variables, 
                           id=NULL, weight=NULL, strata=NULL,func=func){
   
-  if(is.null(id)) data$id<-1:nrow(data)
+  if(is.null(id)) data$id<-c(1:nrow(data))
   if(is.null(id)==F) {if(is.na(id)) data$id<-1:nrow(data)}
+  if(is.null(id)==F) {if (is.na(id)==F) data$id<-data[,id]}
   
   if(is.null(weight)) data$weight<-1
   if(is.null(weight)==F) {if(is.na(weight)) data$weight<-1}
+  if(is.null(weight)==F) {if (is.na(weight)==F) data$weight<-data[,weight]}
   
-  if(is.null(strata)==F) strata<-data[,strata]
   if(is.null(strata)==F) {if(is.na(strata)==F) strata<-data[,strata]}
+  #if(is.null(strata)==F) strata<-data[,strata]
+  
   
     data_design <- survey::svydesign(data = data, ids = ~ id,weights = ~weight, strata=strata)
   

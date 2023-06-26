@@ -1,5 +1,5 @@
 
-local_test_data_biv1 <- function(env = parent.frame()) {
+local_test_data_biv1 <- function(env = parent.frame(), remove_nas="all") {
   
   list.of.packages <- c("wooldridge")
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -21,7 +21,8 @@ local_test_data_biv1 <- function(env = parent.frame()) {
                         weight = c("weight",NA),
                         id = c("id",NA),
                         weight_bench = c("weight",NA),
-                        id_bench = c("id",NA))
+                        id_bench = c("id",NA), 
+                        remove_nas = remove_nas)
   
   biv_data
 }
@@ -55,7 +56,9 @@ local_test_data_biv2 <- function(env = parent.frame()) {
                         weight = NULL,
                         id = NULL,
                         weight_bench = NULL,
-                        id_bench = NULL,p_adjust = "bonferroni")
+                        id_bench = NULL,
+                        p_adjust = "bonferroni", 
+                        remove_nas = "pairwise")
   
   biv_data
 }

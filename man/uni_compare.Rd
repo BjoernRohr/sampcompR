@@ -101,7 +101,9 @@ is needed.}
 \item{varlabels}{A character string or vector of character strings containing the new names of
 variables, also used in plot.}
 
-\item{type}{Define the type of comparison. Can either be "comparison" or "nonrespnse".}
+\item{type}{Define the type of comparison. Can either be "comparison" for a comparison between two surveys,
+"benchmark" for a comparison between a survey and a benchmark to estimate bias in the survey,
+or "nonrespnse", when the function is used to measure nonresponse bias.}
 
 \item{weight, weight_bench}{A character vector determining variables to weight the \code{dfs} or
 \code{benchmarks}. They have to be part of the respective data frame. If only one character is provided,

@@ -150,9 +150,11 @@ biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
                                  benchmarks = c("south","white"),
                                  variables= c("age","educ","fatheduc",
                                              "motheduc","wage","IQ"),
-                                 data=T)
+                                 data=T, corrtype = "rho",
+                                 weight = "weight",
+                                 id="id")
 
-sampcompR::plot_biv_compare(biv_data)
+sampcompR::plot_biv_compare(biv_data, varlabels = c("a","b","c","d","e","f"))
 ```
 
 In this comparison, the Pearson's r correlations of all variables indicated in the `variables` parameter are compared between the data frames and benchmarks. The plotted heatmap shows the difference in three categories. A correlation is green (Same) for one of two reasons. On the one hand, it can be that the Pearson's r correlation of this variable pair is not significant in the data frame and in the benchmark. On the other hand, it can be that both z standardized Pearson's r values are not significantly different. If neither of these conditions is true, the plot's correlations are marked yellow (Small Diff) or red (Large Diff). To be red, it must also fulfill one of two additional conditions. The Pearson's r correlations could be of different directions (e.g., one is positive, while the other is negative). Second, it could be that one of them is double the size of the other.
@@ -190,7 +192,7 @@ table2
 
 ```
 
-Using `type = diff` and `comparison_number = 1` gives us a matrix for the difference in Pearson's r between the surveys. Here we can again see what correlations significantly differ between the surveys and to what extent. However, to know why the colors are as they are in the plot, we must also look at the individual correlation matrices for both surveys. Here we only look at the tables for comparing north versus south respondents as an example.
+Using `type = diff` gives us a matrix for the difference in Pearson's r between the surveys, while `comparison_number = 1` indicates that the table should be for the first comparison (between the`north` and the `south` sample). Here we can again see what correlations significantly differ between the surveys and to what extent. However, to know why the colors are as they are in the plot, we must also look at the individual correlation matrices for both surveys. Here we only look at the tables for comparing north versus south respondents as an example.
 
 ```{r correlation matrices of comparison 1}
 # North correlation matrix of the first comparison
@@ -454,6 +456,8 @@ In general, the package's functions can be ordered into one of four categories. 
 ### Miscellaneous Functions
 
 -   `dataequalizer()` can be used to reduce one data frame to only columns named similarly in another data frame and a list of variables given to the function.
+
+- `descriptive_table` can be used to get a descriptive table for a Dataset, including weighting.
 
 ## References
 

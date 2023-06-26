@@ -30,8 +30,10 @@ multi_compare(
 )
 }
 \arguments{
-\item{df, benchmark}{Data frames containing the samples to compare. All independent and
-dependent variables must be inside both data frames.}
+\item{df, benchmark}{A Data frame containing the sample or benchmark to
+compare, or a character string containing the name of the sample or
+benchmark. All independent and dependent variables must be inside both data
+frames.}
 
 \item{independent}{A list of strings containing the independent variables (x) for comparison.
 Every independent variable will be used in every model to estimate the dependent variable (y)}

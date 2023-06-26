@@ -21,7 +21,7 @@ descriptive_table(
 \item{variables}{A character vector containing the variables in the data frame
 that should be described.}
 
-\item{varlabels}{A character containing the Labels for every variable in variables.}
+\item{varlabels}{A character vector containing the Labels for every variable in variables.}
 
 \item{weight}{A character vector, containing either the name of a weight in the
 respective data frame, or NA, if no weighting should be performed for this data frame.}

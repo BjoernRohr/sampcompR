@@ -76,10 +76,12 @@ combine_dfs_glm<-function(df,benchmark,formula_list,id=NULL,id_bench=NULL,weight
 
 modify_glm_formula <- function(formula) {
   
-  independent<-sub("\\~.*", "", deparse(formula))
-  dependent<-sub(".*~", "", deparse(formula))
   
-  updated_formula<-paste(independent,"~ (",dependent,")","* sample_ident")
+  dependent<-as.character(formula)[[2]]
+  independent<-as.character(formula)[[3]]
+
+  
+  updated_formula<-paste(dependent,"~ (",independent,")","* sample_ident")
   
   updated_formula<-stats::as.formula(updated_formula)
   return(updated_formula)
@@ -136,7 +138,10 @@ run_glm<-function(df_comb,formula_list, design_list=NULL, family=stats::gaussian
     
     
     if(type=="interact"){
-      form<- modify_glm_formula(formula_list[[i]])}
+      
+      form<- modify_glm_formula(formula_list[[i]])
+      }
+    
     
     if (type=="df1" | type=="bench"){
       form<-formula_list[[i]]
@@ -477,8 +482,10 @@ final_glm_list<-function(glm_list, formula_list ,weight_var=NULL,robust_se=F, p_
 #' or \code{\link[survey]{svyglm}} models.
 #' 
 #'
-#' @param df,benchmark Data frames containing the samples to compare. All independent and
-#' dependent variables must be inside both data frames.
+#' @param df,benchmark A Data frame containing the sample or benchmark to 
+#' compare, or a character string containing the name of the sample or 
+#' benchmark. All independent and dependent variables must be inside both data 
+#' frames.
 #' @param formula_list A list of named formulas. Every formula in the list will 
 #' be given to \code{\link[stats]{glm}} or \code{\link[survey]{svyglm}}.
 #' @param family A family input, that can be given to \code{\link[stats]{glm}} or 
@@ -560,13 +567,33 @@ multi_compare2<-function(df,benchmark,formula_list,rm_na="pairwise", out_output_
                          silence_summary=F,...){
   
   ### 1 reduce both data frames ###
-  old_df<-df
-  name_old_df<-deparse(substitute(df))
-  old_benchmark<-benchmark
-  name_old_benchmark<-deparse(substitute(benchmark))
+  if(inherits(df,"data.frame")){  
+    old_df<-df
+    name_old_df<-deparse(substitute(df))}
   
-  #dependent<-dependent_checker(df=df,dependent = dependent, dfname = name_old_df)
-  #dependent<-dependent_checker(df=benchmark,dependent = dependent, dfname = name_old_benchmark)
+  if(inherits(benchmark,"data.frame")){  
+    old_benchmark<-benchmark
+    name_old_benchmark<-deparse(substitute(benchmark))}
+  
+  if(inherits(df,"data.frame")==F){
+    if(is.character(df)){
+      old_df<-get(df)
+      name_old_df<-df
+      df<-get(df)
+    }
+    else stop(paste("df", " must be a data frame or a character string with the name of a dataframe",
+                    sep = "", collapse = NULL))
+  }
+  
+  if(inherits(benchmark,"data.frame")==F){
+    if(is.character(benchmark)){
+      old_benchmark<-get(benchmark)
+      name_old_benchmark<-benchmark
+      benchmark<-get(benchmark)
+    }
+    else stop(paste("benchmark", " must be a data frame or a character string with the name of a dataframe",
+                    sep = "", collapse = NULL))
+  }
   
   
   
@@ -711,3 +738,9 @@ multi_compare2<-function(df,benchmark,formula_list,rm_na="pairwise", out_output_
   
   output
 }
+
+
+
+
+
+

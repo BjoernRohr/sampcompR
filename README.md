@@ -185,7 +185,7 @@ biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
                                              "motheduc","wage","IQ"),
                                  data=T)
 
-sampcompR::plot_biv_compare(biv_data)
+sampcompR::plot_biv_compare(biv_data, varlabels = c("a","b","c","d","e","f"))
 ```
 
 <img src="man/figures/README-bivariate_comparison-1.png" width="100%" />
@@ -237,9 +237,10 @@ table_biv1<-sampcompR::biv_compare_table(biv_data,type = "diff",comparison_numbe
 
 Difference in Pearson’s r for the North/South Sample
 
-Using `type = diff` and `comparison_number = 1` gives us a matrix for
-the difference in Pearson’s r between the surveys. Here we can again see
-what correlations significantly differ between the surveys and to what
+Using `type = diff` gives us a matrix for the difference in Pearson’s r
+between the surveys, while `comparison_number = 1` indicates that the
+table should be for the first comparison. Here we can again see what
+correlations significantly differ between the surveys and to what
 extent. However, to know why the colors are as they are in the plot, we
 must also look at the individual correlation matrices for both surveys.
 Here we only look at the tables for comparing north versus south
@@ -635,6 +636,9 @@ multiple comparisons.
 - `dataequalizer()` can be used to reduce one data frame to only columns
   named similarly in another data frame and a list of variables given to
   the function.
+
+- `descriptive_table` can be used to get a descriptive table for a
+  Dataset, including weighting.
 
 ## References
 

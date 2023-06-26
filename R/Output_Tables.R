@@ -232,10 +232,14 @@ biv_compare_table<-function(biv_compare_object, type="diff", comparison_number=1
     }
     
     r_data<-round(r_data,digits = 2)
-    r_data[p_values<0.001 & is.na(r_data)==F]<-paste(r_data[p_values<0.001 & is.na(r_data)==F],"***",sep="")
-    r_data[p_values<0.01 & p_values>=0.001 & is.na(r_data)==F]<-paste(r_data[p_values<0.01 & p_values>=0.001  & is.na(r_data)==F],"**", sep="")
-    r_data[p_values<0.05 & p_values>=0.01 & is.na(r_data)==F]<-paste(r_data[p_values<0.05 & p_values>=0.01  & is.na(r_data)==F],"*", sep="")
-    r_data[p_values>=0.05 & is.na(r_data)==F]<-paste(r_data[p_values>=0.05 & is.na(r_data)==F],sep="")
+    r_data[p_values<0.001 & is.na(r_data)==F & is.na(p_values)==F]<-
+      paste(r_data[p_values<0.001 & is.na(r_data)==F & is.na(p_values)==F],"***",sep="")
+    r_data[p_values<0.01 & p_values>=0.001 & is.na(r_data)==F & is.na(p_values)==F]<-
+      paste(r_data[p_values<0.01 & p_values>=0.001  & is.na(r_data)==F & is.na(p_values)==F],"**", sep="")
+    r_data[p_values<0.05 & p_values>=0.01 & is.na(r_data)==F & is.na(p_values)==F]<-
+      paste(r_data[p_values<0.05 & p_values>=0.01  & is.na(r_data)==F & is.na(p_values)==F],"*", sep="")
+    r_data[p_values>=0.05 & is.na(r_data)==F & is.na(p_values)==F]<-
+      paste(r_data[p_values>=0.05 & is.na(r_data)==F & is.na(p_values)==F],sep="")
     r_data[is.na(r_data)]<-""
     return(r_data)
   }
@@ -528,11 +532,11 @@ descript_table_sub<-function(df, variables, varlabels=NULL, weight=NULL,strata=N
       
     }
    
+    output<-rbind(output,nrow(df))
   
+    if(is.null(varlabels)) rownames(output)<- variables else rownames(output)<- c(varlabels,"N")
   
-  if(is.null(varlabels)) rownames(output)<- variables else rownames(output)<- varlabels
-  
-  output
+    output
 }
 
 
@@ -543,7 +547,7 @@ descript_table_sub<-function(df, variables, varlabels=NULL, weight=NULL,strata=N
 #' @param dfs A character vector, containing the names of the data frames.
 #' @param variables A character vector containing the variables in the data frame 
 #' that should be described.
-#' @param varlabels A character containing the Labels for every variable in variables.
+#' @param varlabels A character vector containing the Labels for every variable in variables.
 #' @param weight A character vector, containing either the name of a weight in the 
 #' respective data frame, or NA, if no weighting should be performed for this data frame.
 #' @param id A character vector, containing either the name of a id in the 

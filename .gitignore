@@ -4,5 +4,6 @@
 .httr-oauth
 .DS_Store
 style_table.css
-README.html
+README_HTML.html
 README.docx
+README_HTML.Rmd

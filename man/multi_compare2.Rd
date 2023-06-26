@@ -30,8 +30,10 @@ multi_compare2(
 )
 }
 \arguments{
-\item{df, benchmark}{Data frames containing the samples to compare. All independent and
-dependent variables must be inside both data frames.}
+\item{df, benchmark}{A Data frame containing the sample or benchmark to
+compare, or a character string containing the name of the sample or
+benchmark. All independent and dependent variables must be inside both data
+frames.}
 
 \item{formula_list}{A list of named formulas. Every formula in the list will
 be given to \code{\link[stats]{glm}} or \code{\link[survey]{svyglm}}.}

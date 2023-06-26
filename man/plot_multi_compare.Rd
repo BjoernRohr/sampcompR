@@ -24,7 +24,8 @@ plot_multi_compare(
   sum_weights_indep = NULL,
   sum_weights_dep = NULL,
   label_x = NULL,
-  label_y = NULL
+  label_y = NULL,
+  missings_x = T
 )
 }
 \arguments{
@@ -93,6 +94,8 @@ or the same lengths as the independent variables or independent variables.}
 
 \item{label_x, label_y}{A character string or vector of character strings containing a label for
 the x-axis and y-axis.}
+
+\item{missings_x}{If TRUE, missing pairs in the plot will be marked with an X.}
 }
 \value{
 Returns a a heatmatrix-like plot created with ggplot, to vizualize the multivariate differences. If multiple objects are used, they

@@ -18,10 +18,12 @@ plot_biv_compare(
   perc_diff_transparance = 0,
   gradient = F,
   sum_weights = NULL,
+  missings_x = T,
   legend_show_x = F,
   order = NULL,
   breaks = NULL,
-  colors = NULL
+  colors = NULL,
+  ncol_facet = 3
 )
 }
 \arguments{
@@ -59,6 +61,8 @@ depending on the difference in Pearson's r of the data frames of comparison.}
 the displayed percental difference calculation. It can be used if some variables are
 over- or underrepresented in the analysis.}
 
+\item{missings_x}{If TRUE, missing pairs in the plot will be marked with an X.}
+
 \item{legend_show_x}{If true the X will be shown in the legend. At the moment, das
 does not yet work correctly.}
 
@@ -68,6 +72,8 @@ displayed in the plot.}
 \item{breaks}{A vector to label the color sheme in the in the legend.}
 
 \item{colors}{A vector to determine the colors in the plot.}
+
+\item{ncol_facet}{Number of colomns used in faced_wrap() for the plots.}
 }
 \value{
 A object generated with the help of \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}}, used to visualize

@@ -432,10 +432,34 @@ multi_ols_compare<-function(df,benchmark,independent,dependent,rm_na="pairwise",
                             names_df_benchmark=NULL, method="ols", silence_summary=F){
 
   ### 1 reduce both data frames ###
-  old_df<-df
-  name_old_df<-deparse(substitute(df))
-  old_benchmark<-benchmark
-  name_old_benchmark<-deparse(substitute(benchmark))
+  ### 1 reduce both data frames ###
+  if(inherits(df,"data.frame")){  
+    old_df<-df
+    name_old_df<-deparse(substitute(df))}
+  
+  if(inherits(benchmark,"data.frame")){  
+    old_benchmark<-benchmark
+    name_old_benchmark<-deparse(substitute(benchmark))}
+  
+  if(inherits(df,"data.frame")==F){
+    if(is.character(df)){
+      old_df<-get(df)
+      name_old_df<-df
+      df<-get(df)
+    }
+    else stop(paste("df", " must be a data frame or a character string with the name of a dataframe",
+                    sep = "", collapse = NULL))
+  }
+  
+  if(inherits(benchmark,"data.frame")==F){
+    if(is.character(benchmark)){
+      old_benchmark<-get(benchmark)
+      name_old_benchmark<-benchmark
+      benchmark<-get(benchmark)
+    }
+    else stop(paste("benchmark", " must be a data frame or a character string with the name of a dataframe",
+                    sep = "", collapse = NULL))
+  }
 
   dependent<-dependent_checker(df=df,dependent = dependent, dfname = name_old_df)
   dependent<-dependent_checker(df=benchmark,dependent = dependent, dfname = name_old_benchmark)
@@ -632,8 +656,10 @@ summary_ols_compare<-function (ols_comp_object, print_p=F, print_se=F){
 #' \code{multi_compare} compares samples using regression models based on differing methods.
 #' For now, only OLS-Regression and Logit-Regression are implemented. 
 #'
-#' @param df,benchmark Data frames containing the samples to compare. All independent and
-#' dependent variables must be inside both data frames.
+#' @param df,benchmark A Data frame containing the sample or benchmark to 
+#' compare, or a character string containing the name of the sample or 
+#' benchmark. All independent and dependent variables must be inside both data 
+#' frames.
 #' @param dependent A list of strings containing the dependent variables (y) for comparison.
 #' One model will be computed for every dependent variable (y) provided.
 #' @param independent A list of strings containing the independent variables (x) for comparison.
@@ -1038,7 +1064,7 @@ multi_compare<-function(df,benchmark,independent,dependent, method,rm_na="pairwi
 multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, plot_title=NULL,
                             p_value=0.05, breaks=NULL,plot_data=F, colors=NULL, variant="one", p_adjust=NULL,
                             note=T, grid="white", diff_perc=F, diff_perc_size=4.5,
-                            perc_diff_transparance=0, diff_perc_position= "top_right", label_x=NULL, label_y=NULL){
+                            perc_diff_transparance=0, diff_perc_position= "top_right", label_x=NULL, label_y=NULL,missings_x=T){
 
   ### Build title ###
   df_title <- multi_reg_object[[21]][1]
@@ -1234,7 +1260,7 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
     {if (grid != "none") ggplot2::geom_tile(colour= grid, lwd =1,linetype=1)}+
     {if (grid == "none") ggplot2::geom_tile()}+
     {if (grid != "white" & grid != "none") ggplot2::geom_tile(data = na_matrix, colour = "white", lwd=1,linetype=1)}+
-    ggplot2::geom_point(data=subset(comp_matrix_df, comp_matrix_df$value=="X"),shape=4, size=5, show.legend = FALSE)+
+    {if(missings_x==T) ggplot2::geom_point(data=subset(comp_matrix_df, comp_matrix_df$value=="X"),shape=4, size=5, show.legend = FALSE)}+
     ggplot2::coord_fixed()+
     ggplot2::scale_fill_manual(values=colors, name="", na.translate = FALSE, drop=FALSE)+
     ggplot2::scale_y_discrete(name="", limits = rev(levels(comp_matrix_df$x)), labels= label_x, breaks=unique(comp_matrix_df$x), drop=FALSE)+
@@ -1345,6 +1371,7 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
 #' the method used to generate the \code{multi_compare_objects}.
 #' @param label_x,label_y A character string or vector of character strings containing a label for
 #' the x-axis and y-axis.
+#' @param missings_x If TRUE, missing pairs in the plot will be marked with an X.
 #' 
 #' 
 #'@return Returns a a heatmatrix-like plot created with ggplot, to vizualize the multivariate differences. If multiple objects are used, they
@@ -1385,7 +1412,8 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
                          p_value=0.05, breaks=NULL,plot_data=F, colors=NULL, variant="one", p_adjust=NULL,
                          note=F, grid="white", diff_perc=T, diff_perc_size=4.5,
                          perc_diff_transparance=0, diff_perc_position= "top_right", gradient=F,
-                         sum_weights_indep=NULL,sum_weights_dep=NULL, label_x=NULL, label_y=NULL){
+                         sum_weights_indep=NULL,sum_weights_dep=NULL, label_x=NULL, label_y=NULL,
+                         missings_x=T){
 
 
 
@@ -1453,7 +1481,7 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
     help<-multi_reg_plotter(multi_reg_object=curr_df, plot_title=plot_title,
                             p_value=p_value, breaks=breaks, colors=colors, variant=variant, p_adjust=p_adjust,
                             note=note, diff_perc=diff_perc, diff_perc_size=diff_perc_size,
-                            plot_data=T)
+                            plot_data=T, missings_x=missings_x)
 
 
 
@@ -1533,7 +1561,7 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
     ggplot2::ggplot(data=plot_df, ggplot2::aes(x = plot_df[,"y"], y = plot_df[,"x"], fill = factor(plot_df[,"value"], levels = breaks))) +
     {if (gradient==T) ggplot2::aes(alpha= as.numeric(gradient))}+
     ggplot2::geom_tile(colour= grid, lwd =1,linetype=1)+
-    {if(nrow(plot_df[plot_df$value=="X",])>0) ggplot2::geom_point(data=plot_df[plot_df$value=="X",],
+    {if(nrow(plot_df[plot_df$value=="X",])>0 & missings_x==T) ggplot2::geom_point(data=plot_df[plot_df$value=="X",],
                                                                   x=plot_df[plot_df$value=="X",]$y,
                                                                   y=plot_df[plot_df$value=="X",]$x,
                                                                   fill=factor(plot_df[plot_df$value=="X",]$value, levels = breaks),

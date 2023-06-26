@@ -8,6 +8,7 @@ biv_compare(
   dfs,
   benchmarks,
   variables = NULL,
+  corrtype = "r",
   data = FALSE,
   id = NULL,
   weight = NULL,
@@ -31,7 +32,10 @@ biv_compare(
   grid = "white",
   gradient = F,
   sum_weights = NULL,
-  legend_show_x = F
+  missings_x = T,
+  legend_show_x = F,
+  remove_nas = "pairwise",
+  ncol_facet = 3
 )
 }
 \arguments{
@@ -48,6 +52,10 @@ If it has length 1 every survey will be compared against the same benchmark.}
 \item{variables}{A character vector containing the names of the variables for the comparison.
 If NULL, all variables named similar in both the dfs and the benchmarks will be compared.
 Variables missing in one of the data frames or the benchmarks will be neglected for this comparison.}
+
+\item{corrtype}{A character string, indicating the type of the bivariate correlation.
+It can either be "r" for Pearson's r or "rho" for Spearman's "rho". At the moment,
+rho is only applicable to unweighted data.}
 
 \item{data}{If TRUE, a biv_compare object is returned, containing results of the
 comparison.}
@@ -114,8 +122,16 @@ transparent, depending on the difference in Pearson's r of the data frames of co
 the displayed percental difference calculation. It can be used if some variables are over-
 or underrepresented in the analysis.}
 
+\item{missings_x}{If TRUE, missing pairs in the plot will be marked with an X.}
+
 \item{legend_show_x}{If true the X will be shown in the legend. At the moment, das does
 not yet work correctly.}
+
+\item{remove_nas}{A character string, that indicates how missing should be removed, can either be
+"all", two remove all cases that contain NA in any of the variables, or "pairwise", to remove nas
+seperately for every variable pair when calculating Pearson's r}
+
+\item{ncol_facet}{Number of colomns used in faced_wrap() for the plots.}
 }
 \value{
 A object generated with the help of \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}}, used to visualize

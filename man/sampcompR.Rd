@@ -26,6 +26,7 @@ and can be edited as other plots of ggplot afterwards.
 \item {\link[sampcompR]{plot_multi_compare}} {Plot multi_compare objects}
 \item {\link[sampcompR]{multi_compare_table}} {Get a table output of multi_compare objects}
 \item {\link[sampcompR]{multi_compare_merge}} {Combine two multi_compare objects, to plot them together}
+\item {\link[sampcompR]{descriptive_table}} {Get a Descriptive Table for Every Data Frame}
 \item {\link[sampcompR]{dataequalizer}} {Equalize dataframes}
 }
 }
