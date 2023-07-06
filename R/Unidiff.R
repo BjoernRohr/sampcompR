@@ -424,7 +424,6 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
         if (funct[i] == "d_prop") func[i]<- "PROP_DIFF"
         if (funct[i] == "ad_prop") func[i]<- "ABS_PROP_DIFF"
         if (funct[i] == "avg_abs_prop_diff") func[i] <- "MEAN_PERC_DIST"
-        if (funct[i] == "avg_abs_prop_diff") func[i] <- "Mean_ABS_PERC_DIST"
         
       }}
 
@@ -470,6 +469,8 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
 
     if (ncol(df_list[[i]])>0) {
     if (i==1) {
+      
+      
     results<-subfunc_diffplotter(x = df_list[[i]], y = bench_list[[i]],
                                  samp = i, nboots = nboots, func = func_list[[i]],
                                  func_name = func_name, ci_type=ci_type, alpha=alpha, 
@@ -477,7 +478,7 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
                                  weight=weight[i],strata=strata[i],id_bench=id_bench[i],
                                  weight_bench=weight_bench[i],strata_bench=strata_bench[i],
                                  variables = varlist[[i]], parallel = parallel)
-
+    
     } 
 
 
@@ -489,7 +490,9 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
                                                 weight=weight[i],strata=strata[i],id_bench=id_bench[i],
                                                 weight_bench=weight_bench[i],strata_bench=strata_bench[i],
                                                 variables = varlist[[i]], parallel = parallel))
-    }}
+    }
+      
+      }
 
     if (ncol(df_list[[i]])==0) stop(paste(name_dfs[i],"does not share a common variable with the benchmark or the variables parameter"),
                                        sep =" ")
@@ -869,6 +872,14 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
                                 parallel = F) {
 
 
+  ### Check if x and y are factors and edit them to make them fit for further analyses
+  x<-unfactor(x,func[1],weight,strata,id)
+  y<-unfactor(y,func[1],weight_bench,strata_bench,id_bench)
+
+    
+    
+  
+  
   #######################################################
   ### loop to bootstrap for every Variable in data frame ###
   #######################################################
@@ -880,7 +891,7 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
                ncpus = (parallel::detectCores()-1), parallel = para,
                id_x = id,weight_x=weight,strata_x=strata,id_bench=id_bench,
                weight_bench=weight_bench,strata_bench=strata_bench,variables=variables)
-
+  
   ### Make data to a data frame ###
   #t_vec <- getoutboot(bootlist, value = "t0")
   t_vec<-as.numeric(boot$t0)
@@ -912,6 +923,7 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
   lower_ci<- cis[,(ncol(cis)-1)]
   upper_ci<- cis[,(ncol(cis))]
   
+  
   alpha_adjusted<-alpha/length(x)
 
   if(ci_type=="norm") cis<-do.call(rbind,lapply(1:length(variables),getCI,x=boot, ci_type="norm", alpha=alpha_adjusted, varnames= variables))
@@ -919,8 +931,8 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
   lower_ci_adjusted<- cis[,(ncol(cis)-1)]
   upper_ci_adjusted<- cis[,(ncol(cis))]
 
-  se_vect<- as.numeric(sub(".*\\s", "", utils::capture.output(boot)[14:(13+length(variables))]))
-
+  se_vect<- as.numeric(sub(".*\\s", "", utils::capture.output(boot)[15:(14+length(variables))]))
+  
   }
   
   ############################
@@ -2385,3 +2397,62 @@ R_indicator_func2<-function(df,benchmark,variables,
   
   r_indicator
 }
+
+
+
+
+
+
+
+unfactor<-function(df, func, weight, strata, id){
+  
+  
+  if(is.null(id)==F) if(is.na(id)==F){
+    id_var<-df[,id]
+    df<-df[,-which(colnames(df) %in% c(id))]
+  } 
+  
+  if(is.null(weight)==F) if(is.na(weight)==F){
+    weight_var<-df[,weight]
+    df<-df[,-which(colnames(df) %in% c(weight))] 
+  } 
+
+  
+  if(is.null(strata)==F) if(is.na(strata)==F){ 
+    strata_var<-df[,strata]
+    df<-df[,-which(colnames(df) %in% c(strata))]
+    }
+
+  ### check, if df variables are factors ###
+  if(func=="REL_MEAN"| func=="ABS_REL_MEAN"| 
+     func=="ABS_PROP_DIFF"| func=="PROP_DIFF"){
+    
+    for (i in 1:ncol(df)){
+      
+      if(is.factor(df[,i])){
+        if(length(levels(df[,i]))==2){
+          if(all(levels(df)== c("0","1"))) df[,i]<-as.numeric(as.character(df[,i]))
+          else(stop(paste(colnames(df)[i],"must be coded as 0 and 1")))
+        }
+        if(length(levels(df[,i]))>2) stop(paste(colnames(df)[i],"must be numeric, or a factor coded as 0 or 1, for the chosen function"))
+      }
+    }
+  }
+  
+  if(is.null(id)==F) if(is.na(id)==F){
+    df[,id]<-id_var
+  } 
+  
+  if(is.null(weight)==F) if(is.na(weight)==F){
+    df[,weight]<-weight_var
+  } 
+  
+  
+  if(is.null(strata)==F) if(is.na(strata)==F){ 
+    df[,strata]<-strata_var
+  }
+
+df
+}
+
+

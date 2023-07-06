@@ -580,6 +580,12 @@ subfunc_diffplotter2 <- function(x, y, samp = 1, nboots = nboots, func = func, v
                                 ids=ids, weights=weights,strata=strata, 
                                 ids_bench = ids_bench,weights_bench = weights_bench,
                                 strata_bench = strata_bench) {
+  
+  
+  ### Check if x and y are factors and edit them to make them fit for further analyses
+  x<-unfactor(x,func[1],weights,strata,ids)
+  y<-unfactor(y,func[1],weights_bench,strata_bench,ids_bench)
+  
 
   ##########################################################
   ### loop to bootstrap for every Variable in data frame ###
@@ -976,4 +982,64 @@ measure_function<-function(svyboot_object,mean_bench_object,mean_bench,func="abs
   
   results
   
+}
+
+
+
+
+
+
+
+
+
+
+unfactor<-function(df, func, weight, strata, id){
+  
+  
+  if(is.null(id)==F) if(is.na(id)==F){
+    id_var<-df[,id]
+    df<-df[,-which(colnames(df) %in% c(id))]
+  } 
+  
+  if(is.null(weight)==F) if(is.na(weight)==F){
+    weight_var<-df[,weight]
+    df<-df[,-which(colnames(df) %in% c(weight))] 
+  } 
+  
+  
+  if(is.null(strata)==F) if(is.na(strata)==F){ 
+    strata_var<-df[,strata]
+    df<-df[,-which(colnames(df) %in% c(strata))]
+  }
+  
+  ### check, if df variables are factors ###
+  if(func=="REL_MEAN"| func=="ABS_REL_MEAN"| 
+     func=="ABS_PROP_DIFF"| func=="PROP_DIFF"){
+    
+    for (i in 1:ncol(df)){
+      
+      if(is.factor(df[,i])){
+        if(length(levels(df[,i]))==2){
+          if(all(levels(df)== c("0","1"))) df[,i]<-as.numeric(as.character(df[,i]))
+          else(stop(paste(colnames(df)[i],"must be coded as 0 and 1")))
+        }
+        if(length(levels(df[,i]))>2) stop(paste(colnames(df)[i],"must be numeric, or a factor coded as 0 or 1, for the chosen function"))
+      }
+    }
+  }
+  
+  if(is.null(id)==F) if(is.na(id)==F){
+    df[,id]<-id_var
+  } 
+  
+  if(is.null(weight)==F) if(is.na(weight)==F){
+    df[,weight]<-weight_var
+  } 
+  
+  
+  if(is.null(strata)==F) if(is.na(strata)==F){ 
+    df[,strata]<-strata_var
+  }
+  
+  df
 }
