@@ -34,8 +34,7 @@ uni_compare(
   silence = T,
   conf_level = 0.95,
   conf_adjustment = NULL,
-  R_variables = NULL,
-  response_identificator = NULL
+  parallel = F
 )
 }
 \arguments{
@@ -152,17 +151,12 @@ interval.}
 \item{conf_adjustment}{If conf_adjustment=T the confidence level of the confidence interval will be
 adjusted with a Bonferroni adjustment, to account for the problem of multiple comparisons.}
 
-\item{R_variables}{A character vector with the names of variables that should be used in the model
-to calculate the R indicator.}
-
-\item{response_identificator}{A character vector, naming response identificators for every df.
-response identificators should indicate if respondents are part of the sample (respondents=1)
-or not part of the sample (non-respondents=0).}
+\item{parallel}{If True, all detected cors will be used to in bootstrapping.}
 }
 \value{
 A plot based on \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} (or data frame if data==TRUE)
 which shows the difference between two or more data frames on predetermined variables,
-named identical in both samples.
+named identical in both data frames.
 }
 \description{
 Returns a plot or data showing the difference of two or more

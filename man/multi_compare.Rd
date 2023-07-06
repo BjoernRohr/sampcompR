@@ -2,7 +2,7 @@
 % Please edit documentation in R/Multidiff.R
 \name{multi_compare}
 \alias{multi_compare}
-\title{Compares Samples using different regression methods.}
+\title{Compares data frames using different regression methods.}
 \usage{
 multi_compare(
   df,
@@ -26,20 +26,22 @@ multi_compare(
   robust_se = F,
   p_adjust = NULL,
   names_df_benchmark = NULL,
-  silence_summary = F
+  silence_summary = F,
+  nboots = 0,
+  parallel = F
 )
 }
 \arguments{
-\item{df, benchmark}{A Data frame containing the sample or benchmark to
-compare, or a character string containing the name of the sample or
-benchmark. All independent and dependent variables must be inside both data
-frames.}
+\item{df, benchmark}{A data frame containing the set of respondents or
+benchmark set of respondents to compare, or a character string containing the
+name of the set of respondents or benchmark set of respondents. All independent
+and dependent variables must be inside both data frames.}
 
 \item{independent}{A list of strings containing the independent variables (x) for comparison.
 Every independent variable will be used in every model to estimate the dependent variable (y)}
 
-\item{dependent}{A list of strings containing the dependent variables (y) for comparison.
-One model will be computed for every dependent variable (y) provided.}
+\item{dependent}{A list of strings containing the dependent variables (y) for
+comparison. One model will be computed for every dependent variable (y) provided.}
 
 \item{method}{A character string for the method used for comparison. It can either be "ols"
 (Default), or "logit".}
@@ -81,27 +83,35 @@ function for the respective data frame.}
 heteroscedasticity-consistent standard errors will be used in the analysis for
 calculation the sandwitch package and lmtest packages are used.}
 
-\item{p_adjust}{A logical input or character string indicating a adjustment method usable in the}
+\item{p_adjust}{A logical input or character string indicating a adjustment
+method usable in the \code{method} parameter of \code{\link[stats]{p.adjust}}.
+If set to TRUE the Bonferroni adjusted p-values are used in inference.}
 
-\item{names_df_benchmark}{A vector containing first the name of df and benchmark.}
+\item{names_df_benchmark}{A vector containing first the name of df and benchmark.
+
+statistic.}
 
 \item{silence_summary}{A Logical value, to indicate if the
-printed summary should not be printed instead.
+printed summary should not be printed instead.}
 
-\code{method} parameter of \code{\link[stats]{p.adjust}}. If set to TRUE the Bonferroni adjusted
-p-values are used in inference.
-statistic.}
+\item{nboots}{A numeric value indicating the number of bootstrap replications.
+If nboots = 0 no bootstrapping will be performed. Else nboots must be >2. Note,
+that bootstraping can be very computational heavy and can therefore take a while.}
+
+\item{parallel}{If True, all detected cors will be used to in bootstrapping.}
 }
 \value{
-A table is printed showing the difference between samples for each model
-, as well as an indicator, if they differ significantly from each other. It is
-generated using the chosen \code{method}. If\code{out_output_list} = TRUE, also a list
-with additional information will be returned that can be used in some additional
-packages of this function to reprint the summary or to visualize the results.
+A table is printed showing the difference between the set of respondents
+for each model, as well as an indicator, if they differ significantly from each
+other. It is generated using the chosen \code{method}.
+If\code{out_output_list} = TRUE, also a list with additional information will
+be returned that can be used in some additional packages of this function to
+reprint the summary or to visualize the results.
 }
 \description{
-\code{multi_compare} compares samples using regression models based on differing methods.
-For now, only OLS-Regression and Logit-Regression are implemented.
+\code{multi_compare} compares data frames using regression models based on
+differing methods. For now, only OLS-Regression and Logit-Regression are
+implemented.
 }
 \examples{
 

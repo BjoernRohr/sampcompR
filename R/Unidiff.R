@@ -118,18 +118,16 @@
 #' the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package. They have
 #' to be part of the respective data frame. If only one character is provided, the same variable
 #' is used to weight every df or benchmark.
-#' @param R_variables A character vector with the names of variables that should be used in the model 
-#' to calculate the R indicator.
-#' @param response_identificator A character vector, naming response identificators for every df.
-#' response identificators should indicate if respondents are part of the sample (respondents=1) 
-#' or not part of the sample (non-respondents=0).
+# #' @param R_variables A character vector with the names of variables that should be used in the model 
+# #' to calculate the R indicator.
 #' @param type Define the type of comparison. Can either be "comparison" for a comparison between two surveys,
 #' "benchmark" for a comparison between a survey and a benchmark to estimate bias in the survey, 
 #' or "nonrespnse", when the function is used to measure nonresponse bias.
+#' @param parallel If True, all detected cors will be used to in bootstrapping.
 #'
 #' @return A plot based on [ggplot2::ggplot2()] (or data frame if data==TRUE)
 #' which shows the difference between two or more data frames on predetermined variables,
-#' named identical in both samples.
+#' named identical in both data frames.
 #' 
 #' @references 
 #' Felderer, B., Kirchner, A., & Kreuter, F. (2019). The Effect of Survey Mode on Data 
@@ -170,7 +168,7 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
                         colors = NULL, shapes = NULL, label_x = NULL, label_y = NULL, 
                         plot_title = NULL, name_dfs=NULL, name_benchmarks=NULL,
                         summet_size=4, ci_type="perc", silence=T, conf_level=0.95, 
-                        conf_adjustment=NULL, R_variables=NULL, response_identificator=NULL) {
+                        conf_adjustment=NULL, parallel = F) {
 
 
   ##################################
@@ -277,7 +275,7 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
 
   ### Check if data frame is logical
   if (is.numeric(nboots) == FALSE) stop("nboots must be of type numeric")
-  if (nboots < 0 | nboots == 1) stop("nboots must be 0(for standard SE) or >1 for bootstrap SE")
+  if (nboots < 0 | nboots == 1) stop("nboots must be 0 (for analytic SE) or >1 for bootstrap SE")
 
   ### Check is summetric is right ###
   if (is.null(summetric)== FALSE) {
@@ -294,6 +292,9 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
   if(is.null(weight)==F) if(is.null(id)) stop("if a weight var is provided for the data frame also a id is needed")
   if(is.null(weight_bench)==F) if(is.null(id_bench)) stop("if a weight var is provided for the benchmark also id_bench is needed")
 
+  
+  response_identificator<-NULL
+  R_variables<-NULL 
 
   ##############################
   ### Get Benchmarks and DFS ###
@@ -475,7 +476,7 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
                                  conf_adjustment=conf_adjustment, id=id[i],
                                  weight=weight[i],strata=strata[i],id_bench=id_bench[i],
                                  weight_bench=weight_bench[i],strata_bench=strata_bench[i],
-                                 variables = varlist[[i]])
+                                 variables = varlist[[i]], parallel = parallel)
 
     } 
 
@@ -487,7 +488,7 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
                                                 conf_adjustment=conf_adjustment,id=id[i],
                                                 weight=weight[i],strata=strata[i],id_bench=id_bench[i],
                                                 weight_bench=weight_bench[i],strata_bench=strata_bench[i],
-                                                variables = varlist[[i]]))
+                                                variables = varlist[[i]], parallel = parallel))
     }}
 
     if (ncol(df_list[[i]])==0) stop(paste(name_dfs[i],"does not share a common variable with the benchmark or the variables parameter"),
@@ -864,21 +865,26 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
                                 func_name="none", ci_type="perc", alpha=0.05, 
                                 conf_adjustment=NULL,id=NULL,
                                 weight=NULL,strata=NULL,id_bench=NULL,
-                                weight_bench=NULL,strata_bench=NULL,variables=NULL) {
+                                weight_bench=NULL,strata_bench=NULL,variables=NULL,
+                                parallel = F) {
 
 
   #######################################################
   ### loop to bootstrap for every Variable in data frame ###
   #######################################################
+  if (parallel==T) para<-"snow"
+  if (parallel==F) para<-"multicore"
+  
   boot <- boot(data = x, y = y, 
                statistic = get(func[1]), R = nboots, 
-               ncpus = parallel::detectCores(), parallel = "multicore",
+               ncpus = (parallel::detectCores()-1), parallel = para,
                id_x = id,weight_x=weight,strata_x=strata,id_bench=id_bench,
                weight_bench=weight_bench,strata_bench=strata_bench,variables=variables)
 
   ### Make data to a data frame ###
   #t_vec <- getoutboot(bootlist, value = "t0")
   t_vec<-as.numeric(boot$t0)
+  
 
   #########################
   ### Bootstrap CI & SE ###
@@ -1155,8 +1161,14 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func,
     }
 
 
-  data$n_df<-as.vector(sapply(x[,variables],length))
-  data$n_bench<-as.vector(sapply(y[,variables],length))
+  n_df_func<-function(df,variable){
+    
+    length(stats::na.omit(df[,variable]))
+    
+  }
+  
+  data$n_df<-as.vector(sapply(variables,n_df_func,df=x))
+  data$n_bench<-as.vector(sapply(variables,n_df_func,df=y))
 
 
   if (is.null(conf_adjustment)){
@@ -2126,7 +2138,8 @@ chi_square_df<- function(dfs,benchmarks, name_dfs=NULL, name_benchmarks=NULL, va
 #' to calculate the R indicator for.
 #' @param response_identificators A character vector, naming response identificators 
 #' for every df. response identificators should indicate if respondents are part 
-#' of the sample \code{(respondents = 1)} or not part of the sample 
+#' of the set of respondents \code{(respondents = 1)} or not part of the set of
+#' respondents. 
 #' \code{(non-respondents = 0)}. If only one character is provided, the same 
 #' variable is used in every df.
 #' @param variables A character vector with the names of variables that should be 
@@ -2144,6 +2157,8 @@ chi_square_df<- function(dfs,benchmarks, name_dfs=NULL, name_benchmarks=NULL, va
 #' the dfs with the help of the survey package. They have to be part of the 
 #' respective data frame. If only one character is provided, the same variable 
 #' is used to weight every df.
+#' @param get_r2 If true, Pseudo R-Squared of the propensity model will be 
+#' returned, based on the method of McFadden.
 #' 
 #' @return A list containing the R-indicator, and its standard error for every data frame.
 #' 
@@ -2170,7 +2185,7 @@ chi_square_df<- function(dfs,benchmarks, name_dfs=NULL, name_benchmarks=NULL, va
 #' @export
 
 R_indicator<-function(dfs,response_identificators,variables,
-                      id=NULL,weight=NULL,strata=NULL){
+                      id=NULL,weight=NULL,strata=NULL, get_r2=F){
   
   if(length(response_identificators)>1 & length(response_identificators)<length(dfs)){
     stop(paste("response_identificators has to be of length 1, or the same length as dfs"))
@@ -2217,7 +2232,7 @@ R_indicator<-function(dfs,response_identificators,variables,
                                    response_identificator=response_identificators[i],
                                    variables=variables,
                                    id=id[i],
-                                   weight=weight[i],strata=strata[i])
+                                   weight=weight[i],strata=strata[i], get_r2 = get_r2)
     
   }
   
@@ -2229,7 +2244,7 @@ R_indicator<-function(dfs,response_identificators,variables,
 
 
 R_indicator_func<-function(df,response_identificator,variables,
-                           id=NULL,weight=NULL,strata=NULL){
+                           id=NULL,weight=NULL,strata=NULL, get_r2=F){
   
   
   
@@ -2276,8 +2291,8 @@ R_indicator_func<-function(df,response_identificator,variables,
   model<-survey::svyglm(design=df_design, formula =formula,family = stats::quasibinomial("logit"))
   
   
-  Response_propensity <- stats::predict(model,type = "response")
-  
+  #Response_propensity <- stats::predict(model,type = "response")
+  Response_propensity <-model$fitted.values
   
   estimated_pop_variance<- survey::svyvar(x= Response_propensity, design=df_design)
   
@@ -2285,8 +2300,12 @@ R_indicator_func<-function(df,response_identificator,variables,
   
   r_indicator<-1-2*estimated_pop_std_dev
   
+  mcfadden <- function(model){1- (model$deviance/model$null.deviance)}
+  
   output<-c(r_indicator,survey::SE(estimated_pop_std_dev))
-  names(output)<-c("R-Indicator","SE")
+  if(get_r2==T) output<-c(output, mcfadden(model))
+  if(get_r2==F) names(output)<-c("R-Indicator","SE")
+  if(get_r2==T) names(output)<-c("R-Indicator","SE", "Pseudo R2")
   output
 }
 
@@ -2357,7 +2376,8 @@ R_indicator_func2<-function(df,benchmark,variables,
   suppressWarnings(model<-survey::svyglm(design=comp_design, formula =formula,family = stats::binomial("logit")))
   
   
-  Response_propensity = stats::predict(model,type = "response")
+  Response_propensity <- stats::predict(model,type = "response")
+
   
   estimated_pop_std_dev<-sqrt(stats::var(Response_propensity))
   

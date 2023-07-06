@@ -4,9 +4,9 @@ Bjoern Rohr (<bjoern.rohr@gesis.org>)
 
 # Disclaimer:
 
-sampcompR is still in development and may contain bugs. If you use the
-package and a bug crosses your way, feel free to contact the Author
-(<bjoern.rohr@gesis.org>).
+This is only a beta version of sampcompR. It is still in development and
+may contain bugs. If you use the package and a bug crosses your way,
+feel free to contact the Author (<bjoern.rohr@gesis.org>).
 
 # sampcompR
 
@@ -40,10 +40,7 @@ You can install the development version of sampcompR like so:
     ### Install the dependencies
     install.packages("devtools")
 
-    # install.packages(c("boot", "data.table", "dplyr", "ggplot2", "Hmisc", "jtools",
-    #                    "lmtest", "magrittr", "margins", "parallel", "psych", "reshape2",
-    #                    "readr", "svrep", "sandwich", "stats", "survey", "tidyselect", 
-    #                    "utils","weights", "wooldridge"))
+    # install.packages(c("boot", boot.pval, "data.table", "dplyr", "ggplot2", "Hmisc", "jtools","lmtest", "magrittr", "margins", "parallel", "psych", "reshape2", "readr", "svrep", "sandwich", "stats", "survey", "tidyselect", "utils","weights", "wooldridge"))
 
     ### Install the package
     devtools::install_github("BjoernRohr/sampcompR")
@@ -164,7 +161,7 @@ uni_output_table<-sampcompR::uni_compare_table(univar_data)
 |               | (0.057, 0.073) | (-0.193, -0.161) |
 | Average Error |     0.128      |      0.187       |
 | RANK          |       1        |        2         |
-| N             |      1795      |       703        |
+| N             |  1358 - 1795   |    297 - 703     |
 
 Difference in Relative Means off different Survey Groups
 
@@ -183,7 +180,9 @@ biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
                                  benchmarks = c("south","white"),
                                  variables= c("age","educ","fatheduc",
                                              "motheduc","wage","IQ"),
-                                 data=T)
+                                 data=T, corrtype = "rho",
+                                 weight = "weight",
+                                 id="id")
 
 sampcompR::plot_biv_compare(biv_data, varlabels = c("a","b","c","d","e","f"))
 ```
@@ -226,25 +225,25 @@ table_biv1<-sampcompR::biv_compare_table(biv_data,type = "diff",comparison_numbe
 
 **Table 2**
 
-|          |    age     |    educ     |  fatheduc   |  motheduc  | wage  | IQ  |
-|:---------|:----------:|:-----------:|:-----------:|:----------:|:-----:|:---:|
-| age      |            |             |             |            |       |     |
-| educ     |  0.12\*\*  |             |             |            |       |     |
-| fatheduc |    0.02    | -0.11\*\*\* |             |            |       |     |
-| motheduc |   -0.05    | -0.13\*\*\* |  -0.08\*\*  |            |       |     |
-| wage     | 0.12\*\*\* | -0.18\*\*\* | -0.16\*\*\* | -0.2\*\*\* |       |     |
-| IQ       |    0.04    |      0      |  -0.14\*\*  |   -0.1\*   | -0.07 |     |
+|          |    age     |    educ     |  fatheduc   |  motheduc   | wage  | IQ  |
+|:---------|:----------:|:-----------:|:-----------:|:-----------:|:-----:|:---:|
+| age      |            |             |             |             |       |     |
+| educ     |  0.12\*\*  |             |             |             |       |     |
+| fatheduc |     0      | -0.11\*\*\* |             |             |       |     |
+| motheduc |   -0.06    | -0.14\*\*\* | -0.09\*\*\* |             |       |     |
+| wage     | 0.12\*\*\* | -0.19\*\*\* | -0.16\*\*\* | -0.19\*\*\* |       |     |
+| IQ       |    0.04    |      0      |  -0.15\*\*  |  -0.12\*\*  | -0.08 |     |
 
 Difference in Pearson’s r for the North/South Sample
 
 Using `type = diff` gives us a matrix for the difference in Pearson’s r
 between the surveys, while `comparison_number = 1` indicates that the
-table should be for the first comparison. Here we can again see what
-correlations significantly differ between the surveys and to what
-extent. However, to know why the colors are as they are in the plot, we
-must also look at the individual correlation matrices for both surveys.
-Here we only look at the tables for comparing north versus south
-respondents as an example.
+table should be for the first comparison (between the`north` and the
+`south` sample). Here we can again see what correlations significantly
+differ between the surveys and to what extent. However, to know why the
+colors are as they are in the plot, we must also look at the individual
+correlation matrices for both surveys. Here we only look at the tables
+for comparing north versus south respondents as an example.
 
 ``` r
 # North correlation matrix of the first comparison
@@ -260,10 +259,10 @@ table_biv3<-sampcompR::biv_compare_table(biv_data,type = "benchmarks",comparison
 |:---------|:----------:|:----------:|:----------:|:----------:|:----------:|:---:|
 | age      |            |            |            |            |            |     |
 | educ     |    0.04    |            |            |            |            |     |
-| fatheduc |  -0.06\*   | 0.41\*\*\* |            |            |            |     |
-| motheduc | -0.07\*\*  | 0.36\*\*\* | 0.57\*\*\* |            |            |     |
-| wage     | 0.34\*\*\* | 0.19\*\*\* | 0.09\*\*\* |  0.08\*\*  |            |     |
-| IQ       |   -0.05    | 0.51\*\*\* | 0.26\*\*\* | 0.25\*\*\* | 0.14\*\*\* |     |
+| fatheduc | -0.08\*\*  | 0.41\*\*\* |            |            |            |     |
+| motheduc | -0.08\*\*  | 0.36\*\*\* | 0.57\*\*\* |            |            |     |
+| wage     | 0.35\*\*\* | 0.19\*\*\* | 0.09\*\*\* | 0.08\*\*\* |            |     |
+| IQ       |   -0.05    | 0.5\*\*\*  | 0.26\*\*\* | 0.23\*\*\* | 0.13\*\*\* |     |
 
 Pearson’s r correlation matrix for the North Sample
 
@@ -330,7 +329,7 @@ multi_data1_ols<-sampcompR::multi_compare(df=north,
                                      dependent = dependent_ols,
                                      method = "ols")  
 #> 
-#> Difference in coeficients between samples 
+#> Difference in coeficients between sets of respondents 
 #>  
 #>          wage         educ        
 #> age      -3.74e+00    -7.91e-02*  
@@ -349,7 +348,7 @@ multi_data2_ols<-sampcompR::multi_compare(df=black,
                                      dependent = dependent_ols,
                                      method = "ols")
 #> 
-#> Difference in coeficients between samples 
+#> Difference in coeficients between sets of respondents 
 #>  
 #>          wage         educ        
 #> age       1.27e+01     7.05e-02   
@@ -408,7 +407,7 @@ multi_data1_log<-sampcompR::multi_compare(df=north,
                                      dependent = dependent_log,
                                      method = "logit")  
 #> 
-#> Difference in coeficients between samples 
+#> Difference in coeficients between sets of respondents 
 #>  
 #>          married     
 #> age       1.86e-02   
@@ -427,7 +426,7 @@ multi_data2_log<-sampcompR::multi_compare(df=black,
                                      dependent = dependent_log,
                                      method = "logit")
 #> 
-#> Difference in coeficients between samples 
+#> Difference in coeficients between sets of respondents 
 #>  
 #>          married     
 #> age       3.54e-02   

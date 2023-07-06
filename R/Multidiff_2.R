@@ -475,17 +475,17 @@ final_glm_list<-function(glm_list, formula_list ,weight_var=NULL,robust_se=F, p_
 
 ### Documentation of the multi_compare2 ###
 
-#' Compares Samples using any glm or svyglm.
+#' Compares data frames using any glm or svyglm.
 #' @description
-#' \code{multi_compare2} compares samples using regression models based on glm other 
-#' than \link{multi_compare},it is able to compare all types of \code{\link[stats]{glm}} 
-#' or \code{\link[survey]{svyglm}} models.
+#' \code{multi_compare2} compares data frames using regression models based on glm.
+#' Other than \link{multi_compare},it is able to compare all types of 
+#' \code{\link[stats]{glm}} or \code{\link[survey]{svyglm}} models.
 #' 
 #'
-#' @param df,benchmark A Data frame containing the sample or benchmark to 
-#' compare, or a character string containing the name of the sample or 
-#' benchmark. All independent and dependent variables must be inside both data 
-#' frames.
+#' @param df,benchmark A data frame containing the set of respondents or 
+#' benchmark set of respondentsto compare, or a character string containing the 
+#' name of the set of respondents or benchmark set of respondents. All independent 
+#' and dependent variables must be inside both data frames.
 #' @param formula_list A list of named formulas. Every formula in the list will 
 #' be given to \code{\link[stats]{glm}} or \code{\link[survey]{svyglm}}.
 #' @param family A family input, that can be given to \code{\link[stats]{glm}} or 
@@ -527,11 +527,12 @@ final_glm_list<-function(glm_list, formula_list ,weight_var=NULL,robust_se=F, p_
 #' 
 #' \code{\link[survey]{svyglm}}.
 #'
-#' @return A table is pinted showing the difference between samples for each model
-#' , as well as an indicator, if they differ sinificantly from each other. It is
-#' generated using the chosen \code{method}. If\code{out_output_list} = TRUE, also a list
-#' with additional informations will be retruned that can be used in some aditional
-#' packages of this function to reprint the summary or to visualize the results.
+#' @return A table is printed showing the difference between sets of respondents 
+#' for each model, as well as an indicator, if they differ significantly from each 
+#' other. It is generated using the chosen \code{method}. If 
+#' \code{out_output_list} = TRUE, also a list with additional information will 
+#' be returned that can be used in some additional packages of this function to 
+#' reprint the summary or to visualize the results.
 #'
 #' @examples
 #' 
@@ -705,7 +706,7 @@ multi_compare2<-function(df,benchmark,formula_list,rm_na="pairwise", out_output_
 
   if(silence_summary==F){
   cat("\n")
-  cat("Difference in coeficients between samples \n \n")
+  cat("Difference in coeficients between sets of respondents \n \n")
   
   print(output$coefs_difference_star)
   cat("\n")

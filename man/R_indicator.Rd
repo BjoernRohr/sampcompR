@@ -10,7 +10,8 @@ R_indicator(
   variables,
   id = NULL,
   weight = NULL,
-  strata = NULL
+  strata = NULL,
+  get_r2 = F
 )
 }
 \arguments{
@@ -19,7 +20,8 @@ to calculate the R indicator for.}
 
 \item{response_identificators}{A character vector, naming response identificators
 for every df. response identificators should indicate if respondents are part
-of the sample \code{(respondents = 1)} or not part of the sample
+of the set of respondents \code{(respondents = 1)} or not part of the set of
+respondents.
 \code{(non-respondents = 0)}. If only one character is provided, the same
 variable is used in every df.}
 
@@ -41,6 +43,9 @@ For weighting, the survey package is used.}
 the dfs with the help of the survey package. They have to be part of the
 respective data frame. If only one character is provided, the same variable
 is used to weight every df.}
+
+\item{get_r2}{If true, Pseudo R-Squared of the propensity model will be
+returned, based on the method of McFadden.}
 }
 \value{
 A list containing the R-indicator, and its standard error for every data frame.

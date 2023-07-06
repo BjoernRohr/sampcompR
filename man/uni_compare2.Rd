@@ -33,9 +33,7 @@ uni_compare2(
   strata = NULL,
   weight_bench = NULL,
   id_bench = NULL,
-  strata_bench = NULL,
-  R_variables = NULL,
-  response_identificator = NULL
+  strata_bench = NULL
 )
 }
 \arguments{
@@ -143,18 +141,11 @@ data frame. If only one character is provided, the same variable is used to weig
 the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package. They have
 to be part of the respective data frame. If only one character is provided, the same variable
 is used to weight every df or benchmark.}
-
-\item{R_variables}{A character vector with the names of variables that should be used in the model
-to calculate the R indicator}
-
-\item{response_identificator}{A character vector, naming response identificators for every df.
-response identificators should indicate if respondents are part of the sample (respondents=1)
-or not part of the sample (non-respondents=0).}
 }
 \value{
 A plot based on \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} (or data frame if data==TRUE)
 which shows the difference between two or more data frames on predetermined variables,
-named identical in both samples.
+named identical in both data frames.
 }
 \description{
 Returns a plot or data showing the difference of two or more
@@ -162,7 +153,7 @@ data frames The differences are calculated on the base of
 differing metrics, chosen in the funct argument. All used data frames must
 contain at least one column named equal in all data frames, that has equal
 values. It works similar as \link[sampcompR]{uni_compare}, however it's bootstrap technique
-is based on the \link[survey]{svydesign} package, making it more suitable for the comparison of weighted samples.
+is based on the \link[survey]{svydesign} package, making it more suitable for the comparison of weighted data.
 }
 \examples{
 

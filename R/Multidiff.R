@@ -70,10 +70,11 @@ combine_dfs<-function(df,benchmark,dependent,independent,id=NULL,id_bench=NULL,w
     if ((is.null(weight)==F | is.null(weight_bench)==F) & is.null(id)) dataframe1$id_df<-id_df<-1:nrow(dataframe1)
     if (is.null(weight_bench)==F & is.null(weight)) dataframe1$df_weights<-1
 
-    #comb_data<-rbind(dataframe1,dataframe2)
+    
     if ((is.null(weight)==F | is.null(weight_bench)==F) & is.null(id_bench)) dataframe2$id_df<-id_benchmark<-1:nrow(dataframe2)
     if (is.null(weight)==F & is.null(weight_bench)) dataframe2$df_weights<-1
 
+    
     comb_data<-rbind(dataframe1,dataframe2)
     if(is.null(weight)==F | is.null(weight_bench)==F) comb_data$id_df[comb_data$sample_ident==1]<-comb_data$id_df[comb_data$sample_ident==1]+max(comb_data$id_df[comb_data$sample_ident==0])
     comb_df[[i]]<-comb_data
@@ -196,7 +197,11 @@ run_ols<-function(df_comb,dependent,independent, design_list=NULL, method="ols",
 ###############################
 
 
-final_ols_list<-function(ols_list, ols_list2=NULL, dependent,independent,weight_var=NULL,robust_se=F, p_adjust=NULL){
+final_ols_list<-function(ols_list, dependent,independent,weight_var=NULL,robust_se=F, 
+                         p_adjust=NULL, nboots=0, df=NULL,benchmark=NULL,
+                         id=NULL,id_bench=NULL, weight = NULL,weight_bench = NULL,
+                         strata = NULL, strata_bench = NULL, rm_na = "pairwise", 
+                         method="ols", parallel=F){
 
   output_list<-list()
   ld<-length(dependent)
@@ -223,7 +228,7 @@ final_ols_list<-function(ols_list, ols_list2=NULL, dependent,independent,weight_
   freedom2<-matrix(ncol=ld, nrow=li)
 
   output_list[[1]]<-ols_list
-  output_list[[2]]<-ols_list2
+  #output_list[[2]]<-ols_list2
 
 
   for (i in 1:ld){
@@ -254,6 +259,23 @@ final_ols_list<-function(ols_list, ols_list2=NULL, dependent,independent,weight_
 
     }}
 
+  ### if nboots >0 use bootsrap to get the p_values for df and interaction
+  
+  if (nboots!=0 & nboots <=1) {
+    stop("nboots must be 0 (for analytic p_values) or >1 for bootstrap p_values")}
+  
+  if(nboots>1) {
+    
+    p_se_list<-multi_boot(df=df,benchmark=benchmark,dependent,independent,id = id,
+                     id_bench = id_bench,weight = weight,weight_bench = weight_bench,
+                     strata = strata, strata_bench = strata_bench, rm_na = rm_na, 
+                     method = method, nboots = nboots, parallel = parallel)
+    
+    pmatrix1<-p_se_list[[1]]
+    pmatrix_diff<-p_se_list[[2]]
+    se_matrix1<-p_se_list[[3]]
+    se_matrix<-p_se_list[[4]]
+  }
 
   #boferoni correction
   ### maybe use p.adjust instead ###
@@ -364,16 +386,20 @@ final_ols_list<-function(ols_list, ols_list2=NULL, dependent,independent,weight_
 
 ### Documentation of the multi_ols_compare ###
 
-# #' Compares Samples using OLS-Models fit in two models.
+# #' Compares set of respondents using OLS-models fit in two models.
 # #' 
 # #' \code{multi_ols_compare} This Function compares the coefficients of one OLS-Regression-Model
-# #' in one sample with the coefficients of an identical model in another sample. First, both samples
-# #' will be attended to each other in one data frame and the model will be calculated on the combined sample.
-# #' A sample Dummy will be used as an interaction term, to look for differences in the sample.
-# #' One model will be calclated for every dependent variable provided, using every independet
+# #' in one set of respondents with the coefficients of an identical model in 
+# #' another set of respondents. First, both sets of respondents
+# #' will be attached to each other in one data frame and the model will be 
+# #' calculated on the combined set of respondents.
+# #' A Dummy will be used as an interaction term, to look for differences in the set of respondents.
+# #' One model will be calclated for every dependent variable provided, using 
+# #' every independet
 # #' variable in the models.
 # #' 
-# #' @param df,benchmark Data frames containing the samples to compare. All independent and
+# #' @param df,benchmark Data frames containing the sets of respondents to compare. 
+# #' All independent and
 # #' dependent variables must be inside both data frames.
 # #' @param dependent A list of strings containing the dependent variables (y) for comparison.
 # #' One model will be computed for every dependent variable (y) provided.
@@ -411,10 +437,11 @@ final_ols_list<-function(ols_list, ols_list2=NULL, dependent,independent,weight_
 # #' 
 # #' 
 # #' @return A table is pinted showing the difference in \code{Coeficients)}
-# #' between samples for each model, as well as an indicator, if they differ
-# #' sinificantly from each other. If\code{out_olslist} = TRUE, also a list
-# #' with additional informations will be retruned that can be used in some aditional
-# #' packages of this function to reprint the summary or to visualize the results.
+# #' between sets of respondents for each model, as well as an indicator, if 
+# #' they differ sinificantly from each other. If\code{out_olslist} = TRUE, also 
+# #' a list with additional informations will be retruned that can be used in 
+# #' some aditional packages of this function to reprint the summary or to 
+# #' visualize the results.
 # #' 
 # #' 
 # #' 
@@ -429,7 +456,7 @@ multi_ols_compare<-function(df,benchmark,independent,dependent,rm_na="pairwise",
                             out_df=T, print_p=F, print_se=F, weight=NULL, id=NULL,
                             strata=NULL, nest=FALSE, weight_bench=NULL, id_bench=NULL,
                             strata_bench=NULL, nest_bench=FALSE, robust_se=F, p_adjust=NULL, 
-                            names_df_benchmark=NULL, method="ols", silence_summary=F){
+                            names_df_benchmark=NULL, method="ols", silence_summary=F, nboots=0, parallel=F){
 
   ### 1 reduce both data frames ###
   ### 1 reduce both data frames ###
@@ -465,7 +492,9 @@ multi_ols_compare<-function(df,benchmark,independent,dependent,rm_na="pairwise",
   dependent<-dependent_checker(df=benchmark,dependent = dependent, dfname = name_old_benchmark)
 
 
-
+  df_old<-df
+  benchmark_old<-benchmark
+  
   if (is.null(weight)) df<-reduce_df_ols(df, dependent, independent, rm_na = rm_na)
   if (is.null(weight_bench)) benchmark<-reduce_df_ols(benchmark, dependent, independent, rm_na = rm_na)
   if (is.null(weight)==F) df<-reduce_df_ols(df, dependent, independent,  weight_var = weight, id = id, rm_na = rm_na)
@@ -505,10 +534,10 @@ multi_ols_compare<-function(df,benchmark,independent,dependent,rm_na="pairwise",
    ols_list[[2]]<-run_ols(df_comb = df_comb,dependent,independent, design_list =  design_list[[2]], type="df1")
    ols_list[[3]]<-run_ols(df_comb = df_comb,dependent,independent, design_list =  design_list[[3]], type="bench")
 
-   ols_list2<-list()
-   ols_list2<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[1]], type="interact")
-   ols_list2[[2]]<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[2]], type="df1")
-   ols_list2[[3]]<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[3]], type="bench")
+   # ols_list2<-list()
+   # ols_list2<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[1]], type="interact")
+   # ols_list2[[2]]<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[2]], type="df1")
+   # ols_list2[[3]]<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[3]], type="bench")
   }
 
   if (method=="logit"){
@@ -517,10 +546,10 @@ multi_ols_compare<-function(df,benchmark,independent,dependent,rm_na="pairwise",
     ols_list[[2]]<-run_ols(df_comb = df_comb,dependent,independent, design_list =  design_list[[2]], method = "logit", type="df1")
     ols_list[[3]]<-run_ols(df_comb = df_comb,dependent,independent, design_list =  design_list[[3]], method = "logit", type="bench")
 
-    ols_list2<-list()
-    ols_list2[[1]]<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[1]], method = "logit",type="interact")
-    ols_list2[[2]]<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[2]], method = "logit", type="df1")
-    ols_list2[[3]]<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[3]], method = "logit", type="bench")
+    # ols_list2<-list()
+    # ols_list2[[1]]<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[1]], method = "logit",type="interact")
+    # ols_list2[[2]]<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[2]], method = "logit", type="df1")
+    # ols_list2[[3]]<-run_ols(df_comb = df_comb2,dependent,independent, design_list =  design_list2[[3]], method = "logit", type="bench")
 }
 
 
@@ -529,9 +558,16 @@ multi_ols_compare<-function(df,benchmark,independent,dependent,rm_na="pairwise",
   else weight_var<-NULL
 
   ### 3 build a output list ###
-  output<-final_ols_list(ols_list, ols_list2 = ols_list2, dependent = dependent,
+  output<-final_ols_list(ols_list, dependent = dependent,
                          independent = independent, weight_var=weight_var,
-                         robust_se = robust_se, p_adjust = p_adjust)
+                         robust_se = robust_se, p_adjust = p_adjust,
+                         df=df_old,benchmark=benchmark_old,
+                         id=id,id_bench=id_bench, weight = weight,
+                         weight_bench = weight_bench,
+                         strata = strata, strata_bench = strata_bench, rm_na = rm_na, 
+                         method =method,nboots=nboots, parallel = parallel)
+  
+
 
   
   ### add dependent and independent to list
@@ -572,7 +608,7 @@ multi_ols_compare<-function(df,benchmark,independent,dependent,rm_na="pairwise",
 
 if(silence_summary==F){
   cat("\n")
-  cat("Difference in coeficients between samples \n \n")
+  cat("Difference in coeficients between sets of respondents \n \n")
 
   print(output$coefs_difference_star)
   cat("\n")
@@ -651,17 +687,18 @@ summary_ols_compare<-function (ols_comp_object, print_p=F, print_se=F){
 
 ### Documentation of the multi_compare ###
 
-#' Compares Samples using different regression methods.
+#' Compares data frames using different regression methods.
 #'
-#' \code{multi_compare} compares samples using regression models based on differing methods.
-#' For now, only OLS-Regression and Logit-Regression are implemented. 
+#' \code{multi_compare} compares data frames using regression models based on 
+#' differing methods. For now, only OLS-Regression and Logit-Regression are 
+#' implemented. 
 #'
-#' @param df,benchmark A Data frame containing the sample or benchmark to 
-#' compare, or a character string containing the name of the sample or 
-#' benchmark. All independent and dependent variables must be inside both data 
-#' frames.
-#' @param dependent A list of strings containing the dependent variables (y) for comparison.
-#' One model will be computed for every dependent variable (y) provided.
+#' @param df,benchmark A data frame containing the set of respondents or 
+#' benchmark set of respondents to compare, or a character string containing the 
+#' name of the set of respondents or benchmark set of respondents. All independent 
+#' and dependent variables must be inside both data frames.
+#' @param dependent A list of strings containing the dependent variables (y) for 
+#' comparison. One model will be computed for every dependent variable (y) provided.
 #' @param independent A list of strings containing the independent variables (x) for comparison.
 #' Every independent variable will be used in every model to estimate the dependent variable (y)
 #' @param method A character string for the method used for comparison. It can either be "ols"
@@ -693,20 +730,25 @@ summary_ols_compare<-function (ols_comp_object, print_p=F, print_se=F){
 #' @param robust_se A logical value If TRUE instead of normal standard errors,  
 #' heteroscedasticity-consistent standard errors will be used in the analysis for 
 #' calculation the sandwitch package and lmtest packages are used.
-#' @param p_adjust A logical input or character string indicating a adjustment method usable in the 
+#' @param p_adjust A logical input or character string indicating a adjustment 
+#' method usable in the \code{method} parameter of \code{\link[stats]{p.adjust}}. 
+#' If set to TRUE the Bonferroni adjusted p-values are used in inference.
 #' @param silence_summary A Logical value, to indicate if the 
 #' printed summary should not be printed instead.
-#' 
-#' \code{method} parameter of \code{\link[stats]{p.adjust}}. If set to TRUE the Bonferroni adjusted 
-#' p-values are used in inference.
-#' statistic.
+#' @param nboots A numeric value indicating the number of bootstrap replications. 
+#' If nboots = 0 no bootstrapping will be performed. Else nboots must be >2. Note, 
+#' that bootstraping can be very computational heavy and can therefore take a while.
+#' @param parallel If True, all detected cors will be used to in bootstrapping.
 #' @param names_df_benchmark A vector containing first the name of df and benchmark.
+#' 
+#' statistic.
 #'
-#' @return A table is printed showing the difference between samples for each model
-#' , as well as an indicator, if they differ significantly from each other. It is
-#' generated using the chosen \code{method}. If\code{out_output_list} = TRUE, also a list
-#' with additional information will be returned that can be used in some additional
-#' packages of this function to reprint the summary or to visualize the results.
+#' @return A table is printed showing the difference between the set of respondents
+#' for each model, as well as an indicator, if they differ significantly from each 
+#' other. It is generated using the chosen \code{method}. 
+#' If\code{out_output_list} = TRUE, also a list with additional information will 
+#' be returned that can be used in some additional packages of this function to 
+#' reprint the summary or to visualize the results.
 #'
 #' @examples
 #' 
@@ -732,7 +774,7 @@ multi_compare<-function(df,benchmark,independent,dependent, method,rm_na="pairwi
                         out_df=T, print_p=F, print_se=F, weight=NULL, id=NULL,
                         strata=NULL, nest=FALSE, weight_bench=NULL, id_bench=NULL,strata_bench=NULL,
                         nest_bench=FALSE, robust_se=F, p_adjust=NULL, names_df_benchmark=NULL, 
-                        silence_summary=F){
+                        silence_summary=F, nboots=0, parallel = F){
 
 
   if (is.null(names_df_benchmark)) names_df_benchmark<-c (deparse(substitute(df)), deparse(substitute(benchmark)))
@@ -745,7 +787,8 @@ multi_compare<-function(df,benchmark,independent,dependent, method,rm_na="pairwi
                                               nest=nest, weight_bench=weight_bench, id_bench=id_bench,
                                               strata_bench=strata_bench, nest_bench=nest_bench, robust_se=robust_se,
                                               p_adjust=p_adjust, names_df_benchmark=names_df_benchmark,
-                                              silence_summary=silence_summary)
+                                              silence_summary=silence_summary, nboots = nboots, 
+                                              parallel = parallel)
 
   if(method=="logit") output<-multi_ols_compare(df=df,benchmark=benchmark,independent=independent,
                                               dependent=dependent,rm_na=rm_na, out_olslist=out_output_list,
@@ -754,7 +797,8 @@ multi_compare<-function(df,benchmark,independent,dependent, method,rm_na="pairwi
                                               nest=nest, weight_bench=weight_bench, id_bench=id_bench,
                                               strata_bench=strata_bench, nest_bench=nest_bench, robust_se=robust_se,
                                               p_adjust=p_adjust, names_df_benchmark=names_df_benchmark, method="logit",
-                                              silence_summary=silence_summary)
+                                              silence_summary=silence_summary, nboots = nboots,
+                                              parallel = parallel)
 
   # if(method=="logit2") output<-multi_AME_compare(df=df,benchmark=benchmark,independent=independent,
   #                                             dependent=dependent,rm_na=rm_na, out_amelist=out_output_list,
@@ -1921,7 +1965,7 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
       #rownames(multi_reg_object1[[i]])<-multi_reg_object2[[20]]
       #colnames(multi_reg_object1[[i]])<-c(multi_reg_object1$dependent,multi_reg_object2$dependent)
       
-      if(p_adjust==T & is.character(p_adjust)==T)p_method<-p_adjust
+      if (p_adjust==T & is.character(p_adjust)==T) p_method<-p_adjust
       else p_method<-"bonferroni"
       
       multi_reg_object1[[i]]<- matrix(stats::p.adjust(p = multi_reg_object1[[i-3]], method = p_method),
@@ -1959,7 +2003,7 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
     
     if (i==13){
       
-      if (p_adjust==T){
+      if (p_adjust==T | is.character(p_adjust)==T){
         help<- formatC(multi_reg_object1[[4]], format = "e", digits = 2)
         
         
@@ -2172,3 +2216,167 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
 # 
 #   multi_reg_object1
 # }
+
+
+
+
+
+multi_boot_sub<-function(df,i=NULL,benchmark,dependent,independent,ids = NULL,
+                         id_bench = NULL,weight_df = NULL,weight_bench = NULL,
+                         stratas = NULL, strata_bench = NULL, rm_na = "pairwise",
+                         method = "ols", bootstrap=F){
+  
+  if (bootstrap==T) df<-df[i,]
+  
+  
+  if (is.null(weight_df)) df<-reduce_df_ols(df, dependent, independent, rm_na = rm_na)
+  if (is.null(weight_bench)) benchmark<-reduce_df_ols(benchmark, dependent, independent, rm_na = rm_na)
+  if (is.null(weight_df)==F) df<-reduce_df_ols(df, dependent, independent,  weight_var = weight_df, id = ids, rm_na = rm_na)
+  if (is.null(weight_bench)==F) benchmark<-reduce_df_ols(benchmark, dependent, independent,  weight_var = weight_bench, id = id_bench, rm_na = rm_na)
+  
+  
+  
+  df_comb<-combine_dfs(df,benchmark,dependent,independent,id=ids,id_bench=id_bench,
+                       weight=weight_df,weight_bench=weight_bench,
+                       strata=stratas,strata_bench=strata_bench)
+  
+  
+  # calculate survey deisgns if weighted
+  
+  if (is.null(weight_df)==F | is.null(weight_bench)==F) {
+    design_list<-list()
+    design_list[[1]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact")
+    design_list[[2]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1")
+
+  } else {design_list = list(NULL,NULL,NULL)}
+  
+  # if (is.null(weight_df)==F | is.null(weight_bench)==F) {
+  #   design_list2<-list()
+  #   design_list2[[1]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact")
+  #   design_list2[[2]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1")
+  # } else {design_list2 = list(NULL,NULL,NULL)}
+  
+  
+  ### 2 get a list with ols results for both data frames ###
+  if (method=="ols") {
+    ols_list<-list()
+    ols_list[[1]]<-run_ols(df_comb = df_comb,dependent,independent, design_list =  design_list[[1]], type="interact")
+    ols_list[[2]]<-run_ols(df_comb = df_comb,dependent,independent, design_list =  design_list[[2]], type="df1")
+
+    }
+  
+  if (method=="logit"){
+    ols_list<-list()
+    ols_list[[1]]<-run_ols(df_comb = df_comb,dependent,independent, design_list =  design_list[[1]], method = "logit", type="interact")
+    ols_list[[2]]<-run_ols(df_comb = df_comb,dependent,independent, design_list =  design_list[[2]], method = "logit", type="df1")
+
+    }
+  ### get the coefficients out of the output list
+  
+ ### function ###
+  get_b_function<-function(ols_list,i,independent, type="interact"){
+    
+    if(type=="interact"){
+      out<-ols_list[[1]][[i]][[1]][(length(independent)+3):(2*length(independent)+2)]
+    }
+    
+    if(type=="df"){
+      out<-ols_list[[2]][[i]][[1]][-1]
+    }
+    
+    out
+  }
+  
+  ### dataframe coefficients
+  
+  out<-sapply(1:length(dependent),get_b_function, ols_list=ols_list,
+              independent = independent,type="df")
+  
+  ### interaction coefficients ###
+  out<-cbind(out,sapply(1:length(dependent),get_b_function, ols_list=ols_list,
+                        independent = independent,type="interact"))
+  
+  out
+}
+
+multi_boot<-function(df,benchmark,dependent,independent,id = NULL,
+                     id_bench = NULL,weight = NULL,weight_bench = NULL,
+                     strata = NULL, strata_bench = NULL, rm_na = "pairwise",
+                     method = "ols", nboots=1000, parallel=F){
+  
+  if (parallel==T) para<-"snow"
+  if (parallel==F) para<-"no"
+  
+  boot_out<-boot(df,statistic = multi_boot_sub, R = nboots, benchmark = benchmark, 
+                 dependent=dependent,independent = independent, ids = id, 
+                 stratas=strata, weight_df = weight, id_bench= id_bench,
+                 weight_bench=weight_bench,strata_bench = strata_bench, 
+                 rm_na = "pairwise", bootstrap=T, 
+                 ncpus = (parallel::detectCores()-1), parallel = para)
+  
+  
+  p_se_list<-list()
+  p_se_list[[1]]<-boot_pvalues_multi(boot_out,dependent = dependent, 
+                                  independent = independent,
+                                  type="df")
+
+  p_se_list[[2]]<-boot_pvalues_multi(boot_out,dependent = dependent, 
+                                  independent = independent,
+                                  type="interact")
+  
+  p_se_list[[3]]<-boot_pvalues_multi(boot_out,dependent = dependent, 
+                                  independent = independent,
+                                  type="se_df")
+  
+  p_se_list[[4]]<-boot_pvalues_multi(boot_out,dependent = dependent, 
+                                  independent = independent,
+                                  type="se_interact")
+  
+  names(p_se_list[1])<-"p_df"
+  names(p_se_list[2])<-"p_interaction"
+  names(p_se_list[3])<-"se_df"
+  names(p_se_list[4])<-"se_interaction"
+  
+  p_se_list
+  
+}
+
+
+
+boot_pvalues_multi<-function(boot_object,dependent, independent, type="df"){
+  
+  subfunc_boot_pvalues_multi<-function(boot_object,i){
+    
+    if(is.na(as.vector(boot_object$t0)[i])==F){
+      alpha<-boot.pval::boot.pval(boot_object, type="perc",theta_null=0,index = i)}
+    
+    else {alpha<-c(NA)}
+    
+    alpha
+    
+  }
+  
+  if(type=="df" | type=="se_df") {i<-1:(length(dependent)*length(independent))}
+  if(type=="interact"| type=="se_interact") {i<-(length(dependent)*length(independent)+1):(2*(length(dependent)*length(independent)))}
+  
+  if(type=="df"|type=="interact"){
+  ps<-sapply(i,subfunc_boot_pvalues_multi, boot_object=boot_object)
+  ps<-matrix(ps,ncol=length(dependent),byrow = F)
+  colnames(ps)<-dependent
+  rownames(ps)<-independent
+  return(ps)}
+  
+  if(type=="se_df"| type=="se_interact"){
+    se<-sapply(i,subfunc_multi_se, boot_object=boot_object)
+    se<-matrix(se,ncol=length(dependent),byrow = F)
+    colnames(se)<-dependent
+    rownames(se)<-independent
+  return(se)}
+}
+
+
+subfunc_multi_se<-function(i,boot_object){
+  
+  se<-stats::sd(boot_object$t[,i])
+  
+}

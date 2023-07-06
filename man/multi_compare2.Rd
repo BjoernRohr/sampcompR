@@ -2,7 +2,7 @@
 % Please edit documentation in R/Multidiff_2.R
 \name{multi_compare2}
 \alias{multi_compare2}
-\title{Compares Samples using any glm or svyglm.}
+\title{Compares data frames using any glm or svyglm.}
 \usage{
 multi_compare2(
   df,
@@ -30,10 +30,10 @@ multi_compare2(
 )
 }
 \arguments{
-\item{df, benchmark}{A Data frame containing the sample or benchmark to
-compare, or a character string containing the name of the sample or
-benchmark. All independent and dependent variables must be inside both data
-frames.}
+\item{df, benchmark}{A data frame containing the set of respondents or
+benchmark set of respondentsto compare, or a character string containing the
+name of the set of respondents or benchmark set of respondents. All independent
+and dependent variables must be inside both data frames.}
 
 \item{formula_list}{A list of named formulas. Every formula in the list will
 be given to \code{\link[stats]{glm}} or \code{\link[survey]{svyglm}}.}
@@ -92,16 +92,17 @@ printed summary should not be printed instead.}
 \code{\link[survey]{svyglm}}.}
 }
 \value{
-A table is pinted showing the difference between samples for each model
-, as well as an indicator, if they differ sinificantly from each other. It is
-generated using the chosen \code{method}. If\code{out_output_list} = TRUE, also a list
-with additional informations will be retruned that can be used in some aditional
-packages of this function to reprint the summary or to visualize the results.
+A table is printed showing the difference between sets of respondents
+for each model, as well as an indicator, if they differ significantly from each
+other. It is generated using the chosen \code{method}. If
+\code{out_output_list} = TRUE, also a list with additional information will
+be returned that can be used in some additional packages of this function to
+reprint the summary or to visualize the results.
 }
 \description{
-\code{multi_compare2} compares samples using regression models based on glm other
-than \link{multi_compare},it is able to compare all types of \code{\link[stats]{glm}}
-or \code{\link[survey]{svyglm}} models.
+\code{multi_compare2} compares data frames using regression models based on glm.
+Other than \link{multi_compare},it is able to compare all types of
+\code{\link[stats]{glm}} or \code{\link[survey]{svyglm}} models.
 }
 \examples{
 

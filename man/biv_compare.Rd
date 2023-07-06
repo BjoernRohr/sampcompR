@@ -35,7 +35,9 @@ biv_compare(
   missings_x = T,
   legend_show_x = F,
   remove_nas = "pairwise",
-  ncol_facet = 3
+  ncol_facet = 3,
+  nboots = 0,
+  parallel = F
 )
 }
 \arguments{
@@ -132,6 +134,12 @@ not yet work correctly.}
 seperately for every variable pair when calculating Pearson's r}
 
 \item{ncol_facet}{Number of colomns used in faced_wrap() for the plots.}
+
+\item{nboots}{A numeric value indicating the number of bootstrap replications.
+If nboots = 0 no bootstrapping will be performed. Else nboots must be >2. Note,
+that bootstraping can be very computational heavy and can therefore take a while.}
+
+\item{parallel}{If True, all detected cors will be used to in bootstrapping.}
 }
 \value{
 A object generated with the help of \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}}, used to visualize
@@ -144,7 +152,8 @@ Compare multiple data frames on a bivariate level and plot them together.
 }
 \details{
 The plot shows a heatmap of a correlation matrix, where the colors are determined by
-the similarity of the Pearson's r value in both samples. Leaving default breaks and colors,
+the similarity of the Pearson's r value in both sets of respondents. Leaving
+default breaks and colors,
 \itemize{
 \item \code{Same} (green) indicates, that the Pearson's r correlation is not significant > 0 in
 the related data frame or benchmark or the Pearson's r correlations are not significant

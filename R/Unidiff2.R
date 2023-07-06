@@ -23,7 +23,7 @@
 #' differing metrics, chosen in the funct argument. All used data frames must
 #' contain at least one column named equal in all data frames, that has equal
 #' values. It works similar as \link[sampcompR]{uni_compare}, however it's bootstrap technique
-#' is based on the \link[survey]{svydesign} package, making it more suitable for the comparison of weighted samples.
+#' is based on the \link[survey]{svydesign} package, making it more suitable for the comparison of weighted data.
 #'
 #' @param dfs A character vector containing the names of data frames to compare against the benchmarks. 
 #' @param benchmarks A character vector containing the names of benchmarks to compare the data frames against.
@@ -110,16 +110,13 @@
 #' the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package. They have
 #' to be part of the respective data frame. If only one character is provided, the same variable
 #' is used to weight every df or benchmark.
-#' @param R_variables A character vector with the names of variables that should be used in the model 
-#' to calculate the R indicator
-#' @param response_identificator A character vector, naming response identificators for every df.
-#' response identificators should indicate if respondents are part of the sample (respondents=1) 
-#' or not part of the sample (non-respondents=0).
+# #' @param R_variables A character vector with the names of variables that should be used in the model 
+# #' to calculate the R indicator
 #' @param type Define the type of comparison. Can either be "comparison" or "nonrespnse".
 #' 
 #' @return A plot based on [ggplot2::ggplot2()] (or data frame if data==TRUE)
 #' which shows the difference between two or more data frames on predetermined variables,
-#' named identical in both samples.
+#' named identical in both data frames.
 #' 
 #' @references 
 #' Felderer, B., Kirchner, A., & Kreuter, F. (2019). The Effect of Survey Mode on Data 
@@ -157,8 +154,7 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
                         summetric = "rmse2", label_x = NULL, label_y = NULL, plot_title = NULL, varlabels = NULL,
                         name_dfs=NULL, name_benchmarks=NULL,
                         summet_size=4, ci_type="perc", silence=T, conf_level=0.95, conf_adjustment=NULL,
-                        weight =NULL, id=NULL, strata=NULL, weight_bench=NULL,id_bench=NULL, strata_bench=NULL,
-                        R_variables=NULL,response_identificator=NULL) {
+                        weight =NULL, id=NULL, strata=NULL, weight_bench=NULL,id_bench=NULL, strata_bench=NULL) {
 
   ##################################
   ### Errors if inputs are wrong ###
@@ -282,6 +278,10 @@ uni_compare2 <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct =
   if(is.null(weight_bench)==F) if(is.null(id_bench)) stop("if a weight var is provided for the benchmark also id_bench is needed")
 
 
+  
+  response_identificator<-NULL
+  R_variables<-NULL 
+  
   ##############################
   ### Get Benchmarks and DFS ###
   ##############################
@@ -635,8 +635,14 @@ subfunc_diffplotter2 <- function(x, y, samp = 1, nboots = nboots, func = func, v
     data$ci_level_adjusted<- 1-alpha_adjusted
   }
 
-  data$n_df<-as.vector(sapply(x[,names],length))
-  data$n_bench<-as.vector(sapply(y[,names],length))
+  n_df_func<-function(df,variable){
+    
+    length(stats::na.omit(df[,variable]))
+    
+  }
+  
+  data$n_df<-as.vector(sapply(variables,n_df_func,df=x))
+  data$n_bench<-as.vector(sapply(variables,n_df_func,df=y))
 
   if (is.null(conf_adjustment)){
     names(data) <- c("t_vec", "se_vec", "varnames","ci_lower","ci_upper","ci_level","n_df","n_bench")}
