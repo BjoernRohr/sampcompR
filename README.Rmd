@@ -88,7 +88,7 @@ Splitting the data frame into subgroups allows us to compare if the subgroups di
 
 Now that we have data frames we want to compare that are gathered similarly, we will start with a univariate comparison.
 
-```{r univariate_comparison}
+```{r univariate_comparison, fig.width= 6, fig.hight=12}
 library(sampcompR)
 
 univar_data<-sampcompR::uni_compare(dfs = c("north","black"),
@@ -142,7 +142,7 @@ The table displays the difference between dfs and benchmarks for all variables, 
 
 As with the univariate comparison, we start with a general function to calculate the bivariate difference between the data frames and plot the results.
 
-```{r bivariate_comparison}
+```{r bivariate_comparison, fig.width= 7, fig.hight=12}
 biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
                                  benchmarks = c("south","white"),
                                  variables= c("age","educ","fatheduc",
@@ -151,7 +151,7 @@ biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
                                  weight = "weight",
                                  id="id")
 
-sampcompR::plot_biv_compare(biv_data, varlabels = c("a","b","c","d","e","f"))
+sampcompR::plot_biv_compare(biv_data)
 ```
 
 In this comparison, the Pearson's r correlations of all variables indicated in the `variables` parameter are compared between the data frames and benchmarks. The plotted heatmap shows the difference in three categories. A correlation is green (Same) for one of two reasons. On the one hand, it can be that the Pearson's r correlation of this variable pair is not significant in the data frame and in the benchmark. On the other hand, it can be that both z standardized Pearson's r values are not significantly different. If neither of these conditions is true, the plot's correlations are marked yellow (Small Diff) or red (Large Diff). To be red, it must also fulfill one of two additional conditions. The Pearson's r correlations could be of different directions (e.g., one is positive, while the other is negative). Second, it could be that one of them is double the size of the other.
@@ -253,7 +253,7 @@ When you want to know how different certain data frames or sub-data frames are, 
 
 After choosing independent and dependent variables, all information can be given into `multi_compare()`. For this comparison, three similar regression models are performed. One model with either survey and one model with the combined surveys, including an interaction variable that indicates what survey the respondents are from. After this, for every coefficient, a similar classification is used, as in the bivariate comparison:
 
-```{r ols_models}
+```{r ols_models, fig.width= 8, fig.hight= 7}
 
 # designate dependent variables 
 dependent_ols<-c("wage","educ")
@@ -287,7 +287,7 @@ As we can see here in those models, there are fewer differences than before in t
 
 In addition to the models, we can answer with an ols regression, it would also be interesting to add a model estimating the effect of the coefficients on the probability of marriage. However, for this, we need a logit regression, which now follows.
 
-```{r adding_logit_models}
+```{r adding_logit_models, fig.width= 7, fig.hight= 7}
 
 # logit dependent variable
 

@@ -184,7 +184,7 @@ biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
                                  weight = "weight",
                                  id="id")
 
-sampcompR::plot_biv_compare(biv_data, varlabels = c("a","b","c","d","e","f"))
+sampcompR::plot_biv_compare(biv_data)
 ```
 
 <img src="man/figures/README-bivariate_comparison-1.png" width="100%" />
