@@ -1218,7 +1218,7 @@ summary_glm_compare<-function (glm_comp_object, print_p=F, print_se=F){
 #' north <- card[card$south==0,]
 #'
 #' form_list<-list(formula(educ~age+fatheduc+motheduc+IQ),
-#'                 formula(educ~age+fatheduc+motheduc+IQ))
+#'                 formula(wage~age+fatheduc+motheduc+IQ))
 #'
 ## use the function to plot the data
 #'

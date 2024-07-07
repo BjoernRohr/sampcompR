@@ -169,7 +169,7 @@ south <- card[card$south==1,]
 north <- card[card$south==0,]
 
 form_list<-list(formula(educ~age+fatheduc+motheduc+IQ),
-                formula(educ~age+fatheduc+motheduc+IQ))
+                formula(wage~age+fatheduc+motheduc+IQ))
 
 
 multi_data2 <- sampcompR::multi_compare(df = north, 
