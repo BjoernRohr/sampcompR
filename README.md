@@ -632,9 +632,6 @@ multiple comparisons.
 -   `multi_compare_table()` can be used to get a table for the results
     of the `multi_compare()` function.
 
--   `multi_compare_merge()` can combine objects of the multi_compare()
-    function, to plot them together.
-
 ### Miscellaneous Functions
 
 -   `dataequalizer()` can be used to reduce one data frame to only

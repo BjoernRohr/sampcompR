@@ -1,9 +1,9 @@
 ---
 title: "Introduction to the SampcompR Package"
 author: "Bjoern Rohr (bjoern.rohr@gesis.org)" 
-output:
-   md_document:
-     variant: markdown_github
+output: 
+    md_document:
+      variant: markdown_github
    #html_document:
     #css: style_table.css
    #github_document: default
@@ -445,8 +445,6 @@ In general, the package's functions can be ordered into one of four categories. 
 -   `plot_multi_compare()` can be used to plot the results of the `multi_compare()` function.
 
 -   `multi_compare_table()` can be used to get a table for the results of the `multi_compare()` function.
-
--   `multi_compare_merge()` can combine objects of the multi_compare() function, to plot them together.
 
 ### Miscellaneous Functions
 
