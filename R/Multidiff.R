@@ -2366,14 +2366,16 @@ return(dependent)
 #' Combine multi_compare_objects
 #'
 #' @description
-#' \code{multi_compare_merge} combines two \code{multi_compare_objects} to plot them together
+#' \code{multi_compare_merge} combines two \code{multi_compare_objects} to plot them together.
 #'
-#' @param multi_reg_object1,multi_reg_object2 Multireg objects that should be combined
-#' @param p_adjust A logical input or character string indicating a adjustment method usable in the 
-#' \code{method} parameter of \code{\link[stats]{p.adjust}}. If set to TRUE the Bonferroni adjusted 
+#' @param multi_reg_object1,multi_reg_object2 Multireg objects that should be combined.
+#' @param p_adjust A logical input or character string indicating an adjustment 
+#' method that isusable in the \code{method} parameter of 
+#' \code{\link[stats]{p.adjust}}. If set to TRUE the Bonferroni adjusted 
 #' p-values are used in inference.
 #'
-#' @return A combined multi_reg_object that can be used in plot functions to create a visualization
+#' @return A combined \code{multi_reg_object} that can be used in plot functions to 
+#' create a visualization.
 #' 
 #' @examples
 #' 
