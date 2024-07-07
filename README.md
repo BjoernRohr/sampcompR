@@ -1,7 +1,3 @@
-Introduction to the SampcompR Package
-================
-Bjoern Rohr (<bjoern.rohr@gesis.org>)
-
 # Disclaimer:
 
 This is only a beta version of sampcompR. It is still in development and
@@ -19,19 +15,19 @@ bivariate, and multivariate level. The main intention of the package was
 to compare surveys to benchmark surveys, although other comparisons are
 also viable. (e.g., mode-comparisons)  
 
-- On the univariate level, the variables with the same name in data
-  frames and benchmarks are compared using one of the different
-  measures. Then a plot can be generated to visualize the differences
-  and present a value indicating the overall difference of all variables
-  (e.g., average difference, RMSE).
+-   On the univariate level, the variables with the same name in data
+    frames and benchmarks are compared using one of the different
+    measures. Then a plot can be generated to visualize the differences
+    and present a value indicating the overall difference of all
+    variables (e.g., average difference, RMSE).
 
-- On the bivariate level, Pearson’s r values can be compared between the
-  data frames and the benchmarks. The results of this comparison can
-  also be visualized with a plot in the form of a heatmap.
+-   On the bivariate level, Pearson’s r values can be compared between
+    the data frames and the benchmarks. The results of this comparison
+    can also be visualized with a plot in the form of a heatmap.
 
-- Last, on the multivariate level, the package can compare and visualize
-  multivariate regression models between the data frames and the
-  benchmarks.
+-   Last, on the multivariate level, the package can compare and
+    visualize multivariate regression models between the data frames and
+    the benchmarks.
 
 ## Installation
 
@@ -68,13 +64,9 @@ weights can make a huge difference.
 # install and load some additional packages for this readme
 #install.packages("wooldridge","magrittr","knitr","kableExtra")
 library(wooldridge)
-#> Warning: Paket 'wooldridge' wurde unter R Version 4.2.3 erstellt
 library(magrittr)
-#> Warning: Paket 'magrittr' wurde unter R Version 4.2.3 erstellt
 library(knitr)
-#> Warning: Paket 'knitr' wurde unter R Version 4.2.3 erstellt
 library(kableExtra)
-#> Warning: Paket 'kableExtra' wurde unter R Version 4.2.3 erstellt
 
 
 card<-wooldridge::card
@@ -112,7 +104,7 @@ univar_data<-sampcompR::uni_compare(dfs = c("north","black"),
                                                 "motheduc","wage","IQ"),
                                     funct = "rel_mean",
                                     nboots=0,
-                                    summetric="avg",
+                                    summetric="avg2",
                                     data=T,type = "comparison")
 sampcompR::plot_uni_compare(univar_data)
 ```
@@ -130,7 +122,7 @@ although this may take a while. It is also possible to set `nboots==0`,
 as we did in this example. In this case, the confidence intervals will
 be calculated analytically. The upper right corner of the plot shows the
 average relative difference in mean, which is chosen by using
-`summetric=="avg"`. Last, the parameter data indicates if the function
+`summetric=="avg2"`. Last, the parameter data indicates if the function
 should return a `uni_compare_object` which can be used in other package
 functions (e.g., `plot_uni_compare`).
 
@@ -145,23 +137,23 @@ uni_output_table<-sampcompR::uni_compare_table(univar_data)
 
 **Table 1**
 
-| variables     |     north      |      black       |
-|:--------------|:--------------:|:----------------:|
-| age           |     0.006      |      -0.012      |
-|               |  (\>0, 0.011)  | (-0.02, -0.004)  |
-| educ          |     0.087      |      -0.125      |
-|               | (0.078, 0.096) | (-0.139, -0.111) |
-| fatheduc      |     0.186      |      -0.304      |
-|               | (0.168, 0.205) | (-0.341, -0.267) |
-| motheduc      |     0.149      |      -0.23       |
-|               | (0.135, 0.163) | (-0.256, -0.204) |
-| wage          |     0.276      |      -0.273      |
-|               | (0.251, 0.301) | (-0.296, -0.25)  |
-| IQ            |     0.065      |      -0.177      |
-|               | (0.057, 0.073) | (-0.193, -0.161) |
-| Average Error |     0.128      |      0.187       |
-| RANK          |       1        |        2         |
-| N             |  1358 - 1795   |    297 - 703     |
+| Variables     |      north       |      black       |
+|:--------------|:----------------:|:----------------:|
+| age           |      0.006       |      -0.012      |
+|               | (\>0.000, 0.011) | (-0.020, -0.004) |
+| educ          |      0.087       |      -0.125      |
+|               |  (0.078, 0.096)  | (-0.139, -0.111) |
+| fatheduc      |      0.186       |      -0.304      |
+|               |  (0.168, 0.205)  | (-0.341, -0.267) |
+| motheduc      |      0.149       |      -0.230      |
+|               |  (0.135, 0.163)  | (-0.256, -0.204) |
+| wage          |      0.276       |      -0.273      |
+|               |  (0.251, 0.301)  | (-0.296, -0.250) |
+| IQ            |      0.065       |      -0.177      |
+|               |  (0.057, 0.073)  | (-0.193, -0.161) |
+| Average Error |      0.128       |      0.187       |
+| RANK          |        1         |        2         |
+| N             |   1358 - 1795    |    297 - 703     |
 
 Difference in Relative Means off different Survey Groups
 
@@ -183,6 +175,16 @@ biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
                                  data=T, corrtype = "rho",
                                  weight = "weight",
                                  id="id")
+#> 
+#> Attache Paket: 'purrr'
+#> Das folgende Objekt ist maskiert 'package:magrittr':
+#> 
+#>     set_names
+#> [1] "survey 1 of 2 is compared"
+#> [1] "survey 2 of 2 is compared"
+```
+
+``` r
 
 sampcompR::plot_biv_compare(biv_data)
 ```
@@ -229,10 +231,10 @@ table_biv1<-sampcompR::biv_compare_table(biv_data,type = "diff",comparison_numbe
 |:---------|:----------:|:-----------:|:-----------:|:-----------:|:-----:|:---:|
 | age      |            |             |             |             |       |     |
 | educ     |  0.12\*\*  |             |             |             |       |     |
-| fatheduc |     0      | -0.11\*\*\* |             |             |       |     |
+| fatheduc |    0.00    | -0.11\*\*\* |             |             |       |     |
 | motheduc |   -0.06    | -0.14\*\*\* | -0.09\*\*\* |             |       |     |
 | wage     | 0.12\*\*\* | -0.19\*\*\* | -0.16\*\*\* | -0.19\*\*\* |       |     |
-| IQ       |    0.04    |      0      |  -0.15\*\*  |  -0.12\*\*  | -0.08 |     |
+| IQ       |    0.04    |    0.00     |  -0.15\*\*  |  -0.12\*\*  | -0.08 |     |
 
 Difference in Pearson’s r for the North/South Sample
 
@@ -262,7 +264,7 @@ table_biv3<-sampcompR::biv_compare_table(biv_data,type = "benchmarks",comparison
 | fatheduc | -0.08\*\*  | 0.41\*\*\* |            |            |            |     |
 | motheduc | -0.08\*\*  | 0.36\*\*\* | 0.57\*\*\* |            |            |     |
 | wage     | 0.35\*\*\* | 0.19\*\*\* | 0.09\*\*\* | 0.08\*\*\* |            |     |
-| IQ       |   -0.05    | 0.5\*\*\*  | 0.26\*\*\* | 0.23\*\*\* | 0.13\*\*\* |     |
+| IQ       |   -0.05    | 0.50\*\*\* | 0.26\*\*\* | 0.23\*\*\* | 0.13\*\*\* |     |
 
 Pearson’s r correlation matrix for the North Sample
 
@@ -275,7 +277,7 @@ Pearson’s r correlation matrix for the North Sample
 | fatheduc |  -0.09\*   | 0.52\*\*\* |            |            |            |     |
 | motheduc |   -0.02    | 0.49\*\*\* | 0.66\*\*\* |            |            |     |
 | wage     | 0.23\*\*\* | 0.38\*\*\* | 0.25\*\*\* | 0.28\*\*\* |            |     |
-| IQ       |  -0.09\*   | 0.51\*\*\* | 0.4\*\*\*  | 0.35\*\*\* | 0.21\*\*\* |     |
+| IQ       |  -0.09\*   | 0.51\*\*\* | 0.40\*\*\* | 0.35\*\*\* | 0.21\*\*\* |     |
 
 Pearson’s r correlation matrix for the South Sample
 
@@ -297,14 +299,11 @@ When you want to know how different certain data frames or sub-data
 frames are, it may also be interesting to see if those differences exist
 in multivariate comparisons. For this, the first step is to choose the
 multivariate models we want to compare. This function
-`(multi_compare())` is restricted to `ols` and `logit` regressions,
-without interactions. However, there is another function,
-`multi_compare2(),` that can compare any model commutable with `glm()`
+`(multi_compare())` is restricted to any model commutable with `glm()`
 (without weighting) or `svyglm()` (when weights are provided). In this
-example, `multi_compare()` will be enough, as we want to see if there
-are differences between the groups when looking at the regression of
-`age`, `father's education`, `mother's education`, and `IQ` on wage and
-education.
+example, we want to see if there are differences between the groups when
+looking at the regression of `age`, `father's education`,
+`mother's education`, and `IQ` on wage and education.
 
 After choosing independent and dependent variables, all information can
 be given into `multi_compare()`. For this comparison, three similar
@@ -327,38 +326,44 @@ multi_data1_ols<-sampcompR::multi_compare(df=north,
                                      bench=south,
                                      independent = independent,
                                      dependent = dependent_ols,
-                                     method = "ols")  
+                                     family = "ols")  
 #> 
 #> Difference in coeficients between sets of respondents 
 #>  
 #>          wage         educ        
 #> age      -3.74e+00    -7.91e-02*  
 #> fatheduc -3.11e+00    -4.41e-02   
-#> motheduc  5.40e+00     4.34e-02   
-#> IQ        8.34e-01    -1.85e-02** 
+#> motheduc 5.40e+00     4.34e-02    
+#> IQ       8.34e-01     -1.85e-02** 
 #> 
 #> Overall difference between north & south: 25% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
+```
+
+``` r
 
 # compare the black and white data frames
 multi_data2_ols<-sampcompR::multi_compare(df=black, 
                                      bench=white,
                                      independent = independent,
                                      dependent = dependent_ols,
-                                     method = "ols")
+                                     family = "ols")
 #> 
 #> Difference in coeficients between sets of respondents 
 #>  
 #>          wage         educ        
-#> age       1.27e+01     7.05e-02   
-#> fatheduc  4.91e-01     7.38e-02   
-#> motheduc  6.94e-01    -1.13e-01   
-#> IQ       -5.40e-01     2.89e-02** 
+#> age      1.27e+01     7.05e-02    
+#> fatheduc 4.91e-01     7.38e-02    
+#> motheduc 6.94e-01     -1.13e-01   
+#> IQ       -5.40e-01    2.89e-02**  
 #> 
 #> Overall difference between black & white: 12.5% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
+```
+
+``` r
 
 # plot the results
 sampcompR::plot_multi_compare(c("multi_data1_ols","multi_data2_ols"),
@@ -405,38 +410,44 @@ multi_data1_log<-sampcompR::multi_compare(df=north,
                                      bench=south,
                                      independent = independent,
                                      dependent = dependent_log,
-                                     method = "logit")  
+                                     family = "logit")  
 #> 
 #> Difference in coeficients between sets of respondents 
 #>  
 #>          married     
-#> age       1.86e-02   
+#> age      1.86e-02    
 #> fatheduc -1.00e-02   
-#> motheduc  2.17e-02   
-#> IQ        1.07e-03   
+#> motheduc 2.17e-02    
+#> IQ       1.07e-03    
 #> 
 #> Overall difference between north & south: 0% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
+```
+
+``` r
 
 # compare the black and white data frames
 multi_data2_log<-sampcompR::multi_compare(df=black, 
                                      bench=white,
                                      independent = independent,
                                      dependent = dependent_log,
-                                     method = "logit")
+                                     family = "logit")
 #> 
 #> Difference in coeficients between sets of respondents 
 #>  
 #>          married     
-#> age       3.54e-02   
+#> age      3.54e-02    
 #> fatheduc -8.37e-02   
-#> motheduc  1.99e-01*  
+#> motheduc 1.99e-01*   
 #> IQ       -4.24e-03   
 #> 
 #> Overall difference between black & white: 25% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
+```
+
+``` r
 
 
 # merge those  multi_compare_objects to the ols based objects
@@ -475,21 +486,21 @@ multi_table3 <-sampcompR::multi_compare_table(c("final_multi1","final_multi2"),t
 
 | data_frames | variables |  wage   |    educ    | married |
 |:------------|:---------:|:-------:|:----------:|:-------:|
-| north       |    age    |  -3.74  |  -0.079\*  |  0.019  |
+| north       |    age    | -3.740  |  -0.079\*  |  0.019  |
 |             |           | (4.455) |  (0.034)   | (0.048) |
-|             | fatheduc  |  -3.11  |   -0.044   |  -0.01  |
+|             | fatheduc  | -3.110  |   -0.044   | -0.010  |
 |             |           | (4.582) |  (0.035)   | (0.045) |
-|             | motheduc  |   5.4   |   0.043    |  0.022  |
+|             | motheduc  |  5.400  |   0.043    |  0.022  |
 |             |           | (5.376) |  (0.041)   | (0.054) |
 |             |    IQ     |  0.834  | -0.019\*\* |  0.001  |
 |             |           | (0.911) |  (0.007)   | (0.009) |
-| black       |    age    |  12.7   |   0.071    |  0.035  |
+| black       |    age    | 12.700  |   0.070    |  0.035  |
 |             |           | (7.095) |  (0.054)   | (0.069) |
 |             | fatheduc  |  0.491  |   0.074    | -0.084  |
 |             |           | (7.236) |  (0.055)   | (0.067) |
 |             | motheduc  |  0.694  |   -0.113   | 0.199\* |
 |             |           | (7.937) |   (0.06)   | (0.08)  |
-|             |    IQ     |  -0.54  | 0.029\*\*  | -0.004  |
+|             |    IQ     | -0.540  | 0.029\*\*  | -0.004  |
 |             |           | (1.423) |  (0.011)   | (0.013) |
 
 Multivariate Comparison of Subgroups of the Card Sample : Interaction
@@ -497,48 +508,48 @@ Models
 
 **Table 6**
 
-| data_frames | variables |    wage    |    educ     |   married   |
-|:------------|:---------:|:----------:|:-----------:|:-----------:|
-| north       |    age    | 33.6\*\*\* | 0.099\*\*\* | 0.168\*\*\* |
-|             |           |  (2.539)   |   (0.019)   |   (0.026)   |
-|             | fatheduc  |    5.62    | 0.156\*\*\* |   -0.016    |
-|             |           |  (2.949)   |   (0.022)   |   (0.028)   |
-|             | motheduc  |    2.81    |  0.085\*\*  |   -0.066    |
-|             |           |  (3.518)   |   (0.026)   |   (0.034)   |
-|             |    IQ     | 2.05\*\*\* | 0.068\*\*\* |   -0.002    |
-|             |           |  (0.545)   |   (0.004)   |   (0.005)   |
-| black       |    age    |  21\*\*\*  |    0.016    |   0.139\*   |
-|             |           |  (5.425)   |   (0.054)   |   (0.065)   |
-|             | fatheduc  |    4.71    |    0.073    |    0.049    |
-|             |           |   (5.49)   |   (0.054)   |   (0.063)   |
-|             | motheduc  |    4.26    |  0.2\*\*\*  | -0.231\*\*  |
-|             |           |  (5.952)   |   (0.059)   |   (0.075)   |
-|             |    IQ     |   2.71\*   | 0.041\*\*\* |   -0.004    |
-|             |           |  (1.075)   |   (0.011)   |   (0.012)   |
+| data_frames | variables |     wage     |    educ     |   married   |
+|:------------|:---------:|:------------:|:-----------:|:-----------:|
+| north       |    age    | 33.600\*\*\* | 0.099\*\*\* | 0.168\*\*\* |
+|             |           |   (2.539)    |   (0.019)   |   (0.026)   |
+|             | fatheduc  |    5.620     | 0.156\*\*\* |   -0.016    |
+|             |           |   (2.949)    |   (0.022)   |   (0.028)   |
+|             | motheduc  |    2.810     |  0.085\*\*  |   -0.066    |
+|             |           |   (3.518)    |   (0.026)   |   (0.034)   |
+|             |    IQ     | 2.050\*\*\*  | 0.068\*\*\* |   -0.002    |
+|             |           |   (0.545)    |   (0.004)   |   (0.005)   |
+| black       |    age    | 21.000\*\*\* |    0.016    |   0.139\*   |
+|             |           |   (5.425)    |   (0.054)   |   (0.065)   |
+|             | fatheduc  |    4.710     |    0.073    |    0.049    |
+|             |           |    (5.49)    |   (0.054)   |   (0.063)   |
+|             | motheduc  |    4.260     | 0.200\*\*\* | -0.231\*\*  |
+|             |           |   (5.952)    |   (0.059)   |   (0.075)   |
+|             |    IQ     |   2.710\*    | 0.041\*\*\* |   -0.004    |
+|             |           |   (1.075)    |   (0.011)   |   (0.012)   |
 
 Multivariate Comparison of Subgroups of the Card Sample : North and
 Black Sample Models
 
 **Table 7**
 
-| data_frames | variables |    wage    |    educ     |   married   |
-|:------------|:---------:|:----------:|:-----------:|:-----------:|
-| south       |    age    | 29.8\*\*\* |    0.02     | 0.186\*\*\* |
-|             |           |  (3.492)   |   (0.028)   |   (0.041)   |
-|             | fatheduc  |    2.52    | 0.112\*\*\* |   -0.026    |
-|             |           |  (3.364)   |   (0.027)   |   (0.035)   |
-|             | motheduc  |   8.21\*   | 0.129\*\*\* |   -0.044    |
-|             |           |  (3.904)   |   (0.032)   |   (0.042)   |
-|             |    IQ     | 2.88\*\*\* | 0.05\*\*\*  |   -0.001    |
-|             |           |  (0.697)   |   (0.006)   |   (0.007)   |
-| white       |    age    | 33.7\*\*\* | 0.087\*\*\* | 0.174\*\*\* |
-|             |           |   (2.21)   |   (0.016)   |   (0.023)   |
-|             | fatheduc  |   5.2\*    | 0.147\*\*\* |   -0.035    |
-|             |           |  (2.415)   |   (0.018)   |   (0.023)   |
-|             | motheduc  |    4.95    | 0.088\*\*\* |   -0.032    |
-|             |           |  (2.894)   |   (0.021)   |   (0.028)   |
-|             |    IQ     | 2.17\*\*\* | 0.07\*\*\*  |   -0.009    |
-|             |           |  (0.491)   |   (0.004)   |   (0.005)   |
+| data_frames | variables |     wage     |    educ     |   married   |
+|:------------|:---------:|:------------:|:-----------:|:-----------:|
+| south       |    age    | 29.800\*\*\* |    0.020    | 0.186\*\*\* |
+|             |           |   (4.008)    |   (0.029)   |   (0.044)   |
+|             | fatheduc  |    2.520     | 0.112\*\*\* |   -0.026    |
+|             |           |   (3.598)    |   (0.029)   |   (0.035)   |
+|             | motheduc  |   8.210\*    | 0.129\*\*\* |   -0.044    |
+|             |           |   (3.642)    |   (0.033)   |   (0.041)   |
+|             |    IQ     | 2.880\*\*\*  | 0.050\*\*\* |   -0.001    |
+|             |           |   (0.712)    |   (0.006)   |   (0.008)   |
+| white       |    age    | 33.700\*\*\* | 0.087\*\*\* | 0.174\*\*\* |
+|             |           |   (2.507)    |   (0.017)   |   (0.024)   |
+|             | fatheduc  |   5.200\*    | 0.147\*\*\* |   -0.035    |
+|             |           |    (2.45)    |   (0.019)   |   (0.022)   |
+|             | motheduc  |    4.950     | 0.088\*\*\* |   -0.032    |
+|             |           |   (3.044)    |   (0.023)   |   (0.029)   |
+|             |    IQ     | 2.170\*\*\*  | 0.070\*\*\* |   -0.009    |
+|             |           |   (0.516)    |   (0.004)   |   (0.005)   |
 
 Multivariate Comparison of Subgroups of the Card Sample : South and
 White Sample Models
@@ -584,60 +595,54 @@ multiple comparisons.
 
 ### Univariate Comparison Functions
 
-- `uni_compare()` can be used to make a univariate comparison and get an
-  object usable in the other univariate comparison functions or plot the
-  results directly.
+-   `uni_compare()` can be used to make a univariate comparison and get
+    an object usable in the other univariate comparison functions or
+    plot the results directly.
 
-- `uni_compare2()` is similar to uni_compare() but better suited for
-  weighted comparisons.
+-   `plot_uni_compare()` can be used to plot the results of the
+    `uni_compare()` function.
 
-- `plot_uni_compare()` can be used to plot the results of the
-  `uni_compare()` function.
+-   `uni_compare_table()` can be used to get a table for the results of
+    the `uni_compare()` function.
 
-- `uni_compare_table()` can be used to get a table for the results of
-  the `uni_compare()` function.
-
-- `R_indicator` calculates the R-Indicator of a Survey.
+-   `R_indicator` calculates the R-Indicator of a Survey.
 
 ### Bivariate Comparison Functions
 
-- `biv_compare()` can be used to make a bivariate comparison and get an
-  object usable in the other bivariate comparison functions or plot the
-  results directly.
+-   `biv_compare()` can be used to make a bivariate comparison and get
+    an object usable in the other bivariate comparison functions or plot
+    the results directly.
 
-- `plot_biv_compare()` can be used to plot the results of the
-  `biv_compare()` function.
+-   `plot_biv_compare()` can be used to plot the results of the
+    `biv_compare()` function.
 
-- `biv_compare_table()` can be used to get a table for the results of
-  the `biv_compare()` function.
+-   `biv_compare_table()` can be used to get a table for the results of
+    the `biv_compare()` function.
 
 ### Multivariate Comparison Functions
 
-- `multi_compare()` can be used to make a multivariate comparison and
-  get an object usable in the other bivariate comparison functions or
-  plot the results directly.
+-   `multi_compare()` can be used to make a multivariate comparison and
+    get an object usable in the other bivariate comparison functions or
+    plot the results directly. It is suitable to compare any glm() model
+    between the data frame and the benchmark
 
-- `multi_compare2()` needs a slightly more complicated input, however,
-  it is suitable to compare any glm() model between the data frame and
-  the benchmark.
+-   `plot_multi_compare()` can be used to plot the results of the
+    `multi_compare()` function.
 
-- `plot_multi_compare()` can be used to plot the results of the
-  `multi_compare()` function.
+-   `multi_compare_table()` can be used to get a table for the results
+    of the `multi_compare()` function.
 
-- `multi_compare_table()` can be used to get a table for the results of
-  the `multi_compare()` function.
-
-- `multi_compare_merge()` can combine objects of the multi_compare()
-  function, to plot them together.
+-   `multi_compare_merge()` can combine objects of the multi_compare()
+    function, to plot them together.
 
 ### Miscellaneous Functions
 
-- `dataequalizer()` can be used to reduce one data frame to only columns
-  named similarly in another data frame and a list of variables given to
-  the function.
+-   `dataequalizer()` can be used to reduce one data frame to only
+    columns named similarly in another data frame and a list of
+    variables given to the function.
 
-- `descriptive_table` can be used to get a descriptive table for a
-  Dataset, including weighting.
+-   `descriptive_table` can be used to get a descriptive table for a
+    Dataset, including weighting.
 
 ## References
 

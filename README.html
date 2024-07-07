@@ -1096,12 +1096,9 @@ measuring those correlations for either group.</p>
 frames are, it may also be interesting to see if those differences exist
 in multivariate comparisons. For this, the first step is to choose the
 multivariate models we want to compare. This function
-<code>(multi_compare())</code> is restricted to <code>ols</code> and
-<code>logit</code> regressions, without interactions. However, there is
-another function, <code>multi_compare2(),</code> that can compare any
-model commutable with <code>glm()</code> (without weighting) or
-<code>svyglm()</code> (when weights are provided). In this example,
-<code>multi_compare()</code> will be enough, as we want to see if there
+<code>(multi_compare())</code> is restricted to any model commutable
+with <code>glm()</code> (without weighting) or <code>svyglm()</code>
+(when weights are provided). In this example, we want to see if there
 are differences between the groups when looking at the regression of
 <code>age</code>, <code>father&#39;s education</code>,
 <code>mother&#39;s education</code>, and <code>IQ</code> on wage and

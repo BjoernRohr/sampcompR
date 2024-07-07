@@ -1,10 +1,12 @@
 ---
 title: "Introduction to the SampcompR Package"
 author: "Bjoern Rohr (bjoern.rohr@gesis.org)" 
-output: 
-   html_document:
-    css: style_table.css
-   github_document: default
+output:
+   md_document:
+     variant: markdown_github
+   #html_document:
+    #css: style_table.css
+   #github_document: default
    #word_document: default
 ---
 
@@ -249,7 +251,7 @@ This shows us the whole picture. Looking at the correlation between age and educ
 
 ### Multivariate Comparison
 
-When you want to know how different certain data frames or sub-data frames are, it may also be interesting to see if those differences exist in multivariate comparisons. For this, the first step is to choose the multivariate models we want to compare. This function `(multi_compare())` is restricted to `ols` and `logit` regressions, without interactions. However, there is another function, `multi_compare2(),` that can compare any model commutable with `glm()` (without weighting) or `svyglm()` (when weights are provided). In this example, `multi_compare()` will be enough, as we want to see if there are differences between the groups when looking at the regression of `age`, `father's education`, `mother's education`, and `IQ` on wage and education.
+When you want to know how different certain data frames or sub-data frames are, it may also be interesting to see if those differences exist in multivariate comparisons. For this, the first step is to choose the multivariate models we want to compare. This function `(multi_compare())` is restricted to any model commutable with `glm()` (without weighting) or `svyglm()` (when weights are provided). In this example, we want to see if there are differences between the groups when looking at the regression of `age`, `father's education`, `mother's education`, and `IQ` on wage and education.
 
 After choosing independent and dependent variables, all information can be given into `multi_compare()`. For this comparison, three similar regression models are performed. One model with either survey and one model with the combined surveys, including an interaction variable that indicates what survey the respondents are from. After this, for every coefficient, a similar classification is used, as in the bivariate comparison:
 
@@ -344,14 +346,14 @@ table5 <- knitr::kable(
   format = "pipe",
   booktabs = TRUE,
   align = c("l",rep("c",(ncol(multi_table1)-1))),
-  caption = "Multivariate Comparison of Subgroups of the Card Sample : Interaction Models") %>%
-  kable_styling(full_width = TRUE) %>%
-  row_spec(row = 0, align = "c") %>%
-   footnote(
-    general_title = "Note.",
-    general = "Difference in regression coefficients for three multivariate regression models with the card sample, respondents living in the north were compared to respondents living in the south; black respondents were compared against white respondents; results are based on an interaction model.",
-   footnote_as_chunk = TRUE
-    )
+  caption = "Multivariate Comparison of Subgroups of the Card Sample : Interaction Models") #%>%
+  # kable_styling(full_width = TRUE) %>%
+  # row_spec(row = 0, align = "c") %>%
+  #  footnote(
+  #   general_title = "Note.",
+  #   general = "Difference in regression coefficients for three multivariate regression models with the card sample, respondents living in the north were compared to respondents living in the south; black respondents were compared against white respondents; results are based on an interaction model.",
+  #  footnote_as_chunk = TRUE
+  #   )
 
 table5
 
@@ -367,14 +369,14 @@ table6 <- knitr::kable(
   format = "pipe",
   booktabs = TRUE,
   align = c("l",rep("c",(ncol(multi_table2)-1))),
-  caption = "Multivariate Comparison of Subgroups of the Card Sample :  North and Black Sample Models") %>%
-  kable_styling(full_width = TRUE) %>%
-  row_spec(row = 0, align = "c") %>%
-   footnote(
-    general_title = "Note.",
-    general = "Difference in regression coefficients for for three multivariate regression models with the card sample; results are for respondents living in the north, and black respondents.",
-   footnote_as_chunk = TRUE
-    )
+  caption = "Multivariate Comparison of Subgroups of the Card Sample :  North and Black Sample Models") #%>%
+  # kable_styling(full_width = TRUE) %>%
+  # row_spec(row = 0, align = "c") %>%
+  #  footnote(
+  #   general_title = "Note.",
+  #   general = "Difference in regression coefficients for for three multivariate regression models with the card sample; results are for respondents living in the north, and black respondents.",
+  #  footnote_as_chunk = TRUE
+  #   )
 
 table6
 
@@ -390,14 +392,14 @@ table7<-knitr::kable(
   format = "pipe",
   booktabs = TRUE,
   align = c("l",rep("c",(ncol(multi_table3)-1))),
-  caption = "Multivariate Comparison of Subgroups of the Card Sample : South and White Sample Models") %>%
-  kable_styling(full_width = TRUE) %>%
-  row_spec(row = 0, align = "c") %>%
-   footnote(
-    general_title = "Note.",
-    general = "Difference in regression coefficients for for three multivariate regression models with the card sample; results are for respondents living in the south, and white respondents.",
-   footnote_as_chunk = TRUE
-    )
+  caption = "Multivariate Comparison of Subgroups of the Card Sample : South and White Sample Models") #%>%
+  # kable_styling(full_width = TRUE) %>%
+  # row_spec(row = 0, align = "c") %>%
+  #  footnote(
+  #   general_title = "Note.",
+  #   general = "Difference in regression coefficients for for three multivariate regression models with the card sample; results are for respondents living in the south, and white respondents.",
+  #  footnote_as_chunk = TRUE
+  #   )
 
 table7
 
