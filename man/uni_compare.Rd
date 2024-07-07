@@ -10,103 +10,124 @@ uni_compare(
   variables = NULL,
   nboots = 2000,
   funct = "rel_mean",
-  data = FALSE,
-  summetric = "rmse2",
-  varlabels = NULL,
+  data = TRUE,
   type = "comparison",
+  legendlabels = NULL,
+  legendtitle = NULL,
+  colors = NULL,
+  shapes = NULL,
+  summetric = "rmse2",
+  label_x = NULL,
+  label_y = NULL,
+  plot_title = NULL,
+  varlabels = NULL,
+  name_dfs = NULL,
+  name_benchmarks = NULL,
+  summet_size = 4,
+  silence = TRUE,
+  conf_level = 0.95,
+  conf_adjustment = NULL,
   weight = NULL,
   id = NULL,
   strata = NULL,
   weight_bench = NULL,
   id_bench = NULL,
   strata_bench = NULL,
-  legendlabels = NULL,
-  legendtitle = NULL,
-  colors = NULL,
-  shapes = NULL,
-  label_x = NULL,
-  label_y = NULL,
-  plot_title = NULL,
-  name_dfs = NULL,
-  name_benchmarks = NULL,
-  summet_size = 4,
-  ci_type = "perc",
-  silence = T,
-  conf_level = 0.95,
-  conf_adjustment = NULL,
-  parallel = F
+  adjustment_weighting = "raking",
+  adjustment_vars = NULL,
+  raking_targets = NULL,
+  post_targets = NULL,
+  ndigits = 3
 )
 }
 \arguments{
 \item{dfs}{A character vector containing the names of data frames to compare against the benchmarks.}
 
 \item{benchmarks}{A character vector containing the names of benchmarks to compare the data frames against.
-The vector must either to be the same length as \code{dfs}, or length 1. If it has length 1 every
+The vector must either be the same length as \code{dfs}, or length 1. If it has length 1 every
 df will be compared against the same benchmark. Benchmarks can either be the name of data frames or
 the name of a list of tables. The tables in the list need to be named as the respective variables
 in the data frame of comparison.}
 
 \item{variables}{A character vector containing the names of the variables for the comparison. If NULL,
-all variables named similar in both the dfs and the benchmarks will be compared. Variables missing
+all variables named similarly in both the \code{dfs} and the benchmarks will be compared. Variables missing
 in one of the data frames or the benchmarks will be neglected for this comparison.}
 
-\item{nboots}{The Number of bootstraps used to calculate standard errors. Must either be >2 or 0.
+\item{nboots}{The number of bootstraps used to calculate standard errors. Must either be >2 or 0.
 If >2 bootstrapping is used to calculate standard errors with \code{nboots} iterations. If 0, SE
 is calculated analytically. We do not recommend using \code{nboots} =0 because this method is not
 yet suitable for every \code{funct} used and every method. Depending on the size of the data and the
 number of bootstraps, \code{uni_compare} can take a while.}
 
-\item{funct}{A function or a vector of functions to calculate the difference between the
-data frames. If a single input is given, the same function will be used for all variables.
-If the input is a vector, the vector has to be of the same length as \code{variables}.
-Then for eachvariable the indicated function will be used. The input can either be a
-character indicating a predefined function, or function (not yet clearly defined).
+\item{funct}{A character string, indicating the function to calculate the
+difference between the data frames.
+
 Predefined functions are:
 \itemize{
 \item \code{"d_mean"}, \code{"ad_mean"} A function to calculate the (absolute) difference in mean of
-the variables in dfs and benchmarks with the same name. Only applicable for
-metric variables
+the variables in \code{dfs} and benchmarks with the same name. Only applicable for
+metric variables.
 \item \code{"d_prop"}, \code{"ad_prop"} A function to calculate the (absolute) difference in proportions of
-the variables in dfs and benchmarks with the same name. Only applicable for dummy
+the variables in \code{dfs} and benchmarks with the same name. Only applicable for dummy
 variables.
-\item \code{"prop_modecat"}, \code{"abs_prop_modecat"} A function to calculate the (absolute) difference in
-proportions of the variables in dfs and benchmarks with the same name. Only applicable for
-variables with a limited number of categories.
-\item \code{"avg_abs_prop_diff"} A function to calculate the average absolute difference in
-proportions of all categories in a variables in dfs and benchmarks with the same name.
-Only applicable for variables with the same number of categories.
 \item \code{"rel_mean"}, \code{"abs_rel_mean"} A function to calculate the (absolute)
-relative difference in mean of the variables in dfs and benchmarks with the same name.
-For more information on the formula for difference and analytic variance, see Felderer
+relative difference in mean of the variables in \code{dfs} and benchmarks with the same name.
+#' For more information on the formula for difference and analytic variance, see Felderer
 et al. (2019). Only applicable for metric variables.
 \item \code{"rel_prop"}, \code{"abs_rel_prop"} A function to calculate the (absolute)
-relative difference in proportions of the variables in dfs and benchmarks with
+relative difference in proportions of the variables in \code{dfs} and benchmarks with
 the same name. it is calculated similar to the relative difference in mean
 (see Felderer et al., 2019), however the default label for the plot is different.
 Only applicable for dummy variables.
-\item \code{"d_median"} \code{"ad_median"} A function to calculate the (absolute) relative difference in median of
-the variables in dfs and benchmarks with the same name.
 }}
 
 \item{data}{If TRUE, a uni_compare_object is returned, containing results of the comparison.}
 
-\item{summetric}{If ,\code{"avg"}, \code{"mse1"}, \code{"rmse1"}, or \code{"R"}
+\item{type}{Define the type of comparison. Can either be \code{"comparison"} or \code{"nonresponse"}.}
+
+\item{legendlabels}{A character string or vector of strings containing a label for the
+legend.}
+
+\item{legendtitle}{A character string containing the title of the legend.}
+
+\item{colors}{A vector of colors that is used in the plot for the
+different comparisons.}
+
+\item{shapes}{A vector of shapes applicable in \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} that is used in the plot for
+the different comparisons.}
+
+\item{summetric}{If ,\code{"avg1"}, \code{"mse1"}, \code{"rmse1"}, or \code{"R"}
 the respective measure is calculated for the biases of each survey. The values
-\code{"mse1"} and \code{"rmse2"} lead to similar results as in \code{"mse1"} and \code{"rmse1"},
-with slightly different visualization in the plot. If summetric = NULL, no summetric
+\code{"mse1"} and \code{"rmse1"} lead to similar results as in \code{"mse2"} and \code{"rmse2"},
+with slightly different visualization in the plot. If \code{summetric = NULL}, no summetric
 will be displayed in the Plot. When \code{"R"} is chosen, also \code{response_identificator}
 is needed.}
+
+\item{label_x, label_y}{A character string or vector of character strings containing a label for
+the x-axis and y-axis.}
+
+\item{plot_title}{A character string containing the title of the plot.}
 
 \item{varlabels}{A character string or vector of character strings containing the new names of
 variables, also used in plot.}
 
-\item{type}{Define the type of comparison. Can either be "comparison" for a comparison between two surveys,
-"benchmark" for a comparison between a survey and a benchmark to estimate bias in the survey,
-or "nonrespnse", when the function is used to measure nonresponse bias.}
+\item{name_dfs, name_benchmarks}{A character string or vector of character strings containing the
+new names of the \code{dfs} and \code{benchmarks}, also used in plot.}
+
+\item{summet_size}{A number to determine the size of the displayed \code{summetric} in the plot.}
+
+\item{silence}{If \code{silence = F} a warning will be displayed, if variables are excluded from either
+data frame or benchmark, for not existing in both.}
+
+\item{conf_level}{A numeric value between zero and one to determine the confidence level of the confidence
+interval.}
+
+\item{conf_adjustment}{If \code{conf_adjustment = T} the confidence level of the confidence interval will be
+adjusted with a Bonferroni adjustment, to account for the problem of multiple comparisons.}
 
 \item{weight, weight_bench}{A character vector determining variables to weight the \code{dfs} or
 \code{benchmarks}. They have to be part of the respective data frame. If only one character is provided,
-the same variable is used to weight every df or benchmark. If a weight variable is provided also an id
+the same variable is used to weight every df or benchmark. If a weight variable is provided also an \code{id}
 variable is needed.For weighting, the \code{survey} package is used.}
 
 \item{id, id_bench}{A character vector determining id variables used to weight the \code{dfs} or
@@ -118,40 +139,19 @@ the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package. 
 to be part of the respective data frame. If only one character is provided, the same variable
 is used to weight every df or benchmark.}
 
-\item{legendlabels}{A character string or vector of strings containing a label for the
-legend.}
+\item{adjustment_weighting}{A character vector indicating if adjustment
+weighting should be used. it can either be \code{"raking"} or \code{"post_start"}.}
 
-\item{legendtitle}{A character string containing the title of the Legend.}
+\item{adjustment_vars}{Variables used to adjust the survey when using raking
+or post stratification.}
 
-\item{colors}{A vector of colors used in the plot for the
-different comparisons.}
+\item{raking_targets}{A List of raking targets that can be given to the rake
+function of \code{\link[survey]{rake}}, to rake the \code{dfs}.}
 
-\item{shapes}{A vector of shapes applicable in \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} used in the plot for
-the different comparisons.}
+\item{post_targets}{A List of post_stratification targets that can be given to the rake
+function of \code{\link[survey]{postStratify}}, to post_stratify the \code{dfs}.}
 
-\item{label_x, label_y}{A character string or vector of character strings containing a label for
-the x-axis and y-axis.}
-
-\item{plot_title}{A character string containing the title of the plot.}
-
-\item{name_dfs, name_benchmarks}{A character string or vector of character strings containing the
-new names of the data frames and benchmarks, also used in plot.}
-
-\item{summet_size}{A number to determine the size of the displayed summetric in the plot.}
-
-\item{ci_type}{A character string determining the type of bootstrap ci available in the
-\code{\link[boot]{boot.ci}} function of the code{boot} package.}
-
-\item{silence}{If silence = F a warning will be displayed, if variables are excluded from either
-data frame or benchmark, for not existing in both.}
-
-\item{conf_level}{A numeric value between zero and one to determine the confidence level of the confidence
-interval.}
-
-\item{conf_adjustment}{If conf_adjustment=T the confidence level of the confidence interval will be
-adjusted with a Bonferroni adjustment, to account for the problem of multiple comparisons.}
-
-\item{parallel}{If True, all detected cors will be used to in bootstrapping.}
+\item{ndigits}{The number of digits for rounding in plot.}
 }
 \value{
 A plot based on \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} (or data frame if data==TRUE)
@@ -159,17 +159,16 @@ which shows the difference between two or more data frames on predetermined vari
 named identical in both data frames.
 }
 \description{
-Returns a plot or data showing the difference of two or more
+Returns data or a plot showing the difference of two or more
 data frames The differences are calculated on the base of
 differing metrics, chosen in the funct argument. All used data frames must
 contain at least one column named equal in all data frames, that has equal
-values. For a comparison of weighted data in bootstrapping, uni_compare 2 is
-faster and more accurate, as it's bootstrap technique is based on the
-\link[survey]{svydesign} package.
+values.
 }
 \examples{
 
 ## Get Data for comparison
+require(wooldridge)
 card<-wooldridge::card
 
 black<-wooldridge::card[wooldridge::card$black==1,]
@@ -182,7 +181,7 @@ univar_comp<-sampcompR::uni_compare(dfs = c("north","white"),
                                     benchmarks = c("south","black"),
                                     variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
                                     funct = "abs_rel_mean",
-                                    nboots=0,
+                                    nboots=200,
                                     summetric="rmse2",
                                     data=FALSE)
 

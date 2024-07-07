@@ -34,13 +34,13 @@ multi_data1 <- sampcompR::multi_compare(df = north,
                                         bench = south,
                                         independent = c("age","fatheduc","motheduc","IQ"),
                                         dependent = c("educ"),
-                                        method = "ols") 
+                                        family = "ols") 
                                      
 multi_data2 <- sampcompR::multi_compare(df = black, 
                                         bench = white,
                                         independent = c("age","fatheduc","motheduc","IQ"),
                                         dependent = c("wage"),
-                                        method = "ols") 
+                                        family = "ols") 
  ### merge two objects ###                                       
  merged_object<-multi_compare_merge(multi_data1,multi_data2)
  

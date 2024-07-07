@@ -2,8 +2,8 @@
 title: "Introduction to the SampcompR Package"
 author: "Bjoern Rohr (bjoern.rohr@gesis.org)" 
 output: 
-   #html_document:
-    #css: style_table.css
+   html_document:
+    css: style_table.css
    github_document: default
    #word_document: default
 ---
@@ -97,13 +97,13 @@ univar_data<-sampcompR::uni_compare(dfs = c("north","black"),
                                                 "motheduc","wage","IQ"),
                                     funct = "rel_mean",
                                     nboots=0,
-                                    summetric="avg",
+                                    summetric="avg2",
                                     data=T,type = "comparison")
 sampcompR::plot_uni_compare(univar_data)
 
 ```
 
-Here we can see a plot showing the difference in mean for several variables (indicated in the `variables` parameter) in the data frames. The first data frame, named as a character in `dfs`, is compared to the first data frame in `benchmarks`, while the second is compared to the second, and so forth. Another important parameter is `nboots`. It indicates the number of bootstraps to calculate the confidence intervals. We recommend using at least 2000 to 10000 bootstraps, although this may take a while. It is also possible to set `nboots==0`, as we did in this example. In this case, the confidence intervals will be calculated analytically. The upper right corner of the plot shows the average relative difference in mean, which is chosen by using `summetric=="avg"`. Last, the parameter data indicates if the function should return a `uni_compare_object` which can be used in other package functions (e.g., `plot_uni_compare`).
+Here we can see a plot showing the difference in mean for several variables (indicated in the `variables` parameter) in the data frames. The first data frame, named as a character in `dfs`, is compared to the first data frame in `benchmarks`, while the second is compared to the second, and so forth. Another important parameter is `nboots`. It indicates the number of bootstraps to calculate the confidence intervals. We recommend using at least 2000 to 10000 bootstraps, although this may take a while. It is also possible to set `nboots==0`, as we did in this example. In this case, the confidence intervals will be calculated analytically. The upper right corner of the plot shows the average relative difference in mean, which is chosen by using `summetric=="avg2"`. Last, the parameter data indicates if the function should return a `uni_compare_object` which can be used in other package functions (e.g., `plot_uni_compare`).
 
 Also, the difference can be shown in a table that can be helpful to document the results. We can easily get a good result table by adding the resulting table to other functions (e.g., the kable() function in RMarkdown).
 
@@ -266,14 +266,14 @@ multi_data1_ols<-sampcompR::multi_compare(df=north,
                                      bench=south,
                                      independent = independent,
                                      dependent = dependent_ols,
-                                     method = "ols")  
+                                     family = "ols")  
 
 # compare the black and white data frames
 multi_data2_ols<-sampcompR::multi_compare(df=black, 
                                      bench=white,
                                      independent = independent,
                                      dependent = dependent_ols,
-                                     method = "ols")
+                                     family = "ols")
 
 # plot the results
 sampcompR::plot_multi_compare(c("multi_data1_ols","multi_data2_ols"),
@@ -300,14 +300,14 @@ multi_data1_log<-sampcompR::multi_compare(df=north,
                                      bench=south,
                                      independent = independent,
                                      dependent = dependent_log,
-                                     method = "logit")  
+                                     family = "logit")  
 
 # compare the black and white data frames
 multi_data2_log<-sampcompR::multi_compare(df=black, 
                                      bench=white,
                                      independent = independent,
                                      dependent = dependent_log,
-                                     method = "logit")
+                                     family = "logit")
 
 
 # merge those  multi_compare_objects to the ols based objects
@@ -344,14 +344,14 @@ table5 <- knitr::kable(
   format = "pipe",
   booktabs = TRUE,
   align = c("l",rep("c",(ncol(multi_table1)-1))),
-  caption = "Multivariate Comparison of Subgroups of the Card Sample : Interaction Models") #%>%
-  # kable_styling(full_width = TRUE) %>%
-  # row_spec(row = 0, align = "c") %>%
-  #  footnote(
-  #   general_title = "Note.",
-  #   general = "Difference in regression coefficients for three multivariate regression models with the card sample, respondents living in the north were compared to respondents living in the south; black respondents were compared against white respondents; results are based on an interaction model.",
-  #  footnote_as_chunk = TRUE
-  #   )
+  caption = "Multivariate Comparison of Subgroups of the Card Sample : Interaction Models") %>%
+  kable_styling(full_width = TRUE) %>%
+  row_spec(row = 0, align = "c") %>%
+   footnote(
+    general_title = "Note.",
+    general = "Difference in regression coefficients for three multivariate regression models with the card sample, respondents living in the north were compared to respondents living in the south; black respondents were compared against white respondents; results are based on an interaction model.",
+   footnote_as_chunk = TRUE
+    )
 
 table5
 
@@ -367,14 +367,14 @@ table6 <- knitr::kable(
   format = "pipe",
   booktabs = TRUE,
   align = c("l",rep("c",(ncol(multi_table2)-1))),
-  caption = "Multivariate Comparison of Subgroups of the Card Sample :  North and Black Sample Models") #%>%
-  # kable_styling(full_width = TRUE) %>%
-  # row_spec(row = 0, align = "c") %>%
-  #  footnote(
-  #   general_title = "Note.",
-  #   general = "Difference in regression coefficients for for three multivariate regression models with the card sample; results are for respondents living in the north, and black respondents.",
-  #  footnote_as_chunk = TRUE
-  #   )
+  caption = "Multivariate Comparison of Subgroups of the Card Sample :  North and Black Sample Models") %>%
+  kable_styling(full_width = TRUE) %>%
+  row_spec(row = 0, align = "c") %>%
+   footnote(
+    general_title = "Note.",
+    general = "Difference in regression coefficients for for three multivariate regression models with the card sample; results are for respondents living in the north, and black respondents.",
+   footnote_as_chunk = TRUE
+    )
 
 table6
 
@@ -390,14 +390,14 @@ table7<-knitr::kable(
   format = "pipe",
   booktabs = TRUE,
   align = c("l",rep("c",(ncol(multi_table3)-1))),
-  caption = "Multivariate Comparison of Subgroups of the Card Sample : South and White Sample Models") #%>%
-  # kable_styling(full_width = TRUE) %>%
-  # row_spec(row = 0, align = "c") %>%
-  #  footnote(
-  #   general_title = "Note.",
-  #   general = "Difference in regression coefficients for for three multivariate regression models with the card sample; results are for respondents living in the south, and white respondents.",
-  #  footnote_as_chunk = TRUE
-  #   )
+  caption = "Multivariate Comparison of Subgroups of the Card Sample : South and White Sample Models") %>%
+  kable_styling(full_width = TRUE) %>%
+  row_spec(row = 0, align = "c") %>%
+   footnote(
+    general_title = "Note.",
+    general = "Difference in regression coefficients for for three multivariate regression models with the card sample; results are for respondents living in the south, and white respondents.",
+   footnote_as_chunk = TRUE
+    )
 
 table7
 

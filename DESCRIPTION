@@ -1,5 +1,5 @@
 Package: sampcompR
-Title: Comparing and Visualizing Differences between Surveys
+Title: Comparing and Visualizing Differences Between Surveys
 Version: 0.1.0.0
 Authors@R: 
     person("Bjoern", "Rohr",  email= "Bjoern.Rohr@gesis.org", role = c("aut", "cre"),
@@ -10,27 +10,33 @@ Description: A bundle of functions, to easily analyze and visualise differences
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports: 
     boot,
     boot.pval,
     data.table,
     dplyr,
+    forcats,
+    furrr,
+    future,
     ggplot2,
     Hmisc,
-    jtools,
     lmtest,
     magrittr,
-    parallel,
     psych,
+    purrr,
     readr,
     reshape2,
     sandwich,
     stats,
     survey,
     svrep,
-    utils,
-    wooldridge
+    tibble,
+    tidyr,
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    wooldridge,
+    jtools,
+    utils,
+    parallel
 Config/testthat/edition: 3

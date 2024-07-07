@@ -20,7 +20,8 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
                                note=T,p_adjust=NULL, full=FALSE, grid="white",diff_perc=F,
                                diff_perc_size=4.5,perc_diff_transparance=0 ,gradient=F, 
                                breaks=breaks, colors=NULL, remove_nas="pairwise", nboots=0,
-                               parallel = F) {
+                               parallel = F,adjustment_weighting="raking", 
+                               adjustment_vars=NULL,raking_targets=NULL,post_targets=NULL) {
 
 
   ### Build title
@@ -28,54 +29,54 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
   bench_label<-deparse(substitute(benchmark))
   plot_title<-ifelse(is.null(plot_title),paste("Compare ", df1_label," & ",bench_label, sep = "", collapse = NULL), plot_title)
 
-  weighted_cor<-function(x,weight, ID, strata=NULL,return="r"){
-
-    variables<-colnames(x)
-    if(is.null(ID)==F) if(is.na(ID)==F)variables<-variables[!variables==ID]
-    if(is.null(weight)==F) if(is.na(weight)==F) variables<-variables[!variables==weight]
-    if(is.null(strata)==F) if(is.na(strata)==F) variables<-variables[!variables==strata]
-    
-    
-    if(is.null(ID)==F) {
-      if(is.na(ID)==F) ID<-x[,ID]
-      else ID<-c(1:nrow(x))} 
-    if(is.null(ID)==T) ID<-c(1:nrow(x))
-    
-    if(is.null(weight)==F) {
-      if(is.na(weight)==F) weight<-x[,weight]
-      else weight<-c(rep(1,nrow(df)))} 
-    if(is.null(weight)==T) weight<-c(rep(1,nrow(df)))
-    
-    ### normalize the weight
-    weight<- weight/(sum(weight)/nrow(x))
-    
-    if(is.null(strata)==F){
-      if (is.na(strata)==F) strata<-x[,strata]
-      else strata<-NULL
-    }
-    
-    
-    
-
-    df_weighted<- survey::svydesign(id      = ID,
-                                    strata  = strata,
-                                    weights = weight,
-                                    nest    = FALSE,
-                                    data    = x)
-
-    # insertform<-paste("~",colnames(x[1]))
-    # for (i in 2:(length(x))) {
-    #   insertform<-paste(insertform," + ",colnames(x[i]), collapse = "")
-    # }
-
-
-    matrix<-jtools::svycor(formula=stats::reformulate(variables), design = df_weighted, na.rm = TRUE,sig.stats=F)
-    if(return=="p") matrix2<-jtools::svycor(formula=stats::reformulate(variables), design = df_weighted, na.rm = TRUE,sig.stats=T)
-    matrix$cors[matrix$cors==1]<-NA
-
-    if(return=="r") return(matrix$cors)
-    if(return=="p") return(matrix2$p.values)
-  }
+  # weighted_cor<-function(x,weight, ID, strata=NULL,return="r"){
+  # 
+  #   variables<-colnames(x)
+  #   if(is.null(ID)==F) if(is.na(ID)==F)variables<-variables[!variables==ID]
+  #   if(is.null(weight)==F) if(is.na(weight)==F) variables<-variables[!variables==weight]
+  #   if(is.null(strata)==F) if(is.na(strata)==F) variables<-variables[!variables==strata]
+  #   
+  #   
+  #   if(is.null(ID)==F) {
+  #     if(is.na(ID)==F) ID<-x[,ID]
+  #     else ID<-c(1:nrow(x))} 
+  #   if(is.null(ID)==T) ID<-c(1:nrow(x))
+  #   
+  #   if(is.null(weight)==F) {
+  #     if(is.na(weight)==F) weight<-x[,weight]
+  #     else weight<-c(rep(1,nrow(df)))} 
+  #   if(is.null(weight)==T) weight<-c(rep(1,nrow(df)))
+  #   
+  #   ### normalize the weight
+  #   weight<- weight/(sum(weight)/nrow(x))
+  #   
+  #   if(is.null(strata)==F){
+  #     if (is.na(strata)==F) strata<-x[,strata]
+  #     else strata<-NULL
+  #   }
+  #   
+  #   
+  #   
+  # 
+  #   df_weighted<- survey::svydesign(id      = ID,
+  #                                   strata  = strata,
+  #                                   weights = weight,
+  #                                   nest    = FALSE,
+  #                                   data    = x)
+  # 
+  #   # insertform<-paste("~",colnames(x[1]))
+  #   # for (i in 2:(length(x))) {
+  #   #   insertform<-paste(insertform," + ",colnames(x[i]), collapse = "")
+  #   # }
+  # 
+  # 
+  #   matrix<-jtools::svycor(formula=stats::reformulate(variables), design = df_weighted, na.rm = TRUE,sig.stats=F)
+  #   if(return=="p") matrix2<-jtools::svycor(formula=stats::reformulate(variables), design = df_weighted, na.rm = TRUE,sig.stats=T)
+  #   matrix$cors[matrix$cors==1]<-NA
+  # 
+  #   if(return=="r") return(matrix$cors)
+  #   if(return=="p") return(matrix2$p.values)
+  # }
 
   ############################
   ### equalize data frames ###
@@ -93,6 +94,7 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
   if (is.null(weight)==F) df2<-df[,c(colnames(df2),weight)]
   if (is.null(ID)==F) df2<-df[,c(colnames(df2),ID)]
   if (is.null(strata)==F) df2<-df[,c(colnames(df2),strata)]
+  if (is.null(adjustment_vars)==F)df2<-df[,c(colnames(df2),adjustment_vars)]
 
   if (is.null(weight_bench)==F) benchmark2<-benchmark[,c(colnames(benchmark2),weight_bench)]
   if (is.null(ID_bench)==F) benchmark2<-benchmark[,c(colnames(benchmark2),ID_bench)]
@@ -103,6 +105,7 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
   ### Build correlation matrices
   if(remove_nas=="all") df2<-stats::na.omit(df2)
   df<-df2
+  
   if (is.null(weight)==FALSE & is.null(ID)==FALSE) {
     df[,weight]<-NULL
     df[,ID]<-NULL
@@ -141,6 +144,7 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
       if (is.null(variables)) vars<- colnames(df)
       
       
+      
       rcorr_object[[1]]<-rcorr_object[[1]][rownames(rcorr_object[[1]]) %in% vars, colnames(rcorr_object[[1]]) %in% vars]
       rcorr_object[[2]]<-rcorr_object[[2]][rownames(rcorr_object[[2]]) %in% vars, colnames(rcorr_object[[2]]) %in% vars]
       rcorr_object[[3]]<-rcorr_object[[3]][rownames(rcorr_object[[3]]) %in% vars, colnames(rcorr_object[[3]]) %in% vars]
@@ -151,10 +155,12 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
     
     benchmark<-fit_cor(benchmark,df=df,variables = variables)
     df2<-df[,colnames(benchmark[[1]])]
+
     
     if (is.null(weight)==F) df2<-df[,c(colnames(df2),weight)]
     if (is.null(ID)==F) df2<-df[,c(colnames(df2),ID)]
     if (is.null(strata)==F) df2<-df[,c(colnames(df2),strata)]
+    if (is.null(adjustment_vars)==F) df2<-df[,c(colnames(df2),adjustment_vars)]
     
     
     if(remove_nas=="all") df2<-stats::na.omit(df2)
@@ -171,6 +177,10 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
     }
     
   }
+  
+  ###########################
+  ### Type of correlation ###
+  ###########################
 
   if(corrtype=="r") corrtype<-"pearson"
   
@@ -184,53 +194,93 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
   
   
   
-  cor_matrix_df <- Hmisc::rcorr(as.matrix(df), type = corrtype)
-  if (is.null(weight)==FALSE & is.null(ID)==FALSE) cor_matrix_df<- weighted_correlation(df2,weight=weight,ids=ID,stratas=strata,
-                                                                                        variables=colnames(df), remove_nas=remove_nas,
-                                                                                        nboots = nboots)
+  ###############################################
+  ### Get correlation matrix of the Benchmark ###
+  ###############################################
   
-  
-  # if (is.null(weight)==FALSE & is.null(ID)==FALSE) cor_matrix_df$r<- weighted_cor(df2, weight , ID=ID, strata = strata, return="r")
-  # if (is.null(weight)==FALSE & is.null(ID)==FALSE) cor_matrix_df[[3]]<- weighted_cor(df2, weight , ID=ID, strata = strata, return="p")
-  cor_matrix_df$r[cor_matrix_df$r=="NaN"]<-NA
-  cor_matrix_df[[3]][cor_matrix_df[[3]]=="NaN"]<-NA
-
   if (inherits(benchmark,"data.frame")) {
-  cor_matrix_bench <- Hmisc::rcorr(as.matrix(benchmark), type = corrtype)
-  if (is.null(weight_bench)==FALSE & is.null(ID_bench)==FALSE) cor_matrix_bench<- weighted_correlation(benchmark2,weight=weight_bench,
-                                                                           ids=ID_bench,stratas=strata_bench,
-                                                                           variables=colnames(benchmark),remove_nas = remove_nas ,
-                                                                           nboots = 0, parallel = parallel)
-  # if (is.null(weight_bench)==FALSE & is.null(ID_bench)==FALSE)cor_matrix_bench$r<-
-  #   weighted_cor(benchmark2, weight_bench , ID=ID_bench, strata = strata_bench, return = "r")
-  # if (is.null(weight_bench)==FALSE & is.null(ID_bench)==FALSE)cor_matrix_bench[[3]]<-
-  #     weighted_cor(benchmark2, weight_bench , ID=ID_bench, strata = strata_bench, return = "p")
-  cor_matrix_bench$r[cor_matrix_bench$r=="NaN"]<-NA
-  cor_matrix_bench[[3]][cor_matrix_bench[[3]]=="NaN"]<-NA
+    cor_matrix_bench <- Hmisc::rcorr(as.matrix(benchmark), type = corrtype)
+    
+    if (is.null(weight_bench)==FALSE & is.null(ID_bench)==FALSE) 
+      cor_matrix_bench<- weighted_correlation(benchmark2,weight=weight_bench,
+                                               ids=ID_bench,stratas=strata_bench,
+                                               variables=colnames(benchmark),remove_nas = remove_nas ,
+                                               nboots = 0, parallel = parallel,
+                                               corrtype=corrtype,bench=T)
+    
+    #return(cor_matrix_bench)##
+    ###
+    gc()
+    #rm(df2)
+    # if (is.null(weight_bench)==FALSE & is.null(ID_bench)==FALSE)cor_matrix_bench$r<-
+    #   weighted_cor(benchmark2, weight_bench , ID=ID_bench, strata = strata_bench, return = "r")
+    # if (is.null(weight_bench)==FALSE & is.null(ID_bench)==FALSE)cor_matrix_bench[[3]]<-
+    #     weighted_cor(benchmark2, weight_bench , ID=ID_bench, strata = strata_bench, return = "p")
+    #cor_matrix_bench$r[cor_matrix_bench$r=="NaN"]<-NA
+    #cor_matrix_bench[[3]][cor_matrix_bench[[3]]=="NaN"]<-NA
   }
-  
   
   if (inherits(benchmark,"data.frame")==F) cor_matrix_bench<-benchmark
   
+  
+  
+  ####################################
+  ### Get correlation matrix of df ###
+  ####################################
+  
+  cor_matrix_df <- Hmisc::rcorr(as.matrix(df), type = corrtype)
+  if ((is.null(weight)==FALSE & is.null(ID)==FALSE) |is.null(adjustment_vars)==F | nboots>0){
+    
+    cor_matrix_df<- weighted_correlation(df2,weight=weight,ids=ID,stratas=strata,
+                                          variables=colnames(cor_matrix_bench[[1]]), remove_nas=remove_nas,
+                                          nboots = nboots, adjustment_vars=adjustment_vars,
+                                          raking_targets=raking_targets, 
+                                          post_targets=post_targets,
+                                          adjustment_weighting=adjustment_weighting,
+                                          cor_matrix_bench=cor_matrix_bench,
+                                          parallel=parallel,
+                                          corrtype=corrtype,bench=F)}
+  
+  
+  
+  #return(cor_matrix_df)###
+  # if (is.null(weight)==FALSE & is.null(ID)==FALSE) cor_matrix_df$r<- weighted_cor(df2, weight , ID=ID, strata = strata, return="r")
+  # if (is.null(weight)==FALSE & is.null(ID)==FALSE) cor_matrix_df[[3]]<- weighted_cor(df2, weight , ID=ID, strata = strata, return="p")
+  cor_matrix_df$r[cor_matrix_df$r=="NaN"]<-NA
+  cor_matrix_df$r[cor_matrix_bench$r=="NaN"]<-NA
+  cor_matrix_df[[3]][cor_matrix_df[[3]]=="NaN"]<-NA
+
 
   
   
-  fischer_cor_df<- psych::fisherz(cor_matrix_df$r)
-  fischer_cor_bench<- psych::fisherz(cor_matrix_bench$r)
 
-  fischer_z_test<-psych::paired.r(cor_matrix_df$r,cor_matrix_bench$r,n=cor_matrix_df$n, n2=cor_matrix_bench$n)
+  
+  
+   
+  
+  fischer_cor_df<- suppressWarnings(psych::fisherz(cor_matrix_df$r))
+  fischer_cor_bench<- suppressWarnings(psych::fisherz(cor_matrix_bench$r))
+  
+  
+  
+  fischer_z_test<-suppressWarnings(psych::paired.r(cor_matrix_df$r,cor_matrix_bench$r,n=cor_matrix_df$n, n2=cor_matrix_bench$n))
+  fischer_z_test$p[round(cor_matrix_df$r,digits=3) %in%"-1" & round(cor_matrix_bench$r,digits=3) %in% "-1"]<-1
   fischer_z_test$p[fischer_z_test$p=="NaN"]<-NA
-
+  if(is.null(cor_matrix_df$p_diff)==F) fischer_z_test$p<-cor_matrix_df$p_diff
   p_value= ifelse(is.null(p_value),0.05,p_value)
 
   ### implement p_adjustments if needed ###
-  if (is.null(p_adjust)==F) {
-    if (p_adjust!=F) fischer_z_test$p<- matrix(stats::p.adjust(p = fischer_z_test$p, method = p_adjust),
-                                                      ncol = ncol(fischer_z_test$p))}
+  
+  for (i in 1:nrow(fischer_z_test$p)){
+  if (is.null(p_adjust)==F){ 
+    if (p_adjust!=F) fischer_z_test$p[i,]<- matrix(stats::p.adjust(p = fischer_z_test$p[i,], 
+                                                                   method = p_adjust,
+                                                                   n = ncol(fischer_z_test$p)),
+                                                      ncol = ncol(fischer_z_test$p))}}
 
 
 
-
+  
   ### Compute Comparison Matrix
   comp_matrix<-fischer_cor_df
   comp_matrix[comp_matrix=="Inf"]<-NA
@@ -268,6 +318,13 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
     if (length(breaks)>3) diff_summary<-paste (diff_summary, "\n",breaks[4], " :", (round(percental_difference_b4, digits = 3)*100),"%")
   }
 
+  ###########################
+  ### Get X Instead of NA ###
+  ###########################
+  
+  comp_matrix[lower.tri(comp_matrix) & is.na(comp_matrix)]<-"X"
+  #return(comp_matrix)###
+  
   ###########################
   # prepare data for ggplot
   ###########################
@@ -370,7 +427,10 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
 
 
   if (diff_perc==T) {
-    comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes( x = Inf, y = Inf, hjust = 1, vjust = 1), data = diff_summary,
+    comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = rep(Inf,length(label)), 
+                                                                           y = rep(Inf,length(label)), 
+                                                                           hjust = rep(1,length(label)), 
+                                                                           vjust = rep(1,length(label))), data = diff_summary,
                                                              label=diff_summary$label,
                                                              fill = ggplot2::alpha("white", perc_diff_transparance), 
                                                              color = ggplot2::alpha("black", 1), size= diff_perc_size)}
@@ -402,45 +462,50 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
 #'
 #' @param dfs A character vector containing the names of data frames to compare against the
 #' benchmarks.
-#' @param benchmarks A character vector containing the names of benchmarks to compare the
-#' data frames against, or the names of a list. If it is a list, it has to be of the form,
-#' as the output of \link[Hmisc]{rcorr}, with a pearson's r matrix in the first position, a 
-#' n matrix (matrix of n for every correlation) in the second position and a P matrix in the 
-#' third position. The vector must either to be the same length as \code{dfs}, or length 1. 
-#' If it has length 1 every survey will be compared against the same benchmark. 
-#' @param variables A character vector containing the names of the variables for the comparison.
-#' If NULL, all variables named similar in both the dfs and the benchmarks will be compared.
-#' Variables missing in one of the data frames or the benchmarks will be neglected for this comparison.
+#' @param benchmarks A character vector containing the names of benchmarks to 
+#' compare the data frames against, or the names of a list. If it is a list, it 
+#' has to be of the form, as the output of \link[Hmisc]{rcorr}, with a 
+#' Pearson's r matrix in the first position, a n-matrix (matrix of n for every 
+#' correlation) in the second position and a p-matrix in the third position. 
+#' The vector must either be the same length as \code{dfs}, or length 1. If it 
+#' has length one every survey will be compared against the same benchmark. 
+#' @param variables A character vector containing the names of the variables for 
+#' the comparison. If NULL, all variables named similarly in both the \code{dfs} 
+#' and the benchmarks will be compared.Variables missing in one of the data 
+#' frames or the benchmarks will be neglected for this comparison.
 #' @param plot_title A character string containing the title of the plot.
-#' @param plots_label A character string or vector of character strings containing the new
-#' names of the data frames , also used in plot.
-#' @param data If TRUE, a biv_compare object is returned, containing results of the
-#' comparison.
+#' @param plots_label A character string or vector of character strings 
+#' containing the new names of the data frames that is used in the plot.
+#' @param data If TRUE, a biv_compare object is returned, containing the results 
+#' of the comparison.
 #' @param id_bench,id A character vector determining id variables used to weight
 #' the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package. They have
 #' to be part of the respective data frame. If less characters strings are provided,
 #' than in \code{dfs}, the first input is used to weight every df or benchmark, where no input 
 #' is provided.
 #' @param weight_bench,weight A character vector determining variables to weight
-#' the \code{dfs} of \code{benchmarks}. They have to be part of the respective data frame.
-#' If less characters strings are provided, than in \code{dfs}, the first input is used 
-#' to weight every df or benchmark, where no input is provided. If a weight variable is 
-#' provided also an id variable is needed. For weighting, the \code{survey} package is used.
-#' @param strata,strata_bench A character vector determining strata variables used to
-#' weight the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package.
-#' They have to be part of the respective data frame. If less characters strings are provided,
-#' than in \code{dfs}, the first input is used to weight every df or benchmark, where no input 
-#' is provided.
+#' the \code{dfs} of \code{benchmarks}. They have to be part of the respective 
+#' data frame. If fewer characters strings are provided, than in \code{dfs}, 
+#' the first input is used to weight every df or benchmark, where no input is 
+#' provided. If a weight variable is provided also an id variable is needed. 
+#' For weighting, the \code{survey} package is used.
+#' @param strata,strata_bench A character vector determining strata variables 
+#' that is used to weight the \code{dfs} or \code{benchmarks} with the help of 
+#' the \code{survey} package. It has to be part of the respective data frame. 
+#' If fewer characters strings are provided, than in \code{dfs}, the first input 
+#' is used to weight every df or benchmark, where no input is provided.
 #' @param p_value A number between zero and one to determine the maximum significance niveau.
-#' @param varlabels A character string or vector of character strings containing the new
-#' names of variables, also used in plot.
+#' @param varlabels A character string or vector of character strings containing 
+#' the new names of variables that is used in the plot.
 #' @param mar A vector that determines the margins of the plot.
-#' @param note If note = True, a note will be displayed to describe the Plot.
-#' @param p_adjust Can be either TRUE or a character string indicating a adjustment method.
-#' If p_adjust=T the p_values will be adjusted with the Bonferroni adjustment method, by default,
-#' to account for the problem of multiple comparisons. All adjustment methods available
-#' in \code{\link{p.adjust}} can be used here, with the same character strings.
-#' @param grid Grid determines the color of the lines between the tiles of the heatmap.
+#' @param note If note = True, a note will be displayed to describe the plot.
+#' @param p_adjust Can be either TRUE or a character string indicating an 
+#' adjustment method.If p_adjust=T the p_values will be adjusted with the 
+#' Bonferroni adjustment method, by default,to account for the problem of 
+#' multiple comparisons. All adjustment methods available in 
+#' \code{\link{p.adjust}} can be used here, with the same character strings.
+#' @param grid A color string, that determines the color of the lines between 
+#' the tiles of the heatmap.
 #' @param diff_perc If true a percental difference between surveys and benchmarks is
 #' displayed in the plot.
 #' @param diff_perc_size A number to determine the size of the displayed percental
@@ -449,27 +514,37 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
 #' percental difference between surveys in the plot.
 #' @param gradient If gradient = TRUE, colors in the heatmap will be more or less
 #' transparent, depending on the difference in Pearson's r of the data frames of comparison.
-#' @param sum_weights A vector containing information for every variable to weight them in
-#' the displayed percental difference calculation. It can be used if some variables are over-
-#' or underrepresented in the analysis.
-#' @param legend_show_x If true the X will be shown in the legend. At the moment, das does
-#' not yet work correctly.
+#' @param sum_weights A vector containing information for every variable to 
+#' weigh them in the displayed percental-difference calculation. It can be used 
+#' if some variables are over- or underrepresented in the analysis.
 #' @param order A character vector to determine in which order the variables should be
 #' displayed in the plot.
-#' @param breaks A vector to label the color scheme in the in the legend.
+#' @param breaks A vector to label the color scheme in the legend.
 #' @param colors A vector to determine the colors in the plot.
 #' @param corrtype A character string, indicating the type of the bivariate correlation. 
 #' It can either be "r" for Pearson's r or "rho" for Spearman's "rho". At the moment,
 #' rho is only applicable to unweighted data.
 #' @param missings_x If TRUE, missing pairs in the plot will be marked with an X.
-#' @param remove_nas A character string, that indicates how missing should be removed, can either be
-#' "all", two remove all cases that contain NA in any of the variables, or "pairwise", to remove nas
-#' seperately for every variable pair when calculating Pearson's r
-#' @param ncol_facet Number of colomns used in faced_wrap() for the plots.
+#' @param remove_nas A character string, that indicates how missing should be 
+#' removed, can either be "all", two remove all cases that contain NA in any 
+#' of the variables, or "pairwise", to remove NAs separately for every variable 
+#' pair when calculating Pearson's r
+#' @param ncol_facet Number of columns used in faced_wrap() for the plots.
 #' @param nboots A numeric value indicating the number of bootstrap replications. 
-#' If nboots = 0 no bootstrapping will be performed. Else nboots must be >2. Note, 
-#' that bootstraping can be very computational heavy and can therefore take a while.
-#' @param parallel If True, all detected cors will be used to in bootstrapping.
+#' If nboots = 0 no bootstrapping will be performed. Else nboots must be >2. 
+#' Note, that bootstrapping can be very computational heavy and can therefore 
+#' take a while.
+#' @param parallel Can be either FALSE, or a number of cores that should be used 
+#' in the function. If FALSE, only one core will be used otherwise the given 
+#' number of cores.
+#' @param adjustment_vars Variables used to adjust the survey when using raking 
+#' or post stratification.
+#' @param raking_targets A List of raking targets that can be given to the rake 
+#' function of \code{\link[survey]{rake}}, to rake the dfs
+#' @param post_targets A List of post_stratification targets that can be given to the rake 
+#' function of \code{\link[survey]{postStratify}}, to post_stratificatify the dfs
+#' @param adjustment_weighting A character vector indicating if adjustment 
+#' weighting should be used. it can either be "raking" or "post_start".
 #'
 #' @return A object generated with the help of [ggplot2::ggplot2()], used to visualize
 #' the differences between the data frames and benchmarks. If data = T instead of the plot
@@ -492,6 +567,7 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
 #' @examples
 #' 
 #' ## Get Data for comparison
+#' require(wooldridge)
 #' card<-wooldridge::card
 #' 
 #' south <- card[card$south==1,]
@@ -506,18 +582,20 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
 #'                                    data=FALSE)
 #' bivar_comp
 #' 
-# #' @importFrom jtools svycor
+#' 
 #' @export
 
-biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = FALSE,
+biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = T,
                        id=NULL,weight=NULL, strata=NULL,  id_bench=NULL,
                        weight_bench=NULL, strata_bench=NULL, p_value=NULL,
                        p_adjust=NULL, varlabels=NULL, plot_title=NULL, plots_label=NULL,
                        diff_perc=T, diff_perc_size=4.5, perc_diff_transparance=0,  
                        note=F, order=NULL,  breaks=NULL, colors=NULL,  
                        mar = c(0,0,0,0), grid="white", gradient=F,sum_weights= NULL ,missings_x=T, 
-                       legend_show_x=F,remove_nas="pairwise", ncol_facet=3, nboots=0,
-                       parallel = F){
+                       remove_nas="pairwise", ncol_facet=3, nboots=0,
+                       parallel = F, adjustment_weighting="raking",
+                       adjustment_vars=NULL,raking_targets=NULL,
+                       post_targets=NULL){
 
 
 
@@ -562,6 +640,7 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = FAL
       curr_id <- id[i]
       curr_weight<- weight[i]}
       if (is.null(strata)==F) {if (is.na(strata[i])==F) curr_strata<- strata[i]}}
+    
 
     if (is.null(weight_bench)==F){
       if (is.na(weight_bench[i])==F) {
@@ -570,7 +649,7 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = FAL
       if (is.null(strata_bench)==F) {if (is.na(strata_bench[i])==F) curr_strata_bench<- strata_bench[i]}}
 
 
-    
+
 
     if (is.null(weight)==F) {
       if (is.na(weight[i])) {
@@ -585,8 +664,8 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = FAL
 
     if (is.null(weight_bench)==F){
       if (is.na(weight_bench[i])) {
-        curr_id <- NULL
-        curr_weight<- NULL
+        curr_id_bench <- NULL
+        curr_weight_bench<- NULL
         if (is.null(strata_bench)==F) {if(is.na(strata_bench[i])) curr_strata_bench<-NULL}}}
 
     if (is.null(weight_bench)){
@@ -601,21 +680,26 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = FAL
                                strata = curr_strata, strata_bench = curr_strata_bench,
                                p_value=p_value, varlabels=varlabels, note=note,p_adjust=p_adjust, gradient=T,
                                data = T, breaks=breaks,remove_nas=remove_nas, nboots = nboots,
-                               parallel = parallel)
+                               parallel = parallel, adjustment_weighting=adjustment_weighting,
+                               adjustment_vars=adjustment_vars[[i]],
+                               raking_targets=raking_targets[[i]],
+                               post_targets=post_targets[[i]])
+    print(paste("survey",i,"of",length(dfs),"is compared"))
     
-    
-   
+    #return(help[[i]])###
     help[[i]][[1]]$samp<-i
     if (is.null(plots_label)) help[[i]][[1]]$samp_name<-dfs[i]
     if (is.null(plots_label)==F) help[[i]][[1]]$samp_name<-plots_label[i]
 
-
+    
     if (is.null(plot_list)==F) {
       plot_list[[1]]<-rbind(plot_list[[1]],help[[i]][[1]])
       plot_list[1+i]<-help[[i]][2]
     }
 
+    
     if(is.null(plot_list)) plot_list <- help[[i]]
+    
 
 
   }
@@ -659,7 +743,6 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = FAL
   ##########################
   
   plot_list[[1]]<-empty_finder(plot_list[[1]],plots_label)
-  
   
   ################################
   ### change color of the grid ###
@@ -711,6 +794,7 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = FAL
   ##############################
   ###    order variables     ###
   ##############################
+  if (is.null(order) & is.null(variables)==F) order<-variables[variables %in% unique(plot_list[[1]]$x)]
   if (is.null(order)==F) plot_list[[1]]$x<-factor(plot_list[[1]]$x, levels =order)
   if (is.null(order)==F) plot_list[[1]]$y<-factor(plot_list[[1]]$y, levels = order)
 
@@ -721,10 +805,14 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = FAL
   variables_in<-unique(plot_list[[1]]$x)
   if (is.null(varlabels)) varlabels<- unique(plot_list[[1]]$x)
   if (length(varlabels)<length(variables_in)) varlabels<-c(varlabels,variables_in[(length(varlabels)+1):length(variables_in)])
-
-
+  if(length(varlabels)==length(variables)) varlabels<-varlabels[variables %in% unique(plot_list[[1]]$x)]
   
-
+  #return(list(variables,varlabels,unique(plot_title[[1]]$x)))
+  plot_list[[1]]<-plot_list[[1]] |> 
+    dplyr::mutate(x=forcats::fct_recode(x, !!! setNames(order, varlabels)),
+           y=forcats::fct_recode(y, !!! setNames(order, varlabels)))
+  
+  
   
   ####################
   ### Build a Note ###
@@ -805,7 +893,7 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = FAL
                                                               ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
     #ggplot2::geom_point(data= subset(plot_list[[1]], value=="X"), ggplot2::aes(x = y, y = x), show.legend = T)+
     {if (missings_x==T) 
-      ggplot2::geom_point(show.legend = legend_show_x, na.rm = T, ggplot2::aes(shape= factor(plot_list[[1]]$shape, levels="X", labels=c("Missing"))))}+
+      ggplot2::geom_point(show.legend = F, na.rm = T, ggplot2::aes(shape= factor(plot_list[[1]]$shape, levels="X", labels=c("Missing"))))}+
     ggplot2::coord_fixed()+
     ggplot2::scale_fill_manual(values= colors, name="", na.translate = FALSE)+
     ggplot2::scale_y_discrete(name="", limits = rev(levels(plot_list[[1]]$x)), labels= varlabels, breaks=unique(plot_list[[1]]$x))+
@@ -845,231 +933,230 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = FAL
 
 
 
-
-#' Plot Comparison of Multiple Data Frames on a Bivariate Level
-#'
-#' Plot a object generated by \link{biv_compare} function.
-#' @param biv_data_object A object generated by \link{biv_compare} function.
-#' @param plot_title A character string containing the title of the plot.
-#' @param plots_label A character string or vector of character strings containing the
-#' new names of the data frames , also used in plot.
-#' @param p_value A number between 0 and one to determine the maximum significance niveau.
-#' @param varlabels A character string or vector of character strings containing the new
-#' names of variables, also used in plot.
-#' @param mar A vector that determines the margins of the plot.
-#' @param note If note = True, a note will be displayed to describe the Plot.
+# #' Plot Comparison of Multiple Data Frames on a Bivariate Level
+# #'
+# #' Plot a object generated by \link{biv_compare} function.
+# #' @param biv_data_object A object generated by \link{biv_compare} function.
+# #' @param plot_title A character string containing the title of the plot.
+# #' @param plots_label A character string or vector of character strings containing the
+# #' new names of the data frames , also used in plot.
+# #' @param p_value A number between 0 and one to determine the maximum significance niveau.
+# #' @param varlabels A character string or vector of character strings containing the new
+# #' names of variables, also used in plot.
+# #' @param mar A vector that determines the margins of the plot.
+# #' @param note If note = True, a note will be displayed to describe the Plot.
 # #' @param p_adjust Can be either TRUE or a character string indicating a adjustment method.
 # #' If p_adjust=T the p_values will be adjusted with the Bonferroni adjustment method, by default,
 # #' to account for the problem of multiple comparisons. All adjustment methods available
 # #' in \code{\link{p.adjust}} can be used here, with the same character strings.
-#' @param grid Grid determines the color of the lines between the tiles of the heatmap.
-#' @param diff_perc If TRUE a percental measure of difference between dfs and benchmarks is
-#' displayed in the plot.
-#' @param diff_perc_size A number to determine the size of the displayed percental
-#' difference between surveys in the plot.
-#' @param perc_diff_transparance A number to determine the transparancy of the displayed
-#' percental difference between surveys in the plot.
-#' @param gradient If gradient = TRUE, colors in the heatmap will be more or less transparent,
-#' depending on the difference in Pearson's r of the data frames of comparison.
-#' @param sum_weights A vector containing information for every variable to weight them in
-#' the displayed percental difference calculation. It can be used if some variables are
-#' over- or underrepresented in the analysis.
-#' @param legend_show_x If true the X will be shown in the legend. At the moment, das
-#' does not yet work correctly.
-#' @param order A character vector to determine in which order the variables should be
-#' displayed in the plot.
-#' @param breaks A vector to label the color sheme in the in the legend.
-#' @param colors A vector to determine the colors in the plot.
-#' @param missings_x If TRUE, missing pairs in the plot will be marked with an X.
-#' @param ncol_facet Number of colomns used in faced_wrap() for the plots.
-#'
-#' @return A object generated with the help of [ggplot2::ggplot2()], used to visualize
-#' the differences between the data frames and benchmarks.
-#' @details The plot shows a heatmap of a correlation matrix, where the colors are determined by
-#' the similarity of the Pearson's r value in both sets of respondents. Leaving 
-#' default breaks and colors,
-#' * \code{Same} (green) indicates, that the Pearson's r correlation is not significant > 0 in
-#' the related data frame or benchmark or the Pearson's r correlations are not significant
-#' different, between data frame and benchmark.
-#' * \code{Small Diff} (yellow) indicates that the Pearson's r
-#' correlation is significant > 0 in the related data frame or benchmark and the Pearson's r
-#' correlations are significant different, between data frame and benchmark.
-#' * \code{Large Diff} (red) indicates, that the same coditions of yellow are fulfilled, and
-#' the correlations are either in opposite directions,or one is double the size of the other.
-#'
-#' @examples
-#' 
-#' ## Get Data for comparison
-#' card<-wooldridge::card
-#' 
-#' south <- card[card$south==1,]
-#' north <- card[card$south==0,]
-#' black <- card[card$black==1,]
-#' white <- card[card$black==0,]
-#' 
-#' ## use the function to plot the data 
-#' bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
-#'                                    benchmarks = c("south","black"),
-#'                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
-#'                                    data=TRUE)
-#'                         
-#' sampcompR::plot_biv_compare(bivar_data)
-#'
-#' @export
-
-
-plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
-                            p_value=NULL, varlabels=NULL,
-                            mar = c(0,0,0,0),note=F, grid="white",diff_perc=T,
-                            diff_perc_size=4.5,perc_diff_transparance=0,gradient=F,sum_weights= NULL,
-                            missings_x = T, legend_show_x=F, order=NULL, breaks=NULL,colors=NULL,
-                            ncol_facet = 3){
-
-
-
-  plot_list<- biv_data_object
-  if(is.null(colors)==T) colors=plot_list$colors
-  if (is.null(breaks)) breaks<-plot_list$breaks
-
-
-  ##########################################
-  ### Calculate percentage of difference ###
-  ##########################################
-
-  if(diff_perc==T) {
-
-    summary_df<-difference_summary(plot_list[[1]],breaks=breaks, sum_weights=sum_weights)
-  }
-
-  ################################
-  ### change color of the grid ###
-  ################################
-
-  if (grid!="white"){ # create a matrix for NA, to exclude from grid
-
-    ### buid a df where no grid shall be set ###
-    na_df<-plot_list[[1]][is.na(plot_list[[1]]$value),]
-
-    ### build a df, where the diagonal is.
-    plot_df2<-plot_list[[1]]
-    names_var<-as.character(unique(plot_df2$x))
-    names_var<-c(names_var,names_var[1])
-    plot_df2$value[is.na(plot_df2$value)]<- "not_edge"
-
-
-
-    for (i in 1:length(names_var)){
-      plot_df2$value[plot_df2$x==names_var[i+1] & plot_df2$y==names_var[i]]<-NA
-    }
-
-    edge_df<- plot_df2[is.na(plot_df2$value),]
-  }
-
-
-
-  #######################################
-  ### reorder plots to original order ###
-  #######################################
-
-  #if (is.null(plots_label)) plot_list[[1]]$samp_name <- factor(plot_list[[1]]$samp_name, levels = unique(plot_list[[1]]$samp_name))
-  #if (is.null(plots_label)==F) plot_list[[1]]$samp_name <- factor(plot_list[[1]]$samp_name, levels = plots_label)
-  if (is.null(plots_label)) plots_label <- plot_list$plots_label
-  if(length(plots_label)< length(plot_list$plots_label)) plots_label[(length(plots_label)+1):length(plot_list$plots_label)]<-
-      plot_list$plots_label[(length(plots_label)+1):length(plot_list$plots_label)]
-  
-
-  breaks2<-c(breaks,"X")
-  colors2<-c(colors, "white")
-
-  plot_list[[1]]$shape<-NA
-  plot_list[[1]]$shape[plot_list[[1]]$value=="X"]<-"X"
-  
-  
-  labellist_biv<-function(lables,values){
-    output<-lables
-    names(output)<-as.character(values)
-    output
-  }
-  
-  
-  labellist<-labellist_biv(plots_label,c(1:length(plots_label)))
-  
-
-  ##############################
-  ###    order variables     ###
-  ##############################
-  if (is.null(order)==F) plot_list[[1]]$x<-factor(plot_list[[1]]$x, levels =order)
-  if (is.null(order)==F) plot_list[[1]]$y<-factor(plot_list[[1]]$y, levels = order)
-
-  ##############################
-  ###     Label variables    ###
-  ##############################
-
-  variables_in<-unique(plot_list[[1]]$x)
-  if (is.null(varlabels)) varlabels<- unique(plot_list[[1]]$x)
-  if (length(varlabels)<length(variables_in)) varlables<-c(varlabels,variables_in[(length(varlabels)+1):length(variables_in)])
-  
-  # ########################
-  # ### edit plots_label ###
-  # ########################
-  # 
-  # if (is.null(plots_label)) plots_label<-"dfs"
-  # if (length(plots_label)<length(unique(plot_list[[1]]$samp_name))) plots_label<-c(plots_label,unique(plot_list[[1]]$samp_name)[(length(plots_label)+1:length(unique(plot_list[[1]]$samp_name)))])
-  # 
-
-  ######################
-  ###     Plots      ###
-  ######################
-
-  comparison_plot<-
-    ggplot2::ggplot(plot_list[[1]], ggplot2::aes(x = plot_list[[1]]$y, y = plot_list[[1]]$x)) +
-    {if (gradient==T) ggplot2::aes(alpha= gradient)}+
-    {if (grid != "none") ggplot2::geom_tile(colour= grid, lwd =1,linetype=1,
-                                            ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
-    {if (grid == "none") ggplot2::geom_tile(ggplot2::aes( fill = factor(plot_list[[1]]$value, levels = breaks)))}+
-    {if (grid != "white" & grid != "none") ggplot2::geom_tile(data = na_df, colour = "white", lwd=1,linetype=1,
-                                                              ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
-    {if (grid != "white" & grid != "none") ggplot2::geom_tile(data = edge_df, colour = grid, lwd=1,linetype=1,
-                                                              ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
-    #ggplot2::geom_point(data= subset(plot_list[[1]], value=="X"), ggplot2::aes(x = y, y = x), show.legend = T)+
-    {if(missings_x==T) 
-      ggplot2::geom_point(show.legend = legend_show_x, na.rm = T, ggplot2::aes(shape= factor(plot_list$shape, levels="X", labels=c("Missing"))))}+
-    ggplot2::coord_fixed()+
-    ggplot2::scale_fill_manual(values= colors, name="", na.translate = FALSE)+
-    ggplot2::scale_y_discrete(name="", limits = rev(levels(plot_list[[1]]$x)), labels= varlabels, breaks=unique(plot_list[[1]]$x))+
-    ggplot2::scale_x_discrete(name="", limits = levels(plot_list[[1]]$y), labels= varlabels, breaks=unique(plot_list[[1]]$y))+
-    ggplot2::scale_shape_manual(name="", values = c("Missing"=4))+
-    ggplot2::theme_classic()+
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.33, hjust=0),
-                   axis.text.y = ggplot2::element_text(vjust = 0.33, hjust=0),
-                   axis.title.x= ggplot2::element_blank(),
-                   axis.title.y= ggplot2::element_blank(),
-                   plot.margin = grid::unit(mar, "cm"),
-                   plot.caption=ggplot2::element_text(hjust = 0))+
-    ggplot2::ggtitle(plot_title)+
-    ggplot2::guides(alpha="none",
-                    fill  = ggplot2::guide_legend(order = 1),
-                    shape = ggplot2::guide_legend(order = 2))+
-    ggplot2::facet_wrap(~ samp, labeller = ggplot2::labeller(samp = labellist),ncol = ncol_facet)
-
-  if(note==T) comparison_plot<-comparison_plot + ggplot2::labs(caption = plot_list$note_text)
-
-
-  if (diff_perc==T) {
-    comparison_plot <- comparison_plot + ggplot2::geom_label(x=Inf, y=Inf,
-                                                             ggplot2::aes(  hjust = 1, vjust = 1), data=summary_df,
-                                                             label = summary_df$label,
-                                                             fill = ggplot2::alpha("white", perc_diff_transparance),
-                                                             color = ggplot2::alpha("black", 1), size= diff_perc_size, show.legend = F)}
-
-
-
-
-  
-    return (comparison_plot)
-
-}
-
+# #' @param grid Grid determines the color of the lines between the tiles of the heatmap.
+# #' @param diff_perc If TRUE a percental measure of difference between dfs and benchmarks is
+# #' displayed in the plot.
+# #' @param diff_perc_size A number to determine the size of the displayed percental
+# #' difference between surveys in the plot.
+# #' @param perc_diff_transparance A number to determine the transparancy of the displayed
+# #' percental difference between surveys in the plot.
+# #' @param gradient If gradient = TRUE, colors in the heatmap will be more or less transparent,
+# #' depending on the difference in Pearson's r of the data frames of comparison.
+# #' @param sum_weights A vector containing information for every variable to weight them in
+# #' the displayed percental difference calculation. It can be used if some variables are
+# #' over- or underrepresented in the analysis.
+# #' @param legend_show_x If true the X will be shown in the legend. At the moment, das
+# #' does not yet work correctly.
+# #' @param order A character vector to determine in which order the variables should be
+# #' displayed in the plot.
+# #' @param breaks A vector to label the color sheme in the in the legend.
+# #' @param colors A vector to determine the colors in the plot.
+# #' @param missings_x If TRUE, missing pairs in the plot will be marked with an X.
+# #' @param ncol_facet Number of colomns used in faced_wrap() for the plots.
+# #'
+# #' @return A object generated with the help of [ggplot2::ggplot2()], used to visualize
+# #' the differences between the data frames and benchmarks.
+# #' @details The plot shows a heatmap of a correlation matrix, where the colors are determined by
+# #' the similarity of the Pearson's r value in both sets of respondents. Leaving 
+# #' default breaks and colors,
+# #' * \code{Same} (green) indicates, that the Pearson's r correlation is not significant > 0 in
+# #' the related data frame or benchmark or the Pearson's r correlations are not significant
+# #' different, between data frame and benchmark.
+# #' * \code{Small Diff} (yellow) indicates that the Pearson's r
+# #' correlation is significant > 0 in the related data frame or benchmark and the Pearson's r
+# #' correlations are significant different, between data frame and benchmark.
+# #' * \code{Large Diff} (red) indicates, that the same coditions of yellow are fulfilled, and
+# #' the correlations are either in opposite directions,or one is double the size of the other.
+# #'
+# #' @examples
+# #' 
+# #' ## Get Data for comparison
+# #' require(wooldridge)
+# #' card<-wooldridge::card
+# #' 
+# #' south <- card[card$south==1,]
+# #' north <- card[card$south==0,]
+# #' black <- card[card$black==1,]
+# #' white <- card[card$black==0,]
+# #' 
+# #' ## use the function to plot the data 
+# #' bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
+# #'                                    benchmarks = c("south","black"),
+# #'                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
+# #'                                    data=TRUE)
+# #'                         
+# #' sampcompR::plot_biv_compare(bivar_data)
+# #'
+# #' @export
+# 
+# 
+# plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
+#                             p_value=NULL, varlabels=NULL,
+#                             mar = c(0,0,0,0),note=F, grid="white",diff_perc=T,
+#                             diff_perc_size=4.5,perc_diff_transparance=0,gradient=F,sum_weights= NULL,
+#                             missings_x = T, legend_show_x=F, order=NULL, breaks=NULL,colors=NULL,
+#                             ncol_facet = 3){
+# 
+# 
+# 
+#   plot_list<- biv_data_object
+#   if(is.null(colors)==T) colors=plot_list$colors
+#   if (is.null(breaks)) breaks<-plot_list$breaks
+#
+# 
+#   ##########################################
+#   ### Calculate percentage of difference ###
+#   ##########################################
+# 
+#   if(diff_perc==T) {
+# 
+#     summary_df<-difference_summary(plot_list[[1]],breaks=breaks, sum_weights=sum_weights)
+#   }
+# 
+#   ################################
+#   ### change color of the grid ###
+#   ################################
+# 
+#   if (grid!="white"){ # create a matrix for NA, to exclude from grid
+# 
+#     ### buid a df where no grid shall be set ###
+#     na_df<-plot_list[[1]][is.na(plot_list[[1]]$value),]
+# 
+#     ### build a df, where the diagonal is.
+#     plot_df2<-plot_list[[1]]
+#     names_var<-as.character(unique(plot_df2$x))
+#     names_var<-c(names_var,names_var[1])
+#     plot_df2$value[is.na(plot_df2$value)]<- "not_edge"
+# 
+# 
+# 
+#     for (i in 1:length(names_var)){
+#       plot_df2$value[plot_df2$x==names_var[i+1] & plot_df2$y==names_var[i]]<-NA
+#     }
+# 
+#     edge_df<- plot_df2[is.na(plot_df2$value),]
+#   }
+# 
+# 
+# 
+#   #######################################
+#   ### reorder plots to original order ###
+#   #######################################
+# 
+#   #if (is.null(plots_label)) plot_list[[1]]$samp_name <- factor(plot_list[[1]]$samp_name, levels = unique(plot_list[[1]]$samp_name))
+#   #if (is.null(plots_label)==F) plot_list[[1]]$samp_name <- factor(plot_list[[1]]$samp_name, levels = plots_label)
+#   if (is.null(plots_label)) plots_label <- plot_list$plots_label
+#   if(length(plots_label)< length(plot_list$plots_label)) plots_label[(length(plots_label)+1):length(plot_list$plots_label)]<-
+#       plot_list$plots_label[(length(plots_label)+1):length(plot_list$plots_label)]
+#   
+# 
+#   breaks2<-c(breaks,"X")
+#   colors2<-c(colors, "white")
+# 
+#   plot_list[[1]]$shape<-NA
+#   plot_list[[1]]$shape[plot_list[[1]]$value=="X"]<-"X"
+#   
+#   
+#   labellist_biv<-function(lables,values){
+#     output<-lables
+#     names(output)<-as.character(values)
+#     output
+#   }
+#   
+#   
+#   labellist<-labellist_biv(plots_label,c(1:length(plots_label)))
+#   
+# 
+#   ##############################
+#   ###    order variables     ###
+#   ##############################
+#   if (is.null(order)==F) plot_list[[1]]$x<-factor(plot_list[[1]]$x, levels =order)
+#   if (is.null(order)==F) plot_list[[1]]$y<-factor(plot_list[[1]]$y, levels = order)
+# 
+#   ##############################
+#   ###     Label variables    ###
+#   ##############################
+# 
+#   variables_in<-unique(plot_list[[1]]$x)
+#   if (is.null(varlabels)) varlabels<- unique(plot_list[[1]]$x)
+#   if (length(varlabels)<length(variables_in)) varlables<-c(varlabels,variables_in[(length(varlabels)+1):length(variables_in)])
+#   
+#   # ########################
+#   # ### edit plots_label ###
+#   # ########################
+#   # 
+#   # if (is.null(plots_label)) plots_label<-"dfs"
+#   # if (length(plots_label)<length(unique(plot_list[[1]]$samp_name))) plots_label<-c(plots_label,unique(plot_list[[1]]$samp_name)[(length(plots_label)+1:length(unique(plot_list[[1]]$samp_name)))])
+#   # 
+# 
+#   ######################
+#   ###     Plots      ###
+#   ######################
+# 
+#   comparison_plot<-
+#     ggplot2::ggplot(plot_list[[1]], ggplot2::aes(x = plot_list[[1]]$y, y = plot_list[[1]]$x)) +
+#     {if (gradient==T) ggplot2::aes(alpha= gradient)}+
+#     {if (grid != "none") ggplot2::geom_tile(colour= grid, lwd =1,linetype=1,
+#                                             ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
+#     {if (grid == "none") ggplot2::geom_tile(ggplot2::aes( fill = factor(plot_list[[1]]$value, levels = breaks)))}+
+#     {if (grid != "white" & grid != "none") ggplot2::geom_tile(data = na_df, colour = "white", lwd=1,linetype=1,
+#                                                               ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
+#     {if (grid != "white" & grid != "none") ggplot2::geom_tile(data = edge_df, colour = grid, lwd=1,linetype=1,
+#                                                               ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
+#     #ggplot2::geom_point(data= subset(plot_list[[1]], value=="X"), ggplot2::aes(x = y, y = x), show.legend = T)+
+#     {if(missings_x==T) 
+#       ggplot2::geom_point(show.legend = legend_show_x, na.rm = T, ggplot2::aes(shape= factor(plot_list$shape, levels="X", labels=c("Missing"))))}+
+#     ggplot2::coord_fixed()+
+#     ggplot2::scale_fill_manual(values= colors, name="", na.translate = FALSE)+
+#     ggplot2::scale_y_discrete(name="", limits = rev(levels(plot_list[[1]]$x)), labels= varlabels, breaks=unique(plot_list[[1]]$x))+
+#     ggplot2::scale_x_discrete(name="", limits = levels(plot_list[[1]]$y), labels= varlabels, breaks=unique(plot_list[[1]]$y))+
+#     ggplot2::scale_shape_manual(name="", values = c("Missing"=4))+
+#     ggplot2::theme_classic()+
+#     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.33, hjust=0),
+#                    axis.text.y = ggplot2::element_text(vjust = 0.33, hjust=0),
+#                    axis.title.x= ggplot2::element_blank(),
+#                    axis.title.y= ggplot2::element_blank(),
+#                    plot.margin = grid::unit(mar, "cm"),
+#                    plot.caption=ggplot2::element_text(hjust = 0))+
+#     ggplot2::ggtitle(plot_title)+
+#     ggplot2::guides(alpha="none",
+#                     fill  = ggplot2::guide_legend(order = 1),
+#                     shape = ggplot2::guide_legend(order = 2))+
+#     ggplot2::facet_wrap(~ samp, labeller = ggplot2::labeller(samp = labellist),ncol = ncol_facet)
+# 
+#   if(note==T) comparison_plot<-comparison_plot + ggplot2::labs(caption = plot_list$note_text)
+# 
+# 
+#   if (diff_perc==T) {
+#     comparison_plot <- comparison_plot + ggplot2::geom_label(x=Inf, y=Inf,
+#                                                              ggplot2::aes(  hjust = 1, vjust = 1), data=summary_df,
+#                                                              label = summary_df$label,
+#                                                              fill = ggplot2::alpha("white", perc_diff_transparance),
+#                                                              color = ggplot2::alpha("black", 1), size= diff_perc_size, show.legend = F)}
+# 
+# 
+#
+# 
+#   
+#     return (comparison_plot)
+# 
+# }
 
 
 
@@ -1157,6 +1244,8 @@ difference_summary<-function(results_object,sum_weights=NULL,breaks){
     
     ### add help_matrix to results_object ###
     results_object$sum_weight[results_object$samp==samps[i]]<-help_matrix_df$value
+    
+    
     results_object$sum_weight[is.na(results_object$value)]<-NA
     
     ### build a summary for every sample ###
@@ -1173,9 +1262,20 @@ difference_summary<-function(results_object,sum_weights=NULL,breaks){
                                                              & results_object$samp==samps[i] & results_object$value != "X"])/
         sum(results_object$sum_weight[is.na(results_object$value)==F & results_object$samp==samps[i] & results_object$value != "X"])}
     
-    diff_summary<-paste(breaks[1]," :",(round((percental_difference_b1), digits = 3)*100),"% \n",
-                        breaks[2]," :",(round(percental_difference_b2, digits = 3)*100),"%")
-    if (length(breaks)>2) diff_summary<-paste (diff_summary, "\n",breaks[3], " :", (round(percental_difference_b3, digits = 3)*100),"%")
+    
+    # Define a function to pad a string with leading spaces
+    pad_with_spaces <- function(x, width=4) {
+      if (nchar(x) < width) {
+        paste0(rep("  ", width - nchar(x)),x)
+      } else {
+        x
+      }
+    }
+    
+    
+    diff_summary<-paste0(breaks[1],"  ",pad_with_spaces(format((round((percental_difference_b1), digits = 3)*100),nsmall=1))," %\n",
+                         breaks[2],"  ",pad_with_spaces(format((round(percental_difference_b2, digits = 3)*100),nsmall=1))," %")
+    if (length(breaks)>2) diff_summary<-paste0 (diff_summary, "\n",breaks[3], "  ", pad_with_spaces(format((round(percental_difference_b3, digits = 3)*100),nsmall=1))," %")
     
     summary_df[i,]<- c(as.character(samps[i]), diff_summary)
   }
@@ -1205,11 +1305,37 @@ na_func<-function(values,vars,i){
   
 }
 
-r_cor_func<-function(design,var1,var2){
-  variance <- survey::svyvar(stats::reformulate(var1,var2), design, na.rm = T)
-  #as.matrix(variance)
-  cormatrix<-stats::cov2cor(as.matrix(variance))
-  cormatrix[2]
+r_cor_func<-function(design,var1,var2,corrtype="pearson"){
+  
+  if(corrtype=="pearson"){
+  variance <- suppressWarnings(survey::svyvar(stats::reformulate(var1,var2), design, na.rm = T,
+                             return.replicates=T))}
+  
+  if(corrtype=="spearman"){
+    
+    svyrank<-function(formula, design){
+      mf <- stats::model.frame(formula, stats::model.frame(design), na.action = na.omit)
+      y<-mf[,1]
+      ii <- order(y)
+      n <- length(y)
+      rankhat <- numeric(n)
+      w <- stats::weights(design, "sampling")
+      rankhat[ii] <- stats::ave(cumsum(w[ii]) - w[ii]/2, factor(y[ii]))
+      rankhat
+    }
+    
+    #rank_desig<-svyrank(stats::reformulate(var1,var2),design)
+    
+    variance <- suppressWarnings(survey::svyvar(stats::reformulate(var1,var2), 
+                                                design, na.rm = T, 
+                                                return.replicates=T))
+    
+    
+  }
+  suppressWarnings(cormatrix<-stats::cov2cor(as.matrix(variance)))
+  # boot_r<-map_dbl(1:nrow(variance[[2]]),~cov2cor(matrix(variance[.x,],ncol=2))[2])
+  # boot_SE<-sqrt(stats::var(boot_r))
+  list(cormatrix[2],variance)
 }
 
 ### get a longer list of variables
@@ -1235,11 +1361,15 @@ n_func<-function(design,var1,var2){
 ### Function, to weight correlations ###
 
 wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids = NULL, 
-                  variables = NULL, remove_nas = "pairwise", bootstrap = F){
+                  variables = NULL, remove_nas = "pairwise", nboots=0, 
+                  adjustment_weighting="raking",
+                  adjustment_vars=NULL, raking_targets=NULL,post_targets=NULL,
+                  cor_matrix_bench=NULL,
+                  parallel=F,corrtype="pearson",bench=F){
   
   
   ### look if bootstrap or not ###
-  if (bootstrap==T) df<-df[i,]
+  #if (bootstrap==T) df<-df[i,]
   
   ### prepare variables if needed ###  
   # if(is.null(variables)){
@@ -1259,7 +1389,7 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
          ,ids<-c(1:nrow(df)))
   
   ifelse(is.null(weight_var)==F,
-         ifelse(is.na(weight_var)==F,weight_var<-df[,weight_var],c(rep(1,nrow(df))))
+         ifelse(is.na(weight_var)==F,weight_var<-df[,weight_var],weight_var<-c(rep(1,nrow(df))))
          ,weight_var<-c(rep(1,nrow(df))))
   
   # if(is.null(ids)==F) {
@@ -1280,6 +1410,16 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
     # if (is.na(stratas)==F) stratas<-df[,stratas]
     # else stratas<-NULL
   }
+  # 
+  # df_list<-list()
+  # for (i in 1:length(row)){
+  #   df_list[[i]]<-df[,c(row[i],col[i])]
+  # }
+  # design_list<-purrr::map(df_list,~survey::svydesign(id=ids,
+  #                                                   strata = stratas,
+  #                                                   weights = weight_var,
+  #                                                   nest    = FALSE,
+  #                                                   data    = .))
   
   ### Get surveydesign ###
   df_design<- survey::svydesign(id      = ids,
@@ -1288,26 +1428,229 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
                                 nest    = FALSE,
                                 data    = df)
   
-
-  r<-c()
-  c<-1
-  for (i in 1:length(row)){
-      r[c]<-r_cor_func(df_design,row[i],col[i])
-      c<-c+1
+  
+  #################################
+  ### if no bootstrap is needed ###
+  #################################
+  
+  if(nboots==0){
+  
+    if(is.null(adjustment_vars)==F & adjustment_weighting=="raking"){
+      
+      adjustment_vars<-purrr::map(paste0("~",adjustment_vars),stats::as.formula)
+      
+      survey_design_raked <- survey::rake(design = df_design, 
+                                          population.margins = raking_targets, 
+                                          sample.margins = adjustment_vars, 
+                                          control = list(maxit =1000, epsilon = 1, verbose=F))
+      
     }
+    
+    if(is.null(adjustment_vars)==F & adjustment_weighting=="post_strat"){
+      
+      #adjustment_vars<-purrr::map(paste0("~",adjustment_vars),as.formula)
+      
+      survey_design_post <- survey::postStratify(design= df_design, 
+                                         strata=reformulate(adjustment_vars), 
+                                         population=post_targets,
+                                         partial = F)
+      
+    }
+    
+    
+    }
+  
+  ##############################
+  ### if bootstrap is needed ###
+  ##############################
+  
+  if(nboots>0){
+    
+    bootstrap_rep_design <- svrep::as_bootstrap_design(df_design,
+                                                       type = "Rao-Wu-Yue-Beaumont",
+                                                       replicates = nboots)
+    
+    if(is.null(adjustment_vars)==F & adjustment_weighting=="raking"){
+      
+      adjustment_vars<-furrr::future_map(paste0("~",adjustment_vars),stats::as.formula)
+      
+      survey_design_raked <- survey::rake(design = bootstrap_rep_design, 
+                                  population.margins = raking_targets, 
+                                  sample.margins = adjustment_vars, 
+                                  control = list(maxit =1000, epsilon = 1, verbose=F))
+    }
+    
+    if(is.null(adjustment_vars)==F & adjustment_weighting=="post_strat"){
+      
+      #adjustment_vars<-purrr::map(paste0("~",adjustment_vars),as.formula)
+      
+      survey_design_post <- survey::postStratify(design= bootstrap_rep_design,
+                                         strata=stats::reformulate(adjustment_vars),
+                                         population=post_targets,
+                                         partial = F)
+      
+      # survey_design_post <- svrep::calibrate_to_sample(
+      #   primary_rep_design = bootstrap_rep_design,
+      #   control_rep_design = post_targets,
+      #   cal_formula = stats::reformulate(adjustment_vars),
+      #   calfun = survey::cal.linear,maxit=1000
+      # )
+      
+    }
+    
+    
+    }
+ 
+  ###############################
+  ### choose the right design ###
+  ###############################
+  
+  if(nboots==0 & is.null(adjustment_vars)==T) final_design<-df_design
+  if(nboots>0 & is.null(adjustment_vars)==T) final_design<-bootstrap_rep_design
+  if(is.null(adjustment_vars)==F & adjustment_weighting=="raking") final_design<-survey_design_raked
+  if(is.null(adjustment_vars)==F & adjustment_weighting=="post_strat") final_design<-survey_design_post
+  
+  
+  ############################################
+  ### calculate number of n for every pair ###
+  ############################################
+  
+  n<-mapply(n_func,var1=row,var2=col,
+            MoreArgs = list(design = df_design))
+  
+  #####################################
+  ### calculate R and variance list ###
+  #####################################
+  
 
+  if(parallel!=F){future::plan(future::multisession,workers=parallel)}
+  
+ 
+  r_cor_list<-furrr::future_map2(row,col,~r_cor_func(final_design,.x,.y,corrtype=corrtype))
+  r<-furrr::future_map_dbl(1:length(row),~r_cor_list[[.x]][[1]])
+  var_list<-furrr::future_map(1:length(row),~r_cor_list[[.x]][[2]])
   
   
   
-  if(bootstrap==F) {n<-mapply(n_func,
-                              var1=row,var2=col,
-                              MoreArgs = list(design = df_design))}
+  if(nboots>0){
+  boot_r_func<-function(variance){
+    
+    boot_r<-purrr::map_dbl(1:nrow(variance[[2]]),~suppressWarnings(cov2cor(matrix(variance[[2]][.x,],ncol=2)))[2])
+    
+  }
+  boot_r<-purrr::map(var_list,~boot_r_func(.x))
   
   
-  ### calculate analytical p-values ###
-  if(bootstrap==F) {
-    t<-(abs(r)*sqrt(n-2))/sqrt(1-(r^2))
-    p<-2*stats::pt(t,(n-2),lower.tail = F)
+  }
+  
+  
+  
+  ##########################
+  ### calculate p values ###
+  ##########################
+  
+  if(nboots==0){
+    
+    t<-(abs(r)*sqrt(n-2))/suppressWarnings(sqrt(1-(r^2)))
+    p<-2*stats::pt(t,(n-2),lower.tail = F)}
+  
+  if(nboots>0){
+    
+    boot_pvalues<-function(boot_object,reference=0,r=NULL,row,col,iteration=NULL,bench=F){
+      
+      boot_object[boot_object %in% "NaN"]<-NA
+      if(!is.null(r)) r[r%in%"NaN"]<-NA
+      in_interval <-TRUE
+      alpha<-0
+      
+      ### check if boot_object contains na ###
+      if(sum(is.na(boot_object)) > 0 & is.null(iteration)==F){
+        
+        warning(paste(sum(is.na(boot_object)), "of the", length(boot_object),
+                      "bootstraps contain zero combined cases for the variable pair of:",
+                      row[iteration],"and",col[iteration],".\n"))
+      }
+      if(bench==TRUE & sum(is.na(boot_object))==length(boot_object)) return("NaN")
+      if(sum(is.na(boot_object))==length(boot_object)) return(NA)
+      if(!is.null(r)) if(is.na(r)) return(NA)
+      
+      
+      ### get p_values up to 0.00001
+      while(in_interval){
+        alpha <- alpha + 0.001
+        if(is.null(r)) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=T),stats::quantile(boot_object, probs=(alpha/2),na.rm=T))
+        
+        if(is.null(r)==F){
+          diff<- boot_object - r
+          cis<-c(stats::quantile(diff, probs=(1-(alpha/2)),na.rm=T),stats::quantile(diff, probs=(alpha/2),na.rm=T))
+          # lower_ci<- (r) - (mean(boot_object,na.rm=T) - (r))-stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object))))
+          # upper_ci<- (r) - (mean(boot_object,na.rm=T) - (r))+stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object))))
+          # cis<-c(lower_ci,upper_ci)
+        }
+        
+        in_interval<- (reference > cis[1] & reference < cis[2])|(reference < cis[1] & reference > cis[2])
+      }
+      
+      alpha<-alpha-0.001
+      in_interval<-TRUE
+      
+      while(in_interval){
+        alpha <- alpha + 0.00001
+        if(is.null(r)==T) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=T),stats::quantile(boot_object, probs=(alpha/2),na.rm=T))
+        if(is.null(r)==F){
+          diff<- boot_object - r
+          cis<-c(stats::quantile(diff, probs=(1-(alpha/2)),na.rm=T),stats::quantile(diff, probs=(alpha/2),na.rm=T))
+          # lower_ci<- (r) - (mean(boot_object) - (r))-stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object))))
+          # upper_ci<- (r) - (mean(boot_object) - (r))+stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object))))
+          # cis<-c(lower_ci,upper_ci)
+        }
+        in_interval<- (reference > cis[1] & reference < cis[2])|(reference < cis[1] & reference > cis[2])
+      }
+      alpha
+    }
+    
+    p<-furrr::future_imap_dbl(boot_r,~boot_pvalues(.x,row=row,col=col,iteration=.y,bench=bench))
+    
+    #,r=r[.y]
+    cor_matrix_bench[[1]][!lower.tri(cor_matrix_bench[[1]])]<-NA
+    bench_cor<-c(t(cor_matrix_bench[[1]]))
+    bench_cor<-bench_cor[is.na(bench_cor)==F|is.nan(bench_cor)==T]
+    
+    
+    # p_diff<-furrr::future_map2_dbl(1:length(boot_r),1:length(row),
+    #                                ~boot_pvalues(boot_r[[.x]],bench_cor[.x],r=r[.y]))
+    
+    
+    p_diff<-furrr::future_map(1:length(boot_r),~boot_pvalues(boot_r[[.x]],bench_cor[.x],bench=bench))
+    
+    
+    
+    # boot_se_func<-function(varlist_element){
+    #   boot_r<-map_dbl(1:nrow(varlist_element[[2]]),~cov2cor(matrix(varlist_element[[2]][.x,],ncol=2))[2])
+    #   boot_SE<-sqrt(stats::var(boot_r))
+    # }
+    # boot_r_func<-function(varlist_element){
+    #   mean(map_dbl(1:nrow(varlist_element[[2]]),~cov2cor(matrix(varlist_element[[2]][.x,],ncol=2))[2]))
+    # }
+    
+    # boot_r<-map_dbl(var_list,~boot_r_func(.x))
+    # t<-(abs(boot_r)*sqrt(n-2))/sqrt(1-(boot_r^2))
+    # p<-2*stats::pt(t,(n-2),lower.tail = F)
+    
+    
+    # cor_matrix_bench[[1]][!lower.tri(cor_matrix_bench[[1]])]<-NA
+    # bench_cor<-c(t(cor_matrix_bench[[1]]))
+    # bench_cor<-bench_cor[is.na(bench_cor)==F]
+    # boot_SE<-map_dbl(var_list,~boot_se_func(.x))
+    # 
+    # 
+    # 
+    # t_diff<-abs((boot_r-bench_cor))/(boot_SE/sqrt(n))
+    # p_diff<-2*stats::pt(t_diff,(n-2),lower.tail = F)
+    
+  }
+    
+  
     
     r<- matrix(unlist(lapply(c(0:(length(variables)-1)),
                              na_func,values=r,vars=variables)),
@@ -1325,136 +1668,155 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
                nrow=length(variables), byrow = T,
                dimnames = (list(variables,variables)))
     
-    output<- list(r=r,n=n,P=p)}
-  
-  
-  if(bootstrap ==F ) return(output)
-  if(bootstrap ==T ) return(r)
-}
-
-
-
-bootstrap_correlations<-function(df, weight=NULL, stratas=NULL, 
-                                 ids=NULL, variables=NULL, remove_nas="pairwise", 
-                                 nboots = 2, parallel = F, row, col){
-  
-  # if(is.null(weight)==F) df[,weight]<-as.numeric(df[,weight])
-  # if(is.null(stratas)==F) df[,stratas]<-as.numeric(df[stratas])
-  # if(is.null(ids)==F) df[,ids]<-as.numeric(df[,ids])
-  ### calculate bootstrap p_values ###
-  
-  if(is.null(variables)){
-    variables<-colnames(df)
-    if(is.null(ids)==F) if(is.na(ids) == F)variables<-variables[!variables == ids]
-    if(is.null(weight)==F) if(is.na(weight) == F) variables<-variables[!variables == weight]
-    if(is.null(stratas)==F) if(is.na(stratas) == F) variables<-variables[!variables == stratas]
-  }
-
-    ### perform bootstrap ###
-
-  if (parallel==T) para<-"snow"
-  if (parallel==F) para<-"no"
-  
-    boot_out<-boot(data = df, variables = variables, statistic = wgt_cor, R = nboots, 
-                   weight_var = weight, stratas = stratas, ids = ids, bootstrap = T, 
-                   ncpus = (parallel::detectCores()-1), parallel = para, row=row, col=col)
-   
-
-  # p_value_func<-function(i,boot_object){
-  # 
-  #   if(is.na(boot_object$t0[i])) return(NA)
-  #   if(is.na(boot_object$t0[i])==F) return(
-  #     mean(abs(boot_object$t[,i]) >= abs(boot_object$t0[i]))
-  #   )
-  # }
-    #return(boot_out)
+    if(nboots==0) p_diff<-NULL
+    if(nboots>0) p_diff<-matrix(unlist(lapply(c(0:(length(variables)-1)),
+                                              na_func,values=p_diff,vars=variables)),
+                                ncol=length(variables),
+                                nrow=length(variables), byrow = T,
+                                dimnames = (list(variables,variables)))
     
-    # boot_pvalues<-function(boot_object,variables){
-    #   
-    #   subfunc_boot_pvalues<-function(boot_object,i){
-    #     if(is.na(as.vector(boot_object$t0)[i])==F){
-    #       
-    #       r_null<-0
-    #       in_interval<-TRUE
-    #       alpha<-0
-    #       
-    #       ### get p_values up to 0.0001
-    #       while(in_interval){
-    #         
-    #         alpha <- alpha + 0.0001
-    #         
-    #         ci<-suppressWarnings(boot::boot.ci(boot.out=boot_object,type = "perc",index = i, conf = (1 - alpha)))
-    #         cis<-c(ci$percent[4],ci$percent[5])
-    #         
-    #         in_interval<-  (r_null > cis[1] & r_null < cis[2])|(r_null < cis[1] & r_null > cis[2])
-    #       }
-    #       
-    #       alpha<-alpha-0.0001
-    #       in_interval<-TRUE
-    #       ### get more exact p_values
-    #       
-    #       while(in_interval){
-    #         
-    #         alpha <- alpha + 0.000001
-    #         
-    #         ci<-suppressWarnings(boot::boot.ci(boot.out=boot_object,type = "perc",index = i, conf = (1 - alpha)))
-    #         cis<-c(ci$percent[4],ci$percent[5])
-    #         
-    #         in_interval<-  (r_null > cis[1] & r_null < cis[2])|(r_null < cis[1] & r_null > cis[2])
-    #       }
-    #       
-    #       alpha
-    #     }
-    #     
-    #     else {alpha<-NA}
-    #     
-    #     alpha
-    #     
-    #   } 
-    #   
-    #   ps<-sapply(1:(length(variables)*length(variables)),subfunc_boot_pvalues, boot_object=boot_object)
-    #   ps<-matrix(ps,ncol=length(variables))
-    #   colnames(ps)<-variables
-    #   rownames(ps)<-variables
-    #   ps
-    #   }
-
-    boot_pvalues2<-function(boot_object,variables){
-      
-      subfunc_boot_pvalues2<-function(boot_object,i){
-        
-        if(is.na(as.vector(boot_object$t0)[i])==F){
-          alpha<-boot.pval::boot.pval(boot_object, type="perc",theta_null=0,index = i)}
-        
-        else {alpha<-c(NA)}
-        
-        alpha
-        
-      }
-
-      ps<-sapply(1:(length(variables)*length(variables)),subfunc_boot_pvalues2, boot_object=boot_object)
-      ps<-matrix(ps,ncol=length(variables))
-      colnames(ps)<-variables
-      rownames(ps)<-variables
-      ps}
-  
-  
-  p<-boot_pvalues2(boot_out,variables)
-  
-  
-  output<-wgt_cor(df = df, weight_var = weight, stratas = stratas, 
-          ids = ids, variables = variables, remove_nas = remove_nas, row = row,col=col)
-  output$P<-p
-  
-  output
+    output<- list(r=r,n=n,P=p,p_diff=p_diff)
+    
+  rm(final_design)
+  #if(nboots==0 ) return(output)
+  #if(nboots>0 ) return(r)
+  return(output)
 }
 
 
 
+# bootstrap_correlations3<-function(df, weight=NULL, stratas=NULL, 
+#                                  ids=NULL, variables=NULL, remove_nas="pairwise", 
+#                                  nboots = 2, parallel = F, row, col, adjustment_vars=NULL,
+#                                  raking_targets=NULL){
+#   
+#   # if(is.null(weight)==F) df[,weight]<-as.numeric(df[,weight])
+#   # if(is.null(stratas)==F) df[,stratas]<-as.numeric(df[stratas])
+#   # if(is.null(ids)==F) df[,ids]<-as.numeric(df[,ids])
+#   ### calculate bootstrap p_values ###
+#   
+#   if(is.null(variables)){
+#     variables<-colnames(df)
+#     if(is.null(ids)==F) if(is.na(ids) == F)variables<-variables[!variables == ids]
+#     if(is.null(weight)==F) if(is.na(weight) == F) variables<-variables[!variables == weight]
+#     if(is.null(stratas)==F) if(is.na(stratas) == F) variables<-variables[!variables == stratas]
+#     if(is.null(adjustment_vars)==F) variables<-variables[!variables == adjustment_vars]
+#   }
+# 
+#     ### perform bootstrap ###
+# 
+#   if (parallel==T) para<-"snow"
+#   if (parallel==F) para<-"no"
+#   
+#     boot_out<-boot(data = df, variables = variables, statistic = wgt_cor, R = nboots, 
+#                    weight_var = weight, stratas = stratas, ids = ids, nboots = nboots, 
+#                    ncpus = (parallel::detectCores()-1), parallel = para, row=row, col=col)
+#     
+# 
+#   # p_value_func<-function(i,boot_object){
+#   # 
+#   #   if(is.na(boot_object$t0[i])) return(NA)
+#   #   if(is.na(boot_object$t0[i])==F) return(
+#   #     mean(abs(boot_object$t[,i]) >= abs(boot_object$t0[i]))
+#   #   )
+#   # }
+#     #return(boot_out)
+#     
+#     # boot_pvalues<-function(boot_object,variables){
+#     #   
+#     #   subfunc_boot_pvalues<-function(boot_object,i){
+#     #     if(is.na(as.vector(boot_object$t0)[i])==F){
+#     #       
+#     #       r_null<-0
+#     #       in_interval<-TRUE
+#     #       alpha<-0
+#     #       
+#     #       ### get p_values up to 0.0001
+#     #       while(in_interval){
+#     #         
+#     #         alpha <- alpha + 0.0001
+#     #         
+#     #         ci<-suppressWarnings(boot::boot.ci(boot.out=boot_object,type = "perc",index = i, conf = (1 - alpha)))
+#     #         cis<-c(ci$percent[4],ci$percent[5])
+#     #         
+#     #         in_interval<-  (r_null > cis[1] & r_null < cis[2])|(r_null < cis[1] & r_null > cis[2])
+#     #       }
+#     #       
+#     #       alpha<-alpha-0.0001
+#     #       in_interval<-TRUE
+#     #       ### get more exact p_values
+#     #       
+#     #       while(in_interval){
+#     #         
+#     #         alpha <- alpha + 0.000001
+#     #         
+#     #         ci<-suppressWarnings(boot::boot.ci(boot.out=boot_object,type = "perc",index = i, conf = (1 - alpha)))
+#     #         cis<-c(ci$percent[4],ci$percent[5])
+#     #         
+#     #         in_interval<-  (r_null > cis[1] & r_null < cis[2])|(r_null < cis[1] & r_null > cis[2])
+#     #       }
+#     #       
+#     #       alpha
+#     #     }
+#     #     
+#     #     else {alpha<-NA}
+#     #     
+#     #     alpha
+#     #     
+#     #   } 
+#     #   
+#     #   ps<-sapply(1:(length(variables)*length(variables)),subfunc_boot_pvalues, boot_object=boot_object)
+#     #   ps<-matrix(ps,ncol=length(variables))
+#     #   colnames(ps)<-variables
+#     #   rownames(ps)<-variables
+#     #   ps
+#     #   }
+# 
+# 
+#   
+#   
+#   p<-boot_pvalues2(boot_out,variables)
+#   
+#   
+#   output<-wgt_cor(df = df, weight_var = weight, stratas = stratas, 
+#           ids = ids, variables = variables, remove_nas = remove_nas, 
+#           row = row,col=col)
+#   output$P<-p
+#   
+#   output
+# }
 
-weighted_correlation<-function(df, weight = NULL, stratas = NULL, 
-                                ids = NULL, variables = NULL, remove_nas = "pairwise", 
-                                nboots = 0, parallel = F){
+boot_pvalues2<-function(boot_object,variables){
+  
+  ps<-sapply(1:((length(variables)*(length(variables)-1))/2),subfunc_boot_pvalues2, boot_object=boot_object)
+  ps<-matrix(unlist(lapply(c(0:(length(variables)-1)),
+                           na_func,values=ps,vars=variables)),
+             ncol=length(variables),
+             nrow=length(variables), byrow = T,
+             dimnames = (list(variables,variables)))
+  ps
+}
+
+subfunc_boot_pvalues2<-function(boot_object,i){
+  
+  if(is.na(as.vector(boot_object$t0)[i])==F){
+    alpha<-boot.pval::boot.pval(boot_object, type="perc",theta_null=0,index = i)}
+  
+  alpha
+}
+
+
+weighted_correlation<-function(df, cor_matrix_bench,
+                                weight = NULL, stratas = NULL, 
+                                ids = NULL, variables = NULL, 
+                                remove_nas = "pairwise", 
+                                nboots = 0, parallel = F, 
+                                adjustment_weighting="raking",
+                                adjustment_vars=NULL,
+                                raking_targets=NULL,
+                                post_targets=NULL,
+                                corrtype="pearson",
+                                bench=F){
   
   
   ### get only needed rows and collumns
@@ -1462,24 +1824,24 @@ weighted_correlation<-function(df, weight = NULL, stratas = NULL,
   col<- unlist(sapply(c(1:(length(variables)-1)),varfunc2,vars=variables))
   
   
-  
-  if(nboots == 0){
-    output<-wgt_cor(df = df, weight_var = weight, stratas = stratas, 
-                    ids = ids, variables = variables,
-                    remove_nas = remove_nas, bootstrap=F,
-                    row=row, col=col)
-  }
-  
   if (nboots!=0 & nboots <=1) {
     stop("nboots must be 0 (for analytic p_values) or >1 for bootstrap p_values")}
   
-  if(nboots > 1) {
-    output<- bootstrap_correlations(df = df, weight = weight, stratas = stratas, 
-                                    ids = ids, variables = variables, 
-                                    remove_nas= remove_nas, nboots = nboots, 
-                                    parallel = parallel,row=row, col=col)
-  }
-  
+  #if(nboots == 0){
+    output<-wgt_cor(df = df, weight_var = weight, stratas = stratas, 
+                    ids = ids, variables = variables,
+                    remove_nas = remove_nas, nboots=nboots,
+                    row=row, col=col, 
+                    adjustment_weighting=adjustment_weighting,
+                    adjustment_vars=adjustment_vars,
+                    raking_targets=raking_targets,
+                    post_targets=post_targets,
+                    cor_matrix_bench=cor_matrix_bench,
+                    parallel=parallel,
+                    corrtype=corrtype,
+                    bench=bench)
+
+    
   output
   
   

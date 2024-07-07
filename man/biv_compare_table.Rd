@@ -2,34 +2,50 @@
 % Please edit documentation in R/Output_Tables.R
 \name{biv_compare_table}
 \alias{biv_compare_table}
-\title{Returns a table based on the information of an \code{biv_compare_object} which can be
-outputted as html or LaTex Table, for example with the help of the \link[stargazer]{stargazer} function.}
+\title{Returns a table based on the information of a \code{biv_compare_object} which
+can be outputted as html or LaTex Table, for example with the help of the
+\link[stargazer]{stargazer} function.}
 \usage{
-biv_compare_table(biv_compare_object, type = "diff", comparison_number = 1)
+biv_compare_table(
+  biv_compare_object,
+  type = "diff",
+  comparison_number = 1,
+  ndigits = 2
+)
 }
 \arguments{
-\item{biv_compare_object}{A object returned by \code{\link[sampcompR]{biv_compare}}}
+\item{biv_compare_object}{A object returned by the
+\code{\link[sampcompR]{biv_compare}} function.}
 
 \item{type}{A character string, to choose what matrix should be printed.
 \itemize{
-\item If "dfs", a correlation matrix of all variables of comparison in the chosen dataframe will be returned
-\item If "benchmarks", a correlation matrix of all variables of comparison in the chosen benchmark will be returned
-\item if "diff", a matrix indicating the difference between the chosen dataframe and benchmark will be returned
+\item If "dfs", a correlation matrix of all variables of comparison in the chosen
+dataframe will be returned.
+\item If "benchmarks", a correlation matrix of all variables of comparison in
+the chosen benchmark will be returned.
+\item if "diff", a matrix indicating the difference between the chosen
+dataframe and benchmark will be returned.
 }}
 
-\item{comparison_number}{A number indicating the data of which dataframe, benchmark or comparison should be displayed.
-The maximum length is equal to the length of the dfs vector used to generate the biv_compare_object.}
+\item{comparison_number}{A number indicating the data of which data frame,
+benchmark or comparison should be displayed.
+The maximum length is equal to the length of the \code{dfs vector} that is
+used to generate the \code{biv_compare_object}.}
+
+\item{ndigits}{Number of digits shown in the table.}
 }
 \value{
 A correlation matrix, or difference matrix based on information of a \code{biv_compare_object}.
 }
 \description{
-Returns a table based on the information of an \code{biv_compare_object} which can be
-outputted as html or LaTex Table, for example with the help of the \link[stargazer]{stargazer} function.
+Returns a table based on the information of a \code{biv_compare_object} which
+can be outputted as html or LaTex Table, for example with the help of the
+\link[stargazer]{stargazer} function.
 }
 \examples{
 
 ## Get Data for comparison
+require(wooldridge)
 card<-wooldridge::card
 
 south <- card[card$south==1,]

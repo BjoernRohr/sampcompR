@@ -7,12 +7,14 @@
 multi_compare(
   df,
   benchmark,
-  independent,
-  dependent,
-  method,
+  independent = NULL,
+  dependent = NULL,
+  formula_list = NULL,
+  family = stats::gaussian(link = "identity"),
   rm_na = "pairwise",
   out_output_list = T,
-  out_df = T,
+  out_df = F,
+  out_models = F,
   print_p = F,
   print_se = F,
   weight = NULL,
@@ -28,7 +30,10 @@ multi_compare(
   names_df_benchmark = NULL,
   silence_summary = F,
   nboots = 0,
-  parallel = F
+  parallel = F,
+  adjustment_vars = NULL,
+  raking_targets = NULL,
+  post_targets = NULL
 )
 }
 \arguments{
@@ -37,37 +42,50 @@ benchmark set of respondents to compare, or a character string containing the
 name of the set of respondents or benchmark set of respondents. All independent
 and dependent variables must be inside both data frames.}
 
-\item{independent}{A list of strings containing the independent variables (x) for comparison.
-Every independent variable will be used in every model to estimate the dependent variable (y)}
+\item{independent}{A list of strings containing the independent variables (x)
+for comparison. Every independent variable will be used in every model to
+estimate the dependent variable (y). When a \code{formula_list} is provided,
+\code{independent} will be ignored.}
 
 \item{dependent}{A list of strings containing the dependent variables (y) for
-comparison. One model will be computed for every dependent variable (y) provided.}
+comparison. One model will be computed for every dependent variable (y)
+provided. When a \code{formula_list} is provided, \code{dependent} will be
+ignored.}
 
-\item{method}{A character string for the method used for comparison. It can either be "ols"
-(Default), or "logit".}
+\item{formula_list}{A list of formulas to use in the regression models. If
+given, \code{dependent} and \code{independent} parameters will be ignored.}
+
+\item{family}{A family input, that can be given to \code{\link[stats]{glm}} or
+\code{\link[survey]{svyglm}}. Additionally, if "ols" is given,
+\code{gaussian(link = "identity")}, and if "logit" is given,
+\code{binomial(link = "logit")} is used.}
 
 \item{rm_na}{A character to determine how to handle missing values.  For this two
-options are  supportet. If \code{rm_na = "pairwise"} NAs will be removed
-seperately for every model. Only cases containing NA on one of the variables used
+options are  supported. If \code{rm_na = "pairwise"} NAs will be removed
+separately for every model. Only cases containing NA on one of the variables used
 in the respective model will be removed (all independent variables but only
 the respective dependent variable). If \code{rm_na = "listwise"} all cases containing NA
 on one of the dependent or independent variables are removed.}
 
-\item{out_output_list}{A logical value. If \code{out_output_list} = TRUE, a list will be
-returned, containing the seperate interaction models calculated with the glm function (
-or svyglm in case of weighting, as well as a summary object for every model.
-Standard errors and p-values of this models are always calculated without robustness methods.}
+\item{out_output_list}{A logical value. If \code{out_output_list = TRUE}, a
+list will be returned, containing the separate interaction models calculated
+with the \code{\link[stats]{glm}} function or \code{\link[survey]{svyglm}}
+in case of weighting, as well as a summary object for every model.
+Standard errors and p-values of these models are always calculated without
+robustness methods.}
 
-\item{out_df}{IF True, the used data frames will also be part of the output list}
+\item{out_df}{If \code{TRUE}, the used data frames will also be part of the output list.}
 
-\item{print_p}{IF TRUE, in addition to the difference in Average Discrete Change (ADC),
+\item{out_models}{If True, GLM model objects will be part of the returned object.}
+
+\item{print_p}{If \code{TRUE}, in addition to the difference in Average Discrete Change (ADC),
 p-values will be printed.}
 
-\item{print_se}{IF TRUE, additionally Standard Errors will be printed.}
+\item{print_se}{If \code{TRUE}, additionally standard errors will be printed.}
 
 \item{weight, weight_bench}{A character vector containing the name of the weight
-variable in the respective data frame. IF provided the data frame will be weighted
-using the \code{survey package}. Also id must be provided.}
+variable in the respective data frame. If provided the data frame will be weighted
+using the \code{\link{survey}}. Also \code{id} must be provided.}
 
 \item{id, id_bench}{A character vector containing the name of the id variable in the respectiv
 data frame. Only needed for weighting.}
@@ -76,29 +94,38 @@ data frame. Only needed for weighting.}
 in the respective data frame. It is used in the \code{\link[survey]{svydesign}}
 function for weighting.}
 
-\item{nest, nest_bench}{A logical Vector used in the \code{\link[survey]{svydesign}}
+\item{nest, nest_bench}{A logical vector that is used in the \code{\link[survey]{svydesign}}
 function for the respective data frame.}
 
-\item{robust_se}{A logical value If TRUE instead of normal standard errors,
-heteroscedasticity-consistent standard errors will be used in the analysis for
-calculation the sandwitch package and lmtest packages are used.}
+\item{robust_se}{A logical value If \code{TRUE} instead of normal standard errors,
+heteroscedasticity-consistent standard errors will be used in the analysis to
+calculate them the \code{\link{sandwich}} and \code{\link[lmtest]{coeftest}}
+packages are used.}
 
-\item{p_adjust}{A logical input or character string indicating a adjustment
+\item{p_adjust}{A logical input or character string indicating an adjustment
 method usable in the \code{method} parameter of \code{\link[stats]{p.adjust}}.
 If set to TRUE the Bonferroni adjusted p-values are used in inference.}
 
-\item{names_df_benchmark}{A vector containing first the name of df and benchmark.
+\item{names_df_benchmark}{A vector containing first the name of \code{df} and benchmark.}
 
-statistic.}
-
-\item{silence_summary}{A Logical value, to indicate if the
+\item{silence_summary}{A logical value, to indicate if the
 printed summary should not be printed instead.}
 
 \item{nboots}{A numeric value indicating the number of bootstrap replications.
-If nboots = 0 no bootstrapping will be performed. Else nboots must be >2. Note,
-that bootstraping can be very computational heavy and can therefore take a while.}
+If nboots = 0 no bootstrapping will be performed. Else \code{nboots} must
+be >2. Note, that bootstrapping can be very computationaly heavy and can
+therefore take a while.}
 
-\item{parallel}{If True, all detected cors will be used to in bootstrapping.}
+\item{parallel}{If \code{TRUE}, all detected cores will be used in bootstrapping.}
+
+\item{adjustment_vars}{Variables used to adjust the survey when using raking
+or post-stratification.}
+
+\item{raking_targets}{A List of raking targets that can be given to the rake
+function of \code{\link[survey]{rake}}, to rake the \code{df}.}
+
+\item{post_targets}{A List of post_stratification targets that can be given to the rake
+function of \code{\link[survey]{postStratify}}, to post_stratificatify the \code{df}.}
 }
 \value{
 A table is printed showing the difference between the set of respondents
@@ -110,23 +137,47 @@ reprint the summary or to visualize the results.
 }
 \description{
 \code{multi_compare} compares data frames using regression models based on
-differing methods. For now, only OLS-Regression and Logit-Regression are
-implemented.
+differing methods. All \code{\link[stats]{glm}} Models can be compared.
 }
 \examples{
 
+#Example 1
+## Make a comparison specifiying dependent and independent variables.
+
 ## Get Data for comparison
+require(wooldridge)
 card<-wooldridge::card
 
 south <- card[card$south==1,]
 north <- card[card$south==0,]
+
 
 ## use the function to plot the data 
 multi_data1<-sampcompR::multi_compare(df = north, 
                                      bench = south,
                                      independent = c("age","fatheduc","motheduc","IQ"),
                                      dependent = c("educ","wage"),
-                                     method = "ols") 
+                                     family="ols") 
                         
+plot_multi_compare("multi_data1")
+
+#Example 2
+## Make a comparison with a formula_list
+card<-wooldridge::card
+
+south <- card[card$south==1,]
+north <- card[card$south==0,]
+
+form_list<-list(formula(educ~age+fatheduc+motheduc+IQ),
+                formula(educ~age+fatheduc+motheduc+IQ))
+
+
+multi_data2 <- sampcompR::multi_compare(df = north, 
+                                        bench = south,
+                                        formula_list = form_list,
+                                        family="ols")
+
+
+plot_multi_compare("multi_data2")
 
 }

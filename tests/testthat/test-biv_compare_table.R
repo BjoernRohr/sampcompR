@@ -6,9 +6,9 @@
 test_that("biv_compare_table, type=diff, weighted df", {
   expect_equal(biv_compare_table(local_test_data_biv1(),type="diff"), matrix(c(
     "", "", "", "",
-    "0.11*", "", "", "",
-    "0.05", "-0.05", "", "",
-    "0.05", "-0.01", "-0.02", ""
+    " 0.11*  ", "", "", "",
+    " 0.05   ", "-0.05   ", "", "",
+    " 0.05   ", "-0.01   ", "-0.02   ", ""
   ), nrow = 4, ncol = 4, byrow = TRUE, dimnames = list(c("age", "educ", "wage", "IQ"), c("age", "educ", "wage", "IQ"))))
 })
 
@@ -19,9 +19,9 @@ test_that("biv_compare_table, type=diff, weighted df", {
 test_that("biv_compare_table, type=dfs, weighted data", {
   expect_equal(biv_compare_table(local_test_data_biv1(),type="dfs"), matrix(c(
     "", "", "", "",
-    "0.06*", "", "", "",
-    "0.35***", "0.19***", "", "",
-    "-0.05", "0.5***", "0.13***", ""
+    " 0.06*  ", "", "", "",
+    " 0.35***", " 0.19***", "", "",
+    "-0.05   ", " 0.50***", " 0.13***", ""
   ), nrow = 4, ncol = 4, byrow = TRUE, dimnames = list(c("age", "educ", "wage", "IQ"), c("age", "educ", "wage", "IQ")))
   )
 })
@@ -33,9 +33,9 @@ test_that("biv_compare_table, type=dfs, weighted data", {
 test_that("biv_compare_table, type=benchmarks, weighted data", {
   expect_equal(biv_compare_table(local_test_data_biv1(),type="benchmarks"), matrix(c(
     "", "", "", "",
-    "-0.05", "", "", "",
-    "0.3***", "0.24***", "", "",
-    "-0.1**", "0.52***", "0.15***", ""
+    "-0.05   ", "", "", "",
+    " 0.30***", " 0.24***", "", "",
+    "-0.10** ", " 0.52***", " 0.15***", ""
   ), nrow = 4, ncol = 4, byrow = TRUE, dimnames = list(c("age", "educ", "wage", "IQ"), c("age", "educ", "wage", "IQ")))
   )
 })
@@ -49,9 +49,9 @@ test_that("biv_compare_table, type=diff, un_weighted data", {
                                  comparison_number = 2), 
                matrix(c(
                  "",         "",        "",     "",
-                 "-0.09", "",        "",     "",
-                 "-0.14*", "0.08", "",     "",
-                 "0.01",     "-0.12*",  "0.12", ""
+                 "-0.09   ", "",        "",     "",
+                 "-0.14*  ", " 0.07   ", "",     "",
+                 " 0.02   ",     "-0.12*  ",  " 0.11   ", ""
                ), nrow = 4, ncol = 4, byrow = TRUE, dimnames = list(c("age", "educ", "wage", "IQ"), c("age", "educ", "wage", "IQ")))
                
   )
@@ -67,9 +67,9 @@ test_that("biv_compare_table, type=diff, un_weighted data, bonferroni", {
                                  comparison_number = 1), 
                table_matrix <- matrix(c(
                  "",       "",         "",      "",
-                 "0.12*",  "",         "",      "",
-                 "0.12**", "-0.18***", "",      "",
-                 "0.04",   "0",        "-0.07", ""
+                 " 0.12** ",  "",         "",      "",
+                 " 0.12** ", "-0.18***", "",      "",
+                 " 0.04   ",   " 0.00   ",        "-0.07   ", ""
                ), nrow = 4, ncol = 4, byrow = TRUE, dimnames = list(c("age", "educ", "wage", "IQ"), c("age", "educ", "wage", "IQ")))
                
   )
@@ -87,9 +87,9 @@ test_that("biv_compare_table, type=diff, un_weighted data, bonferroni", {
 test_that("biv_compare_table, type=diff, weighted df, pairwise", {
   expect_equal(biv_compare_table(local_test_data_biv1(remove_nas="pairwise"),type="diff"), matrix(c(
     "", "", "", "",
-    "0.12**", "", "", "",
-    "0.09**", "-0.15***", "", "",
-    "0.05", "-0.01", "-0.02", ""
+    " 0.12** ", "", "", "",
+    " 0.09** ", "-0.15***", "", "",
+    " 0.05   ", "-0.01   ", "-0.02   ", ""
   ), nrow = 4, ncol = 4, byrow = TRUE, dimnames = list(c("age", "educ", "wage", "IQ"), c("age", "educ", "wage", "IQ"))))
 })
 
@@ -100,9 +100,9 @@ test_that("biv_compare_table, type=diff, weighted df, pairwise", {
 test_that("biv_compare_table, type=dfs, weighted data, pairwise", {
   expect_equal(biv_compare_table(local_test_data_biv1(remove_nas="pairwise"),type="dfs"), matrix(c(
     "", "", "", "",
-    "0.04", "", "", "",
-    "0.35***", "0.19***", "", "",
-    "-0.05", "0.5***", "0.13***", ""
+    " 0.04   ", "", "", "",
+    " 0.35***", " 0.19***", "", "",
+    "-0.05   ", " 0.50***", " 0.13***", ""
   ), nrow = 4, ncol = 4, byrow = TRUE, dimnames = list(c("age", "educ", "wage", "IQ"), c("age", "educ", "wage", "IQ")))
   )
 })
@@ -114,9 +114,9 @@ test_that("biv_compare_table, type=dfs, weighted data, pairwise", {
 test_that("biv_compare_table, type=benchmarks, weighted data, pairwise", {
   expect_equal(biv_compare_table(local_test_data_biv1(remove_nas="pairwise"),type="benchmarks"), matrix(c(
     "", "", "", "",
-    "-0.08**", "", "", "",
-    "0.26***", "0.33***", "", "",
-    "-0.1**", "0.52***", "0.15***", ""
+    "-0.08** ", "", "", "",
+    " 0.26***", " 0.33***", "", "",
+    "-0.10** ", " 0.52***", " 0.15***", ""
   ), nrow = 4, ncol = 4, byrow = TRUE, dimnames = list(c("age", "educ", "wage", "IQ"), c("age", "educ", "wage", "IQ")))
   )
 })
@@ -130,9 +130,9 @@ test_that("biv_compare_table, type=diff, un_weighted data, pairwise", {
                                  comparison_number = 2), 
                matrix(c(
                  "",         "",        "",     "",
-                 "-0.13**", "",        "",     "",
-                 "-0.21***", "0.15***", "",     "",
-                 "0.01",     "-0.12*",  "0.12", ""
+                 "-0.13** ", "",        "",     "",
+                 "-0.21***", " 0.14***", "",     "",
+                 " 0.02   ",     "-0.12*  ",  " 0.11   ", ""
                ), nrow = 4, ncol = 4, byrow = TRUE, dimnames = list(c("age", "educ", "wage", "IQ"), c("age", "educ", "wage", "IQ")))
                
   )

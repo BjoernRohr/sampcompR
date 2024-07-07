@@ -1,5 +1,5 @@
 
-local_test_data_uni1 <- function(env = parent.frame(), summet="avg",
+local_test_data_uni1 <- function(env = parent.frame(), summet="avg1",
                                  nboots=20, funct="rel_mean") {
   
   list.of.packages <- c("wooldridge")
@@ -14,17 +14,17 @@ local_test_data_uni1 <- function(env = parent.frame(), summet="avg",
   set.seed(1)
   
   ### analyze data ###
-  uni_data<-uni_compare(dfs = c("north","black"),
-                        benchmarks = c("south","white"),
-                        nboots = nboots,
-                        variables = c("age","educ"),
-                        funct = funct,
-                        data=T,
-                        summetric = summet,
-                        weight = c("weight",NA),
-                        id = c("id",NA),
-                        weight_bench = c("weight",NA),
-                        id_bench = c("id",NA))
+  uni_data<-sampcompR::uni_compare(dfs = c("north","black"),
+                                   benchmarks = c("south","white"),
+                                   nboots = nboots,
+                                   variables = c("age","educ"),
+                                   funct = funct,
+                                   data=T,
+                                   summetric = summet,
+                                   weight = c("weight",NA),
+                                   id = c("id",NA),
+                                   weight_bench = c("weight",NA),
+                                   id_bench = c("id",NA))
   
   uni_data
 }

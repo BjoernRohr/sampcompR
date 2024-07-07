@@ -4,27 +4,44 @@
 \alias{uni_compare_table}
 \title{Create an Output-Table of a uni_compare_object}
 \usage{
-uni_compare_table(uni_compare_object, conf_adjustment = F, names = NULL)
+uni_compare_table(
+  uni_compare_object,
+  conf_adjustment = F,
+  df_names = NULL,
+  varlabels = NULL,
+  ci_line = T,
+  ndigits = 3
+)
 }
 \arguments{
-\item{uni_compare_object}{A object returned by \code{\link[sampcompR]{uni_compare}}}
+\item{uni_compare_object}{A object returned by
+\code{\link[sampcompR]{uni_compare}}.}
 
-\item{conf_adjustment}{A logical parameter determining if adjusted confidence intervals
-should be returned}
+\item{conf_adjustment}{A logical parameter determining if adjusted
+confidence intervals should be returned.}
 
-\item{names}{A character vector to rename the dataframes of comparison}
+\item{df_names}{A character vector to relabel the data frames of comparison.}
+
+\item{varlabels}{A character vector to relabel the Variables in the table.}
+
+\item{ci_line}{If TRUE, confidence intervals will be displayed in a separate
+line, otherwise, they are shown in the same line instead.}
+
+\item{ndigits}{The number of digits for rounding in table.}
 }
 \value{
 A table containing information on the univariate comparison based on
 the \code{\link[sampcompR]{uni_compare}} function.
 }
 \description{
-Returns a table based on the information of an \code{uni_compare_object} which can be
-outputted as html or LaTex Table, for example with the help of the \link[stargazer]{stargazer} function.
+Returns a table based on the information of an \code{uni_compare_object}
+which can be outputted as html or LaTex Table, for example with the help of
+the \link[stargazer]{stargazer} function.
 }
 \examples{
 
 ## Get Data for comparison
+require(wooldridge)
 card<-wooldridge::card
 
 south <- card[card$south==1,]

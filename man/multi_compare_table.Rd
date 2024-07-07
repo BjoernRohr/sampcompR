@@ -4,31 +4,46 @@
 \alias{multi_compare_table}
 \title{Create an Output-Table of a multi_compare_object}
 \usage{
-multi_compare_table(multi_compare_objects, type = "diff", names = NULL)
+multi_compare_table(
+  multi_compare_objects,
+  type = "diff",
+  names = NULL,
+  ndigits = 3,
+  envir = parent.frame()
+)
 }
 \arguments{
-\item{multi_compare_objects}{One or more object returned by \code{\link[sampcompR]{multi_compare}}}
+\item{multi_compare_objects}{One or more object that were returned by
+\code{\link[sampcompR]{multi_compare}}.}
 
 \item{type}{A character string, to determine the type of regression table.
 \itemize{
-\item If "dfs"a regression table based on the dataframes is returned.
-\item If "benchmarks" a regression table based on the benchmarks is returned.
-\item If "diff" a table indicating the difference between the dfs and the benchmarks is returned.
+\item If "dfs" a regression table based on the data frame(s) is returned.
+\item If "benchmarks" a regression table based on the benchmark(s) is returned.
+\item If "diff" a table indicating the difference between the df(s) and the
+benchmark(s) is returned.
 }}
 
-\item{names}{A character vector to rename the dataframes of comparison.}
+\item{names}{A character vector to rename the data frames of comparison.}
+
+\item{ndigits}{The Number of digits that is shown in the table.}
+
+\item{envir}{The environment, where the \code{multi_core_objects} can be
+found.}
 }
 \value{
 A table containing information on the multivariate comparison based on
 the \code{\link[sampcompR]{multi_compare}} function.
 }
 \description{
-Returns a table based on the information of an \code{multi_compare_object} which can be
-outputted as html or LaTex Table, for example with the help of the \link[stargazer]{stargazer} function.
+Returns a table based on the information of a \code{multi_compare_object}
+which can be outputted as HTML or LaTex Table, for example with the help of
+the \link[stargazer]{stargazer} function.
 }
 \examples{
 
 ## Get Data for comparison
+require(wooldridge)
 card<-wooldridge::card
 
 south <- card[card$south==1,]
@@ -41,13 +56,13 @@ multi_data1 <- sampcompR::multi_compare(df = north,
                                          bench = south,
                                          independent = c("age","fatheduc","motheduc","IQ"),
                                          dependent = c("educ","wage"),
-                                         method = "ols") 
+                                         family = "ols") 
                                      
 multi_data2 <- sampcompR::multi_compare(df = black, 
                                          bench = white,
                                          independent = c("age","fatheduc","motheduc","IQ"),
                                          dependent = c("educ","wage"),
-                                         method = "ols") 
+                                         family = "ols") 
                                      
 table<-multi_compare_table(c("multi_data1","multi_data2"),type="diff")
 

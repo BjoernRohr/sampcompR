@@ -9,7 +9,7 @@ biv_compare(
   benchmarks,
   variables = NULL,
   corrtype = "r",
-  data = FALSE,
+  data = T,
   id = NULL,
   weight = NULL,
   strata = NULL,
@@ -33,40 +33,45 @@ biv_compare(
   gradient = F,
   sum_weights = NULL,
   missings_x = T,
-  legend_show_x = F,
   remove_nas = "pairwise",
   ncol_facet = 3,
   nboots = 0,
-  parallel = F
+  parallel = F,
+  adjustment_weighting = "raking",
+  adjustment_vars = NULL,
+  raking_targets = NULL,
+  post_targets = NULL
 )
 }
 \arguments{
 \item{dfs}{A character vector containing the names of data frames to compare against the
 benchmarks.}
 
-\item{benchmarks}{A character vector containing the names of benchmarks to compare the
-data frames against, or the names of a list. If it is a list, it has to be of the form,
-as the output of \link[Hmisc]{rcorr}, with a pearson's r matrix in the first position, a
-n matrix (matrix of n for every correlation) in the second position and a P matrix in the
-third position. The vector must either to be the same length as \code{dfs}, or length 1.
-If it has length 1 every survey will be compared against the same benchmark.}
+\item{benchmarks}{A character vector containing the names of benchmarks to
+compare the data frames against, or the names of a list. If it is a list, it
+has to be of the form, as the output of \link[Hmisc]{rcorr}, with a
+Pearson's r matrix in the first position, a n-matrix (matrix of n for every
+correlation) in the second position and a p-matrix in the third position.
+The vector must either be the same length as \code{dfs}, or length 1. If it
+has length one every survey will be compared against the same benchmark.}
 
-\item{variables}{A character vector containing the names of the variables for the comparison.
-If NULL, all variables named similar in both the dfs and the benchmarks will be compared.
-Variables missing in one of the data frames or the benchmarks will be neglected for this comparison.}
+\item{variables}{A character vector containing the names of the variables for
+the comparison. If NULL, all variables named similarly in both the \code{dfs}
+and the benchmarks will be compared.Variables missing in one of the data
+frames or the benchmarks will be neglected for this comparison.}
 
 \item{corrtype}{A character string, indicating the type of the bivariate correlation.
 It can either be "r" for Pearson's r or "rho" for Spearman's "rho". At the moment,
 rho is only applicable to unweighted data.}
 
-\item{data}{If TRUE, a biv_compare object is returned, containing results of the
-comparison.}
+\item{data}{If TRUE, a biv_compare object is returned, containing the results
+of the comparison.}
 
-\item{strata, strata_bench}{A character vector determining strata variables used to
-weight the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package.
-They have to be part of the respective data frame. If less characters strings are provided,
-than in \code{dfs}, the first input is used to weight every df or benchmark, where no input
-is provided.}
+\item{strata, strata_bench}{A character vector determining strata variables
+that is used to weight the \code{dfs} or \code{benchmarks} with the help of
+the \code{survey} package. It has to be part of the respective data frame.
+If fewer characters strings are provided, than in \code{dfs}, the first input
+is used to weight every df or benchmark, where no input is provided.}
 
 \item{id_bench, id}{A character vector determining id variables used to weight
 the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package. They have
@@ -75,25 +80,27 @@ than in \code{dfs}, the first input is used to weight every df or benchmark, whe
 is provided.}
 
 \item{weight_bench, weight}{A character vector determining variables to weight
-the \code{dfs} of \code{benchmarks}. They have to be part of the respective data frame.
-If less characters strings are provided, than in \code{dfs}, the first input is used
-to weight every df or benchmark, where no input is provided. If a weight variable is
-provided also an id variable is needed. For weighting, the \code{survey} package is used.}
+the \code{dfs} of \code{benchmarks}. They have to be part of the respective
+data frame. If fewer characters strings are provided, than in \code{dfs},
+the first input is used to weight every df or benchmark, where no input is
+provided. If a weight variable is provided also an id variable is needed.
+For weighting, the \code{survey} package is used.}
 
 \item{p_value}{A number between zero and one to determine the maximum significance niveau.}
 
-\item{p_adjust}{Can be either TRUE or a character string indicating a adjustment method.
-If p_adjust=T the p_values will be adjusted with the Bonferroni adjustment method, by default,
-to account for the problem of multiple comparisons. All adjustment methods available
-in \code{\link{p.adjust}} can be used here, with the same character strings.}
+\item{p_adjust}{Can be either TRUE or a character string indicating an
+adjustment method.If p_adjust=T the p_values will be adjusted with the
+Bonferroni adjustment method, by default,to account for the problem of
+multiple comparisons. All adjustment methods available in
+\code{\link{p.adjust}} can be used here, with the same character strings.}
 
-\item{varlabels}{A character string or vector of character strings containing the new
-names of variables, also used in plot.}
+\item{varlabels}{A character string or vector of character strings containing
+the new names of variables that is used in the plot.}
 
 \item{plot_title}{A character string containing the title of the plot.}
 
-\item{plots_label}{A character string or vector of character strings containing the new
-names of the data frames , also used in plot.}
+\item{plots_label}{A character string or vector of character strings
+containing the new names of the data frames that is used in the plot.}
 
 \item{diff_perc}{If true a percental difference between surveys and benchmarks is
 displayed in the plot.}
@@ -104,42 +111,56 @@ difference between surveys in the plot.}
 \item{perc_diff_transparance}{A number to determine the transparency of the displayed
 percental difference between surveys in the plot.}
 
-\item{note}{If note = True, a note will be displayed to describe the Plot.}
+\item{note}{If note = True, a note will be displayed to describe the plot.}
 
 \item{order}{A character vector to determine in which order the variables should be
 displayed in the plot.}
 
-\item{breaks}{A vector to label the color scheme in the in the legend.}
+\item{breaks}{A vector to label the color scheme in the legend.}
 
 \item{colors}{A vector to determine the colors in the plot.}
 
 \item{mar}{A vector that determines the margins of the plot.}
 
-\item{grid}{Grid determines the color of the lines between the tiles of the heatmap.}
+\item{grid}{A color string, that determines the color of the lines between
+the tiles of the heatmap.}
 
 \item{gradient}{If gradient = TRUE, colors in the heatmap will be more or less
 transparent, depending on the difference in Pearson's r of the data frames of comparison.}
 
-\item{sum_weights}{A vector containing information for every variable to weight them in
-the displayed percental difference calculation. It can be used if some variables are over-
-or underrepresented in the analysis.}
+\item{sum_weights}{A vector containing information for every variable to
+weigh them in the displayed percental-difference calculation. It can be used
+if some variables are over- or underrepresented in the analysis.}
 
 \item{missings_x}{If TRUE, missing pairs in the plot will be marked with an X.}
 
-\item{legend_show_x}{If true the X will be shown in the legend. At the moment, das does
-not yet work correctly.}
+\item{remove_nas}{A character string, that indicates how missing should be
+removed, can either be "all", two remove all cases that contain NA in any
+of the variables, or "pairwise", to remove NAs separately for every variable
+pair when calculating Pearson's r}
 
-\item{remove_nas}{A character string, that indicates how missing should be removed, can either be
-"all", two remove all cases that contain NA in any of the variables, or "pairwise", to remove nas
-seperately for every variable pair when calculating Pearson's r}
-
-\item{ncol_facet}{Number of colomns used in faced_wrap() for the plots.}
+\item{ncol_facet}{Number of columns used in faced_wrap() for the plots.}
 
 \item{nboots}{A numeric value indicating the number of bootstrap replications.
-If nboots = 0 no bootstrapping will be performed. Else nboots must be >2. Note,
-that bootstraping can be very computational heavy and can therefore take a while.}
+If nboots = 0 no bootstrapping will be performed. Else nboots must be >2.
+Note, that bootstrapping can be very computational heavy and can therefore
+take a while.}
 
-\item{parallel}{If True, all detected cors will be used to in bootstrapping.}
+\item{parallel}{Can be either FALSE, or a number of cores that should be used
+in the function. If FALSE, only one core will be used otherwise the given
+number of cores.}
+
+\item{adjustment_weighting}{A character vector indicating if adjustment
+weighting should be used. it can either be "raking" or "post_start".}
+
+\item{adjustment_vars}{Variables used to adjust the survey when using raking
+or post stratification.}
+
+\item{raking_targets}{A List of raking targets that can be given to the rake
+function of \code{\link[survey]{rake}}, to rake the dfs}
+
+\item{post_targets}{A List of post_stratification targets that can be given to the rake
+function of \code{\link[survey]{postStratify}}, to post_stratificatify the dfs}
 }
 \value{
 A object generated with the help of \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}}, used to visualize
@@ -168,6 +189,7 @@ the correlations are either in opposite directions,or one is double the size of 
 \examples{
 
 ## Get Data for comparison
+require(wooldridge)
 card<-wooldridge::card
 
 south <- card[card$south==1,]
@@ -181,5 +203,6 @@ bivar_comp<-sampcompR::biv_compare(dfs = c("north","white"),
                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
                                    data=FALSE)
 bivar_comp
+
 
 }
