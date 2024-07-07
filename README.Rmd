@@ -422,8 +422,6 @@ In general, the package's functions can be ordered into one of four categories. 
 
 -   `uni_compare()` can be used to make a univariate comparison and get an object usable in the other univariate comparison functions or plot the results directly.
 
--   `uni_compare2()` is similar to uni_compare() but better suited for weighted comparisons.
-
 -   `plot_uni_compare()` can be used to plot the results of the `uni_compare()` function.
 
 -   `uni_compare_table()` can be used to get a table for the results of the `uni_compare()` function.
@@ -440,9 +438,7 @@ In general, the package's functions can be ordered into one of four categories. 
 
 ### Multivariate Comparison Functions
 
--   `multi_compare()` can be used to make a multivariate comparison and get an object usable in the other bivariate comparison functions or plot the results directly.
-
--   `multi_compare2()` needs a slightly more complicated input, however, it is suitable to compare any glm() model between the data frame and the benchmark.
+-   `multi_compare()` can be used to make a multivariate comparison and get an object usable in the other bivariate comparison functions or plot the results directly. It is suitable to compare any glm() model between the data frame and the benchmark
 
 -   `plot_multi_compare()` can be used to plot the results of the `multi_compare()` function.
 
