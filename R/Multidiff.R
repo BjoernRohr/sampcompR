@@ -1146,7 +1146,7 @@ summary_glm_compare<-function (glm_comp_object, print_p=F, print_se=F){
 #' @param print_se If \code{TRUE}, additionally standard errors will be printed.
 #' @param weight,weight_bench A character vector containing the name of the weight
 #' variable in the respective data frame. If provided the data frame will be weighted
-#' using the \code{\link{survey}}. Also \code{id} must be provided.
+#' using the \code{\link[survey]{svydesign}} function. Also \code{id} must be provided.
 #' @param id,id_bench A character vector containing the name of the id variable in the respectiv
 #' data frame. Only needed for weighting.
 #' @param strata,strata_bench A character vector containing the name of the strata variable
@@ -1156,7 +1156,7 @@ summary_glm_compare<-function (glm_comp_object, print_p=F, print_se=F){
 #' function for the respective data frame.
 #' @param robust_se A logical value If \code{TRUE} instead of normal standard errors,  
 #' heteroscedasticity-consistent standard errors will be used in the analysis to 
-#' calculate them the \code{\link{sandwich}} and \code{\link[lmtest]{coeftest}} 
+#' calculate them the \code{\link[sandwich]{vcovHC}} and \code{\link[lmtest]{coeftest}} 
 #' packages are used.
 #' @param p_adjust A logical input or character string indicating an adjustment 
 #' method usable in the \code{method} parameter of \code{\link[stats]{p.adjust}}. 

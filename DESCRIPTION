@@ -2,8 +2,7 @@ Package: sampcompR
 Title: Comparing and Visualizing Differences Between Surveys
 Version: 0.2.0
 Authors@R: 
-    person("Bjoern", "Rohr",  email= "Bjoern.Rohr@gesis.org", role = c("aut", "cre","cph"),
-           comment = c(ORCID = 0000-0001-6504-9516))
+    person("Bjoern", "Rohr",  email= "bjoern.rohr@gesis.org", role = c("aut", "cre","cph"))
 Description: A bundle of functions, to easily analyze and visualise differences 
     between samples or subsamples on three levels. The comparisons can be univariate,
     bivariate or multivariate. 

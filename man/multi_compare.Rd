@@ -85,7 +85,7 @@ p-values will be printed.}
 
 \item{weight, weight_bench}{A character vector containing the name of the weight
 variable in the respective data frame. If provided the data frame will be weighted
-using the \code{\link{survey}}. Also \code{id} must be provided.}
+using the \code{\link[survey]{svydesign}} function. Also \code{id} must be provided.}
 
 \item{id, id_bench}{A character vector containing the name of the id variable in the respectiv
 data frame. Only needed for weighting.}
@@ -99,7 +99,7 @@ function for the respective data frame.}
 
 \item{robust_se}{A logical value If \code{TRUE} instead of normal standard errors,
 heteroscedasticity-consistent standard errors will be used in the analysis to
-calculate them the \code{\link{sandwich}} and \code{\link[lmtest]{coeftest}}
+calculate them the \code{\link[sandwich]{vcovHC}} and \code{\link[lmtest]{coeftest}}
 packages are used.}
 
 \item{p_adjust}{A logical input or character string indicating an adjustment
