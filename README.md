@@ -182,9 +182,6 @@ biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
 #>     set_names
 #> [1] "survey 1 of 2 is compared"
 #> [1] "survey 2 of 2 is compared"
-```
-
-``` r
 
 sampcompR::plot_biv_compare(biv_data)
 ```
@@ -339,9 +336,6 @@ multi_data1_ols<-sampcompR::multi_compare(df=north,
 #> Overall difference between north & south: 25% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
-```
-
-``` r
 
 # compare the black and white data frames
 multi_data2_ols<-sampcompR::multi_compare(df=black, 
@@ -361,9 +355,6 @@ multi_data2_ols<-sampcompR::multi_compare(df=black,
 #> Overall difference between black & white: 12.5% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
-```
-
-``` r
 
 # plot the results
 sampcompR::plot_multi_compare(c("multi_data1_ols","multi_data2_ols"),
@@ -423,9 +414,6 @@ multi_data1_log<-sampcompR::multi_compare(df=north,
 #> Overall difference between north & south: 0% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
-```
-
-``` r
 
 # compare the black and white data frames
 multi_data2_log<-sampcompR::multi_compare(df=black, 
@@ -445,9 +433,6 @@ multi_data2_log<-sampcompR::multi_compare(df=black,
 #> Overall difference between black & white: 25% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
-```
-
-``` r
 
 
 # merge those  multi_compare_objects to the ols based objects
@@ -639,7 +624,7 @@ multiple comparisons.
     variables given to the function.
 
 -   `descriptive_table` can be used to get a descriptive table for a
-    Dataset, including weighting.
+    dataset, including weighting.
 
 ## References
 
