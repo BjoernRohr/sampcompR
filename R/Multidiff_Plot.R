@@ -1666,8 +1666,9 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
 
 
   if (diff_perc==T) {
+    label=summary_df$label
     if (diff_perc_position== "top_left") {
-      comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = rep(-Inf,length(abel)), 
+      comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = rep(-Inf,length(label)), 
                                                                             y = rep(Inf,length(label)), 
                                                                             hjust = rep(0,length(label)), 
                                                                             vjust = rep(1,length(label))), 

@@ -141,7 +141,7 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
       
       if(is.null(adj_weight_design)==F){
         
-        raked_weight<-weights(adj_weight_design[[i]])
+        raked_weight<-stats::weights(adj_weight_design[[i]])
       weight<-data_list[[i]][,weight_var]
       weight[1:length(raked_weight)]<-raked_weight
       data_list[[i]][,weight_var]<-weight
@@ -263,7 +263,7 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
   if(type=="rake_interact"){
     
     if(is.null(adj_weight_design)==F){
-    raked_weight<-weights(adj_weight_design[[i]])
+    raked_weight<-stats::weights(adj_weight_design[[i]])
     weight<-rep(1,nrow(data_list[[i]]))
     weight[1:length(raked_weight)]<-raked_weight
     
@@ -282,7 +282,7 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
 
 
 ### weight every model ###
-weighted_glm <- function(formula, design=NULL, family=gaussian(link = "identity"), 
+weighted_glm <- function(formula, design=NULL, family=stats::gaussian(link = "identity"), 
                               adjustment_vars=NULL,
                               raking_targets=NULL,
                               replicates=NULL) {
@@ -331,7 +331,7 @@ run_glm<-function(df_comb=NULL,dependent,independent, design_list=NULL,
                   raking_targets=NULL,
                   design_list_df=NULL,
                   replicates=NULL,
-                  family=gaussian(link = "identity"),
+                  family=stats::gaussian(link = "identity"),
                   formula_list=NULL){
   ### get formular for glm regression ###
   glm_list<-list()
@@ -369,7 +369,7 @@ run_glm<-function(df_comb=NULL,dependent,independent, design_list=NULL,
     
     if(is.null(formula_list)==F){
       if(type=="interact"){
-        form<-update(formula_list,. ~ . * sample_ident)
+        form<-stats::update(formula_list,. ~ . * sample_ident)
         if(is.null(design_list)) glm_next<- stats::glm(stats::as.formula(form), data = comb_data, family = family)
         if(is.null(design_list)==F) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates=replicates,family = family)}
       
@@ -403,7 +403,7 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
                          p_adjust=NULL, nboots=0, df=NULL,benchmark=NULL,
                          id=NULL,id_bench=NULL, weight = NULL,weight_bench = NULL,
                          strata = NULL, strata_bench = NULL, rm_na = "pairwise", 
-                         family = gaussian(link = "identity"), 
+                         family = stats::gaussian(link = "identity"), 
                          parallel=F, out_models=F,
                          adjustment_vars=NULL,raking_targets=NULL,
                          post_targets=NULL){
@@ -1235,7 +1235,7 @@ summary_glm_compare<-function (glm_comp_object, print_p=F, print_se=F){
 
 
 multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_list=NULL, 
-                          family=stats::gaussian(link = "identity"),rm_na="pairwise",out_output_list=T,
+                          family="ols",rm_na="pairwise",out_output_list=T,
                           out_df=F, out_models=F, print_p=F, print_se=F, weight=NULL, id=NULL,
                           strata=NULL, nest=FALSE, weight_bench=NULL, id_bench=NULL,strata_bench=NULL,
                           nest_bench=FALSE, robust_se=F, p_adjust=NULL, names_df_benchmark=NULL, 
@@ -1292,7 +1292,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
                                 silence_summary=silence_summary, nboots = nboots, 
                                 parallel = parallel,adjustment_vars=adjustment_vars,
                                 raking_targets=raking_targets, post_targets = post_targets,
-                                family = binomial(link = "logit"))}}
+                                family = stats::binomial(link = "logit"))}}
   
   output
 }
@@ -2715,7 +2715,7 @@ multi_boot_sub<-function(df,nboots=2000,benchmark,dependent,independent,
                          weight_df = NULL,weight_bench = NULL,
                          stratas = NULL, strata_bench = NULL, 
                          rm_na = "pairwise",
-                         family=gaussian(link = "identity"), 
+                         family=stats::gaussian(link = "identity"), 
                          adjustment_vars=NULL,
                          raking_targets=NULL,
                          post_targets=NULL){
@@ -2977,7 +2977,7 @@ multi_boot<-function(df,benchmark,dependent,independent,formula_list=NULL,
                      id = NULL,
                      id_bench = NULL,weight = NULL,weight_bench = NULL,
                      strata = NULL, strata_bench = NULL, rm_na = "pairwise",
-                     family=gaussian(link = "identity"), nboots=1000, 
+                     family=stats::gaussian(link = "identity"), nboots=1000, 
                      parallel=F, ref=NULL,
                      adjustment_vars=NULL,
                      raking_targets=NULL, 

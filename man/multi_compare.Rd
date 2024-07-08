@@ -10,7 +10,7 @@ multi_compare(
   independent = NULL,
   dependent = NULL,
   formula_list = NULL,
-  family = stats::gaussian(link = "identity"),
+  family = "ols",
   rm_na = "pairwise",
   out_output_list = T,
   out_df = F,

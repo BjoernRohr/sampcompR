@@ -427,6 +427,7 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
 
 
   if (diff_perc==T) {
+    label<-diff_summary$label
     comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = rep(Inf,length(label)), 
                                                                            y = rep(Inf,length(label)), 
                                                                            hjust = rep(1,length(label)), 
@@ -809,8 +810,8 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = T,
   
   #return(list(variables,varlabels,unique(plot_title[[1]]$x)))
   plot_list[[1]]<-plot_list[[1]] |> 
-    dplyr::mutate(x=forcats::fct_recode(x, !!! setNames(order, varlabels)),
-           y=forcats::fct_recode(y, !!! setNames(order, varlabels)))
+    dplyr::mutate(x=forcats::fct_recode(plot_list[[1]]$x, !!! stats::setNames(order, varlabels)),
+           y=forcats::fct_recode(plot_list[[1]]$y, !!! stats::setNames(order, varlabels)))
   
   
   
@@ -1314,7 +1315,7 @@ r_cor_func<-function(design,var1,var2,corrtype="pearson"){
   if(corrtype=="spearman"){
     
     svyrank<-function(formula, design){
-      mf <- stats::model.frame(formula, stats::model.frame(design), na.action = na.omit)
+      mf <- stats::model.frame(formula, stats::model.frame(design), na.action = stats::na.omit)
       y<-mf[,1]
       ii <- order(y)
       n <- length(y)
@@ -1451,7 +1452,7 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
       #adjustment_vars<-purrr::map(paste0("~",adjustment_vars),as.formula)
       
       survey_design_post <- survey::postStratify(design= df_design, 
-                                         strata=reformulate(adjustment_vars), 
+                                         strata=stats::reformulate(adjustment_vars), 
                                          population=post_targets,
                                          partial = F)
       

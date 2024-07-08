@@ -1,3 +1,12 @@
 # sampcompR (development version)
 
 * Initial CRAN submission.
+
+## Changes in version 0.2 (2024-08-07)
+
+* We implemented better bootstrapping, that will use weighting in every bootstrap iteration, 
+  for all main functions (\code{uni_compare}, \code{biv_compare}, \code{multi_compare}.
+
+* The functions are much faster during bootstrapping now.
+
+* The possibility to weight the dataset to the benchmark using \code{raking} and \code{post-stratification}.

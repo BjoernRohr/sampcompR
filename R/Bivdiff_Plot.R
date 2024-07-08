@@ -1071,6 +1071,7 @@ plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
 
 
   if (diff_perc==T) {
+    label<-summary_df$label
     comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x=rep(Inf,length(label)), 
                                                                           y=rep(Inf,length(label)),  
                                                                           hjust = rep(1,length(label)), 

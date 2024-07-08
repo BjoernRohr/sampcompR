@@ -99,23 +99,23 @@ uni_compare_table<-function(uni_compare_object,
 
   
   if(isTRUE(ci_line)) {
-  base<-base|> dplyr::mutate(Variables=factor(Variables,levels= levels,labels=varlabels)) |> 
-    dplyr::arrange(Variables,name)}
+  base<-base|> dplyr::mutate(Variables=factor(base$Variables,levels= levels,labels=varlabels))  
+  base<-base|>dplyr::arrange(base$Variables,base$name)}
 
   if(isFALSE(ci_line)) {
-  base<-base|> dplyr::mutate(Variables=factor(Variables,levels= levels,labels=varlabels)) |> 
-    dplyr::arrange(Variables)}
+  base<-base|> dplyr::mutate(Variables=factor(base$Variables,levels= levels,labels=varlabels)) 
+  base<-base|> dplyr::arrange(base$Variables)}
   
   
   if(isTRUE(ci_line)) {
     base<-base|> 
     #dplyr::rename_with(~paste0(df_names),starts_with("value")) |> 
-    dplyr::mutate(Variables = as.character(Variables)) |> 
+    dplyr::mutate(Variables = as.character(base$Variables)) |> 
     dplyr::select(-"name")}
   if(isFALSE(ci_line)) {
     base<-base|> 
     #dplyr::rename_with(~paste0(df_names),starts_with("value")) |> 
-    dplyr::mutate(Variables = as.character(Variables)) }
+    dplyr::mutate(Variables = as.character(base$Variables)) }
   
   
   if(isTRUE(ci_line)) base$Variables[seq(2, nrow(base), 2)]<-""
@@ -204,9 +204,9 @@ subfunc_uni_compare_table<-function(uni_compare_object, conf_adjustment=F,names=
   if(isTRUE(conf_adjustment)) uni_compare_object <- uni_compare_object$data |> 
       dplyr::select(c("varnames","sample","t_vec","n_df",
                "n_bench","ci_lower_adjusted","ci_upper_adjusted")) |> 
-      dplyr::mutate(ci_lower = ci_lower_adjusted,
-             ci_upper = ci_upper_adjusted) |> 
-      dplyr::select(-ci_lower_adjusted,-ci_upper_adjusted)|> 
+      dplyr::mutate(ci_lower = uni_compare_object$data$ci_lower_adjusted,
+             ci_upper = uni_compare_object$data$ci_upper_adjusted) |> 
+      dplyr::select(-"ci_lower_adjusted",-"ci_upper_adjusted")|> 
       tibble::tibble() |> 
       dplyr::filter(sample==i)
   
@@ -214,30 +214,34 @@ subfunc_uni_compare_table<-function(uni_compare_object, conf_adjustment=F,names=
   very_low_pos<-paste0(">",format(0,nsmall=ndigits))
   
   uni_compare_object<- uni_compare_object|> 
-    dplyr::transmute(Variables=varnames,
+    dplyr::transmute(Variables=uni_compare_object$varnames,
               t_vec=as.character(format(round(uni_compare_object$t_vec,ndigits), nsmall=ndigits)),
               ci_lower=uni_compare_object$ci_lower,
               ci_upper=uni_compare_object$ci_upper,
-              ci_lower=ifelse(ci_lower!=0 & round(ci_lower,ndigits)==0,
-                              ifelse(ci_lower<0,very_low_neg,very_low_pos),
-                              format(round(ci_lower,ndigits), nsmall=ndigits)),
-              ci_upper=ifelse(ci_upper!=0 & round(ci_upper,ndigits)==0,
-                              ifelse(ci_upper<0,very_low_neg,very_low_pos),
-                              format(round(ci_upper,ndigits), nsmall=ndigits)),
-              cis = paste0("(",ci_lower,", ",ci_upper,")")) |> 
-    dplyr::select(-ci_lower,-ci_upper)
+              ci_lower=ifelse(uni_compare_object$ci_lower!=0 & round(uni_compare_object$ci_lower,ndigits)==0,
+                              ifelse(uni_compare_object$ci_lower<0,very_low_neg,very_low_pos),
+                              format(round(uni_compare_object$ci_lower,ndigits), nsmall=ndigits)),
+              ci_upper=ifelse(uni_compare_object$ci_upper!=0 & round(uni_compare_object$ci_upper,ndigits)==0,
+                              ifelse(uni_compare_object$ci_upper<0,very_low_neg,very_low_pos),
+                              format(round(uni_compare_object$ci_upper,ndigits), nsmall=ndigits)))
+  
+  uni_compare_object<- uni_compare_object|>
+    dplyr::mutate(cis = paste0("(",uni_compare_object$ci_lower,", ",uni_compare_object$ci_upper,")")) |> 
+    dplyr::select(-"ci_lower",-"ci_upper")
   
   if(isFALSE(ci_line)){
     uni_compare_object<- uni_compare_object |> 
-      dplyr::transmute(Variables=Variables,
-                       value= paste(t_vec,cis))
+      dplyr::transmute(Variables=uni_compare_object$Variables,
+                       value= paste(uni_compare_object$t_vec,uni_compare_object$cis))
   }
   
   if(isTRUE(ci_line)) {
   
     uni_compare_object<- uni_compare_object |> 
-      tidyr::pivot_longer(-c(Variables)) |> 
-      dplyr::mutate(name=factor(name, levels= c("t_vec","cis")))}
+      tidyr::pivot_longer(-"Variables") 
+    
+    uni_compare_object<- uni_compare_object |>
+      dplyr::mutate(name=factor(uni_compare_object$name, levels= c("t_vec","cis")))}
   
   
   uni_compare_object
