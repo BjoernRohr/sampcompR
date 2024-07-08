@@ -643,7 +643,7 @@ multiple comparisons.
 
 ## References
 
-Rohr, B., Silber, H., Felderer, B. (2023), “Comparing the accuracy of
+Rohr, B., Silber, H., Felderer, B. (2024), “Comparing the accuracy of
 univariate, bivariate, and multivariate estimates across probability and
 non-probability surveys with populations benchmarks”, SocArXiv,
 Available at <https://doi.org/10.31235/osf.io/n6ehf>
