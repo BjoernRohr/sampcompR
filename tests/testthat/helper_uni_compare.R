@@ -48,7 +48,7 @@ local_test_data_uni2 <- function(env = parent.frame()) {
   south<<-wooldridge::card[wooldridge::card$south==1,]
   
   
-  set.seed(1,kind = "Mersenne-Twister", sample.kind = "default")
+  set.seed(1,kind = "Mersenne-Twister", sample.kind = "Rounding")
   
   ### analyze data ###
   uni_data<-uni_compare(dfs = c("north","black"),
