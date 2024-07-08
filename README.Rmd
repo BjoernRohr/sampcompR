@@ -450,7 +450,7 @@ In general, the package's functions can be ordered into one of four categories. 
 
 -   `dataequalizer()` can be used to reduce one data frame to only columns named similarly in another data frame and a list of variables given to the function.
 
-- `descriptive_table` can be used to get a descriptive table for a Dataset, including weighting.
+- `descriptive_table` can be used to get a descriptive table for a dataset, including weighting.
 
 ## References
 
