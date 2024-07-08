@@ -27,6 +27,7 @@ This is only a beta version of sampcompR. It is still in development and may con
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/BjoernRohr/sampcompR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/BjoernRohr/sampcompR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 SampcompR aims to compare the similarity of one or more data frames with one or more benchmark data frames. This is done on a univariate, bivariate, and multivariate level. The main intention of the package was to compare surveys to benchmark surveys, although other comparisons are also viable. (e.g., mode-comparisons)\

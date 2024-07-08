@@ -7,6 +7,8 @@ feel free to contact the Author (<bjoern.rohr@gesis.org>).
 # sampcompR
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/BjoernRohr/sampcompR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/BjoernRohr/sampcompR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 SampcompR aims to compare the similarity of one or more data frames with
