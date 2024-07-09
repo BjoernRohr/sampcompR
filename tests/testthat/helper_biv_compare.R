@@ -1,9 +1,8 @@
 
 local_test_data_biv1 <- function(env = parent.frame(), remove_nas="all") {
   
-  list.of.packages <- c("wooldridge")
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) install.packages(new.packages)
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge")
   
   black<<-wooldridge::card[wooldridge::card$black==1,]
   north<<-wooldridge::card[wooldridge::card$south==0,]
@@ -36,9 +35,8 @@ local_test_data_biv1 <- function(env = parent.frame(), remove_nas="all") {
 
 local_test_data_biv2 <- function(env = parent.frame()) {
   
-  list.of.packages <- c("wooldridge")
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) install.packages(new.packages)
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge") 
   
   black<<-wooldridge::card[wooldridge::card$black==1,]
   north<<-wooldridge::card[wooldridge::card$south==0,]

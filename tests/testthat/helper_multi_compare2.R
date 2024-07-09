@@ -2,6 +2,9 @@
 local_test_multi_compare1_1 <- function(env = parent.frame()){
   
   ## Get Data for comparison
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge")
+  
   card<-wooldridge::card
   
   south <- card[card$south==1,]
@@ -23,6 +26,9 @@ local_test_multi_compare1_1 <- function(env = parent.frame()){
 local_test_multi_compare1_1_all <- function(env = parent.frame()){
   
   ## Get Data for comparison
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge")
+  
   card<-wooldridge::card
   
   south <- card[card$south==1,]
@@ -43,6 +49,9 @@ local_test_multi_compare1_1_all <- function(env = parent.frame()){
 local_test_multi_compare1_2_all <- function(env = parent.frame()){
   
   ## Get Data for comparison
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge")
+  
   card<-wooldridge::card
   
   south <- card[card$south==1,]
@@ -68,6 +77,9 @@ local_test_multi_compare1_2_all <- function(env = parent.frame()){
 local_test_multi_compare2_1_all <- function(env = parent.frame()){
 
   ## Get Data for comparison
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge")
+  
   card<-wooldridge::card
 
 
@@ -97,6 +109,9 @@ local_test_multi_compare2_1_all <- function(env = parent.frame()){
 local_test_multi_compare2_2_all <- function(env = parent.frame()){
 
   ## Get Data for comparison
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge")
+  
   card<-wooldridge::card
 
 
@@ -127,6 +142,9 @@ normal_glm<-function(env = parent.frame()){
   
   
   ## Get Data for comparison
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge")
+  
   card<-wooldridge::card
   
   north <- card[card$south==0,]

@@ -2,9 +2,8 @@
 local_test_data_uni1 <- function(env = parent.frame(), summet="avg1",
                                  nboots=20, funct="rel_mean") {
   
-  list.of.packages <- c("wooldridge")
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) install.packages(new.packages)
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge")
   
   black<<-wooldridge::card[wooldridge::card$black==1,]
   north<<-wooldridge::card[wooldridge::card$south==0,]
@@ -38,9 +37,8 @@ local_test_data_uni1 <- function(env = parent.frame(), summet="avg1",
 
 local_test_data_uni2 <- function(env = parent.frame()) {
   
-  list.of.packages <- c("wooldridge")
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) install.packages(new.packages)
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge")
   
   black<<-wooldridge::card[wooldridge::card$black==1,]
   north<<-wooldridge::card[wooldridge::card$south==0,]
@@ -70,9 +68,8 @@ local_test_data_uni2 <- function(env = parent.frame()) {
 
 local_test_data_uni3 <- function(env = parent.frame()) {
   
-  list.of.packages <- c("wooldridge")
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) install.packages(new.packages)
+  if (!requireNamespace("wooldridge", quietly = TRUE))
+    install.packages("wooldridge")
   
   card1<<-wooldridge::card
   card2<<-wooldridge::card
