@@ -32,37 +32,37 @@ reduce_df_glm <- function (df,dependent=NULL,independent=NULL,formula_list=NULL,
   dependent<-dependent[dependent %in% colnames(df)]
 
   variables<-c(dependent,independent)
-  if (is.null(weight_var)==F) weighting<-c(weight_var,id)
-  if (is.null(strata)==F) weighting<-c(weighting,strata)
+  if (is.null(weight_var)==FALSE) weighting<-c(weight_var,id)
+  if (is.null(strata)==FALSE) weighting<-c(weighting,strata)
   #adjustment_vars<-adjustment_vars[!(adjustment_vars %in% variables)]
 
-  if (is.null(weight_var)& is.null(adjustment_vars)==F) df<-subset(df, select=c(variables,adjustment_vars))
-  if (is.null(weight_var)& is.null(adjustment_vars)==T) df<-subset(df, select=c(variables))
+  if (is.null(weight_var)& is.null(adjustment_vars)==FALSE) df<-subset(df, select=c(variables,adjustment_vars))
+  if (is.null(weight_var)& is.null(adjustment_vars)==TRUE) df<-subset(df, select=c(variables))
   
-  if (is.null(weight_var)==F & is.null(adjustment_vars)==F) df<-subset(df, select=c(variables,weighting,adjustment_vars))
-  if (is.null(weight_var)==F & is.null(adjustment_vars)==T) df<-subset(df, select=c(variables,weighting))
+  if (is.null(weight_var)==FALSE & is.null(adjustment_vars)==FALSE) df<-subset(df, select=c(variables,weighting,adjustment_vars))
+  if (is.null(weight_var)==FALSE & is.null(adjustment_vars)==TRUE) df<-subset(df, select=c(variables,weighting))
   #reduce df to dependent or independent variables
   if(rm_na=="listwise") df<-stats::na.omit(df)
 
   #reduce df to the model
-  if(is.null(adjustment_vars)==T){
+  if(is.null(adjustment_vars)==TRUE){
   for (i in 1:length(dependent)){
     if (is.null(weight_var)) dataframe<-subset(df,select = c(dependent[i],independent))
-    if (is.null(weight_var)==F) dataframe<-subset(df,select = c(dependent[i],independent, weighting))
-    if (is.null(weight_var)==F) names(dataframe)[names(dataframe)==weight_var]<-"df_weights"
-    if (is.null(weight_var)==F & is.null(id)==F) names(dataframe)[names(dataframe)==id]<-"id_df"
-    if (is.null(weight_var)==F & is.null(strata)==F) names(dataframe)[names(dataframe)==strata]<-"strata_df"
+    if (is.null(weight_var)==FALSE) dataframe<-subset(df,select = c(dependent[i],independent, weighting))
+    if (is.null(weight_var)==FALSE) names(dataframe)[names(dataframe)==weight_var]<-"df_weights"
+    if (is.null(weight_var)==FALSE & is.null(id)==FALSE) names(dataframe)[names(dataframe)==id]<-"id_df"
+    if (is.null(weight_var)==FALSE & is.null(strata)==FALSE) names(dataframe)[names(dataframe)==strata]<-"strata_df"
     #if (rm_na=="pairwise") dataframe<-stats::na.omit(dataframe)
     df_list[[i]]<-dataframe}}
   
-  if(is.null(adjustment_vars)==F){
+  if(is.null(adjustment_vars)==FALSE){
   for (i in 1:length(dependent)){
     adjustment_vars_i<-adjustment_vars[!(adjustment_vars %in% independent) &!(adjustment_vars %in% dependent[i])]
     if (is.null(weight_var)) dataframe<-subset(df,select = c(dependent[i],independent,adjustment_vars_i))
-    if (is.null(weight_var)==F) dataframe<-subset(df,select = c(dependent[i],independent, weighting,adjustment_vars_i))
-    if (is.null(weight_var)==F) names(dataframe)[names(dataframe)==weight_var]<-"df_weights"
-    if (is.null(weight_var)==F & is.null(id)==F) names(dataframe)[names(dataframe)==id]<-"id_df"
-    if (is.null(weight_var)==F & is.null(strata)==F) names(dataframe)[names(dataframe)==strata]<-"strata_df"
+    if (is.null(weight_var)==FALSE) dataframe<-subset(df,select = c(dependent[i],independent, weighting,adjustment_vars_i))
+    if (is.null(weight_var)==FALSE) names(dataframe)[names(dataframe)==weight_var]<-"df_weights"
+    if (is.null(weight_var)==FALSE & is.null(id)==FALSE) names(dataframe)[names(dataframe)==id]<-"id_df"
+    if (is.null(weight_var)==FALSE & is.null(strata)==FALSE) names(dataframe)[names(dataframe)==strata]<-"strata_df"
     #if (rm_na=="pairwise") dataframe<-stats::na.omit(dataframe)
     df_list[[i]]<-dataframe}
   
@@ -89,35 +89,35 @@ combine_dfs<-function(df,benchmark,dependent,independent,
     dataframe2$sample_ident<-1
     
     ### normalize the weights if they are present ###
-    if (is.null(weight)==F) dataframe1$df_weights<- dataframe1$df_weights/(sum(dataframe1$df_weights)/nrow(dataframe1))
-    if (is.null(weight_bench)==F) dataframe2$df_weights<- dataframe2$df_weights/(sum(dataframe2$df_weights)/nrow(dataframe2))
+    if (is.null(weight)==FALSE) dataframe1$df_weights<- dataframe1$df_weights/(sum(dataframe1$df_weights)/nrow(dataframe1))
+    if (is.null(weight_bench)==FALSE) dataframe2$df_weights<- dataframe2$df_weights/(sum(dataframe2$df_weights)/nrow(dataframe2))
     
     
-    if ((is.null(weight)==F | is.null(weight_bench)==F) & is.null(id)) dataframe1$id_df<-id_df<-1:nrow(dataframe1)
-    if (is.null(weight_bench)==F & is.null(weight)) dataframe1$df_weights<-1
-    if ((is.null(weight)==F | is.null(weight_bench)==F) & is.null(strata)==F) dataframe1$strata<-dataframe1[,strata]
-    if ((is.null(weight)==F | is.null(weight_bench)==F) & is.null(strata_bench)==F & is.null(strata)) {
+    if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(id)) dataframe1$id_df<-id_df<-1:nrow(dataframe1)
+    if (is.null(weight_bench)==FALSE & is.null(weight)) dataframe1$df_weights<-1
+    if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(strata)==FALSE) dataframe1$strata<-dataframe1[,strata]
+    if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(strata_bench)==FALSE & is.null(strata)) {
       dataframe1$strata_df<-1
     }
     
-    if ((is.null(weight)==F | is.null(weight_bench)==F) & is.null(id_bench)) dataframe2$id_df<-id_benchmark<-1:nrow(dataframe2)
-    if (is.null(weight)==F & is.null(weight_bench)) dataframe2$df_weights<-1
-    if ((is.null(weight)==F | is.null(weight_bench)==F) & is.null(strata_bench)==F) {
+    if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(id_bench)) dataframe2$id_df<-id_benchmark<-1:nrow(dataframe2)
+    if (is.null(weight)==FALSE & is.null(weight_bench)) dataframe2$df_weights<-1
+    if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(strata_bench)==FALSE) {
       dataframe2$strata_df<-as.numeric(dataframe2$strata_df)+max(as.numeric(dataframe1$strata_df))
     }
-    if ((is.null(weight)==F | is.null(weight_bench)==F) & is.null(strata_bench) & is.null(strata)==F) {
+    if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(strata_bench) & is.null(strata)==FALSE) {
       dataframe2$strata_df<-1+as.numeric(max(dataframe1$strata_df))
     }
       
     
-    if(is.null(adjustment_vars)==F){
+    if(is.null(adjustment_vars)==FALSE){
       for (r in 1:length(adjustment_vars[!(adjustment_vars%in%dependent[i]) & !(adjustment_vars%in%independent)])){
         dataframe2[adjustment_vars[!(adjustment_vars%in%dependent[i]) & !(adjustment_vars%in%independent)][r]]<-NA
       }
     }
     
     comb_data<-rbind(dataframe1,dataframe2)
-    if(is.null(weight)==F | is.null(weight_bench)==F) comb_data$id_df[comb_data$sample_ident==1]<-comb_data$id_df[comb_data$sample_ident==1]+max(comb_data$id_df[comb_data$sample_ident==0])
+    if(is.null(weight)==FALSE | is.null(weight_bench)==FALSE) comb_data$id_df[comb_data$sample_ident==1]<-comb_data$id_df[comb_data$sample_ident==1]+max(comb_data$id_df[comb_data$sample_ident==0])
     comb_df[[i]]<-comb_data
   }
 
@@ -139,7 +139,7 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
   for (i in 1:length (dependent)){
     if(type=="interact"){
       
-      if(is.null(adj_weight_design)==F){
+      if(is.null(adj_weight_design)==FALSE){
         
         raked_weight<-stats::weights(adj_weight_design[[i]])
       weight<-data_list[[i]][,weight_var]
@@ -150,7 +150,7 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
       
       weight_var<-data_list[[i]]$df_weights
       new_id<-data_list[[i]]$id_df
-      if(is.null(data_list[[i]]$strata_df)==F) strata<-data_list[[i]]$strata_df
+      if(is.null(data_list[[i]]$strata_df)==FALSE) strata<-data_list[[i]]$strata_df
       if(is.null(data_list[[i]]$strata_df))strata<-NULL
       
       
@@ -163,10 +163,10 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
     if(type=="df1"){
       
       if(is.null(id)) new_id<-c(1:nrow(data_list[[i]][data_list[[i]]$sample_ident==0,]))
-      if(is.null(id)==F) new_id<-data_list[[i]][data_list[[i]]$sample_ident==0,]$id_df
+      if(is.null(id)==FALSE) new_id<-data_list[[i]][data_list[[i]]$sample_ident==0,]$id_df
       if(is.null(weight_var)) weight_var<-rep(1,nrow(data_list[[i]][data_list[[i]]$sample_ident==0,]))
-      if(is.null(weight_var)==F) weight_var<-data_list[[i]][data_list[[i]]$sample_ident==0,]$df_weights
-      if(is.null(data_list[[i]][data_list[[i]]$sample_ident==0,]$strata_df)==F) strata<-data_list[[i]][data_list[[i]]$sample_ident==0,]$strata_df
+      if(is.null(weight_var)==FALSE) weight_var<-data_list[[i]][data_list[[i]]$sample_ident==0,]$df_weights
+      if(is.null(data_list[[i]][data_list[[i]]$sample_ident==0,]$strata_df)==FALSE) strata<-data_list[[i]][data_list[[i]]$sample_ident==0,]$strata_df
       if(is.null(data_list[[i]][data_list[[i]]$sample_ident==0,]$strata_df)) strata<-NULL
      
       
@@ -183,7 +183,7 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
         design_list[[i]] <- svrep::as_bootstrap_design(design_list[[i]],
                                                                        type = "Rao-Wu-Yue-Beaumont",
                                                                        replicates = nboots)} 
-      if(is.null(raking_targets)==F){
+      if(is.null(raking_targets)==FALSE){
         
 
         rake_margins<-purrr::map(paste0("~",adjustment_vars),stats::as.formula)
@@ -191,24 +191,24 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
         design_list[[i]] <- survey::rake(design = design_list[[i]],
                                  population.margins = raking_targets,
                                  sample.margins = rake_margins,
-                                 control = list(maxit =1000, epsilon = 1, verbose=F))
+                                 control = list(maxit =1000, epsilon = 1, verbose=FALSE))
         
         
       }
       
-      if(is.null(post_targets)==F){
+      if(is.null(post_targets)==FALSE){
       design_list[[i]] <- survey::postStratify(design= design_list[[i]], 
                                                  strata=stats::reformulate(adjustment_vars), 
                                                  population=post_targets,
-                                                 partial = F)
+                                                 partial = FALSE)
       
       
       }}
 
     if(type=="bench"){
-      if(is.null(id)==F){
+      if(is.null(id)==FALSE){
         
-      if(is.null(strata)==F) strata<-data_list[[i]][data_list[[i]]$sample_ident==1,]$strata_df
+      if(is.null(strata)==FALSE) strata<-data_list[[i]][data_list[[i]]$sample_ident==1,]$strata_df
       if(is.null(strata)) strata<-NULL
         
       design_list[[i]]<-survey::svydesign(id = ~get(id),
@@ -238,7 +238,7 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
                                                                  type = "Rao-Wu-Yue-Beaumont",
                                                                  replicates = nboots)} 
     
-    if(is.null(raking_targets)==F){
+    if(is.null(raking_targets)==FALSE){
       
       
       rake_margins<-purrr::map(paste0("~",adjustment_vars),stats::as.formula)
@@ -246,14 +246,14 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
       design_list[[i]] <- survey::rake(design = design_list[[i]],
                                population.margins = raking_targets,
                                sample.margins = rake_margins,
-                               control = list(maxit =1000, epsilon = 1, verbose=F))
+                               control = list(maxit =1000, epsilon = 1, verbose=FALSE))
     }
     
-    if(is.null(post_targets)==F){
+    if(is.null(post_targets)==FALSE){
       design_list[[i]] <- survey::postStratify(design= design_list[[i]], 
                                                strata=stats::reformulate(adjustment_vars), 
                                                population=post_targets,
-                                               partial = F)
+                                               partial = FALSE)
       }
     
   }
@@ -262,7 +262,7 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
   
   if(type=="rake_interact"){
     
-    if(is.null(adj_weight_design)==F){
+    if(is.null(adj_weight_design)==FALSE){
     raked_weight<-stats::weights(adj_weight_design[[i]])
     weight<-rep(1,nrow(data_list[[i]]))
     weight[1:length(raked_weight)]<-raked_weight
@@ -287,14 +287,14 @@ weighted_glm <- function(formula, design=NULL, family=stats::gaussian(link = "id
                               raking_targets=NULL,
                               replicates=NULL) {
   
-  # if(is.null(design_list_df)==F & is.null(adjustment_vars)==F){
+  # if(is.null(design_list_df)==FALSE & is.null(adjustment_vars)==FALSE){
   #   
   #   adjustment_vars<-purrr::map(paste0("~",adjustment_vars),stats::as.formula)
   #   #return(raking_targets)
   #   survey_design_raked <- rake(design = design_list_df, 
   #                               population.margins = raking_targets, 
   #                               sample.margins = adjustment_vars, 
-  #                               control = list(maxit =1000, epsilon = 5, verbose=F))
+  #                               control = list(maxit =1000, epsilon = 5, verbose=FALSE))
   #   
   # design$prob<-(design$prob/sum(design$prob))*length(design$prob)
   # survey_design_raked$prob<-(survey_design_raked$prob/sum(survey_design_raked$prob))*length(survey_design_raked$prob)
@@ -307,11 +307,11 @@ weighted_glm <- function(formula, design=NULL, family=stats::gaussian(link = "id
                                            family = family))
   }
   
-  if(is.null(replicates)==F){
+  if(is.null(replicates)==FALSE){
     model<-suppressWarnings(survey::svyglm(formula = stats::as.formula(formula),
                                            design = design, 
                                            family = family,
-                                           return.replicates=T))
+                                           return.replicates=TRUE))
   }
   
 
@@ -337,7 +337,7 @@ run_glm<-function(df_comb=NULL,dependent,independent, design_list=NULL,
   glm_list<-list()
   for (i in 1:length (dependent)){
 
-    if(is.null(df_comb)==F) comb_data<-df_comb[[i]]
+    if(is.null(df_comb)==FALSE) comb_data<-df_comb[[i]]
 
 
     if(type=="interact"){
@@ -356,32 +356,32 @@ run_glm<-function(df_comb=NULL,dependent,independent, design_list=NULL,
     if(is.null(formula_list)){
         if(type=="interact"){
         if(is.null(design_list)) glm_next<- stats::glm(stats::as.formula(form), data = comb_data, family = family)
-        if(is.null(design_list)==F) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates=replicates,family = family)}
+        if(is.null(design_list)==FALSE) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates=replicates,family = family)}
 
       if(type=="df1"){
         if(is.null(design_list)) glm_next<- stats::glm(stats::as.formula(form), data = comb_data[comb_data$sample_ident==0,], family = family)
-        if(is.null(design_list)==F) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates = replicates,family = family)}
+        if(is.null(design_list)==FALSE) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates = replicates,family = family)}
     
       if(type=="bench"){
         if(is.null(design_list)) glm_next<- stats::glm(stats::as.formula(form), data = comb_data[comb_data$sample_ident==1,], family = family)
-        if(is.null(design_list)==F) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates= replicates,family = family)}
+        if(is.null(design_list)==FALSE) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates= replicates,family = family)}
     }
     
-    if(is.null(formula_list)==F){
+    if(is.null(formula_list)==FALSE){
       if(type=="interact"){
         form<-stats::update(formula_list,. ~ . * sample_ident)
         if(is.null(design_list)) glm_next<- stats::glm(stats::as.formula(form), data = comb_data, family = family)
-        if(is.null(design_list)==F) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates=replicates,family = family)}
+        if(is.null(design_list)==FALSE) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates=replicates,family = family)}
       
       if(type=="df1"){
         form<-formula_list
         if(is.null(design_list)) glm_next<- stats::glm(stats::as.formula(form), data = comb_data[comb_data$sample_ident==0,], family = family)
-        if(is.null(design_list)==F) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates = replicates,family = family)}
+        if(is.null(design_list)==FALSE) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates = replicates,family = family)}
       
       if(type=="bench"){
         form<-formula_list
         if(is.null(design_list)) glm_next<- stats::glm(stats::as.formula(form), data = comb_data[comb_data$sample_ident==1,], family = family)
-        if(is.null(design_list)==F) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates= replicates,family = family)}
+        if(is.null(design_list)==FALSE) glm_next<- weighted_glm (design=design_list[[i]], formula= form,replicates= replicates,family = family)}
     }
 
     glm_list[[i]]<-glm_next
@@ -399,20 +399,20 @@ run_glm<-function(df_comb=NULL,dependent,independent, design_list=NULL,
 
 
 final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=NULL,
-                         weight_var=NULL,robust_se=F, 
+                         weight_var=NULL,robust_se=FALSE, 
                          p_adjust=NULL, nboots=0, df=NULL,benchmark=NULL,
                          id=NULL,id_bench=NULL, weight = NULL,weight_bench = NULL,
                          strata = NULL, strata_bench = NULL, rm_na = "pairwise", 
                          family = stats::gaussian(link = "identity"), 
-                         parallel=F, out_models=F,
+                         parallel=FALSE, out_models=FALSE,
                          adjustment_vars=NULL,raking_targets=NULL,
                          post_targets=NULL){
 
   output_list<-list()
-  if(out_models==T) output_list[[1]]<-glm_list
+  if(out_models==TRUE) output_list[[1]]<-glm_list
   
   if(is.null(formula_list)) forms<- purrr::map(dependent,~stats::as.formula(paste(.,"~",paste(independent, collapse = " + "))))
-  if(is.null(formula_list)==F) forms<-formula_list
+  if(is.null(formula_list)==FALSE) forms<-formula_list
   
   if(is.null(names(forms))) names(forms)<-purrr::map(forms,~as.character(.)[2])
   names(forms)<-number_occurrences(names(forms))
@@ -420,7 +420,7 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
   for (i in 1:length(forms)) {
     bmatrix1_help<- as.matrix(stats::coef(glm_list[[2]][[i]])[-1])
     bmatrix2_help<- as.matrix(stats::coef(glm_list[[3]][[i]])[-1])
-    bmatrix_diff_help<- as.matrix(extract_interaction_results(glm_list[[1]][[i]],robust_se=F)[,1])
+    bmatrix_diff_help<- as.matrix(extract_interaction_results(glm_list[[1]][[i]],robust_se=FALSE)[,1])
     
     
     colnames(bmatrix1_help)<-names(forms)[i]
@@ -429,11 +429,11 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
     rownames(bmatrix_diff_help)<-rownames(bmatrix1_help)
     
     
-    if (robust_se==F | isTRUE(weight_var)){
-      pmatrix_diff_help<- as.matrix(extract_interaction_results(glm_list[[1]][[i]],robust_se=F)[,3])
+    if (robust_se==FALSE | isTRUE(weight_var)){
+      pmatrix_diff_help<- as.matrix(extract_interaction_results(glm_list[[1]][[i]],robust_se=FALSE)[,3])
       pmatrix1_help<- as.matrix(summary(glm_list[[2]][[i]])$coefficients[, 4][-1])
       pmatrix2_help<- as.matrix(summary(glm_list[[3]][[i]])$coefficients[, 4][-1])
-      se_matrix_help<- as.matrix(extract_interaction_results(glm_list[[1]][[i]],robust_se=F)[,2])
+      se_matrix_help<- as.matrix(extract_interaction_results(glm_list[[1]][[i]],robust_se=FALSE)[,2])
       se_matrix1_help<- as.matrix(summary(glm_list[[2]][[i]])$coefficients[, "Std. Error"][-1])
       se_matrix2_help<- as.matrix(summary(glm_list[[3]][[i]])$coefficients[, "Std. Error"][-1])
       
@@ -451,11 +451,11 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
       
     }
     
-    if (robust_se==T & is.null(weight_var)){
-      pmatrix_diff_help<- as.matrix(extract_interaction_results(glm_list[[1]][[i]],robust_se=T)[,3])
+    if (robust_se==TRUE & is.null(weight_var)){
+      pmatrix_diff_help<- as.matrix(extract_interaction_results(glm_list[[1]][[i]],robust_se=TRUE)[,3])
       pmatrix1_help<- as.matrix(lmtest::coeftest(glm_list[[2]][[i]], vcov = sandwich::vcovHC(glm_list[[2]][[1]], type="HC1"))[, 4][-1])
       pmatrix2_help<- as.matrix(lmtest::coeftest(glm_list[[3]][[i]], vcov = sandwich::vcovHC(glm_list[[3]][[1]], type="HC1"))[, 4][-1])
-      se_matrix_help<- as.matrix(extract_interaction_results(glm_list[[1]][[i]],robust_se=T)[,2])
+      se_matrix_help<- as.matrix(extract_interaction_results(glm_list[[1]][[i]],robust_se=TRUE)[,2])
       se_matrix1_help<- as.matrix(lmtest::coeftest(glm_list[[2]][[i]], vcov = sandwich::vcovHC(glm_list[[2]][[1]], type="HC1"))[, "Std. Error"][-1])
       se_matrix2_help<- as.matrix(lmtest::coeftest(glm_list[[3]][[i]], vcov = sandwich::vcovHC(glm_list[[3]][[1]], type="HC1"))[, "Std. Error"][-1])
       
@@ -490,49 +490,49 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
     }
     
     if (i>1){
-      bmatrix1<- merge(bmatrix1, bmatrix1_help, by=0,all=T,sort = F)
+      bmatrix1<- merge(bmatrix1, bmatrix1_help, by=0,all=TRUE,sort = FALSE)
       rownames(bmatrix1)<-bmatrix1$Row.names
       bmatrix1$Row.names<-NULL
       bmatrix1 <- as.matrix(bmatrix1)
       
-      bmatrix2 <- merge(bmatrix2, bmatrix2_help, by=0,all=T,sort = F)
+      bmatrix2 <- merge(bmatrix2, bmatrix2_help, by=0,all=TRUE,sort = FALSE)
       rownames(bmatrix2)<-bmatrix2$Row.names
       bmatrix2$Row.names<-NULL
       bmatrix2 <- as.matrix(bmatrix2)
       
-      bmatrix_diff <- merge(bmatrix_diff, bmatrix_diff_help, by=0,all=T,sort = F)
+      bmatrix_diff <- merge(bmatrix_diff, bmatrix_diff_help, by=0,all=TRUE,sort = FALSE)
       rownames(bmatrix_diff)<-bmatrix_diff$Row.names
       bmatrix_diff$Row.names<-NULL
       bmatrix_diff <- as.matrix(bmatrix_diff)
       
       
-      pmatrix1 <- merge(pmatrix1, pmatrix1_help, by=0,all=T,sort = F)
+      pmatrix1 <- merge(pmatrix1, pmatrix1_help, by=0,all=TRUE,sort = FALSE)
       rownames(pmatrix1)<-pmatrix1$Row.names
       pmatrix1$Row.names<-NULL
       pmatrix1 <- as.matrix(pmatrix1)
       
-      pmatrix2 <- merge(pmatrix2, pmatrix2_help, by=0,all=T,sort = F)
+      pmatrix2 <- merge(pmatrix2, pmatrix2_help, by=0,all=TRUE,sort = FALSE)
       rownames(pmatrix2)<-pmatrix2$Row.names
       pmatrix2$Row.names<-NULL
       pmatrix2 <- as.matrix(pmatrix2)
       
-      pmatrix_diff <- merge(pmatrix_diff, pmatrix_diff_help, by=0,all=T,sort = F)
+      pmatrix_diff <- merge(pmatrix_diff, pmatrix_diff_help, by=0,all=TRUE,sort = FALSE)
       rownames(pmatrix_diff)<-pmatrix_diff$Row.names
       pmatrix_diff$Row.names<-NULL
       pmatrix_diff <- as.matrix(pmatrix_diff)
       
       
-      se_matrix1 <- merge(se_matrix1, se_matrix1_help, by=0,all=T,sort = F)
+      se_matrix1 <- merge(se_matrix1, se_matrix1_help, by=0,all=TRUE,sort = FALSE)
       rownames(se_matrix1)<-se_matrix1$Row.names
       se_matrix1$Row.names<-NULL
       se_matrix1 <- as.matrix(se_matrix1)
       
-      se_matrix2 <- merge(se_matrix2, se_matrix2_help, by=0,all=T,sort = F)
+      se_matrix2 <- merge(se_matrix2, se_matrix2_help, by=0,all=TRUE,sort = FALSE)
       rownames(se_matrix2)<-se_matrix2$Row.names
       se_matrix2$Row.names<-NULL
       se_matrix2 <- as.matrix(se_matrix2)
       
-      se_matrix <- merge(se_matrix, se_matrix_help, by=0,all=T,sort = F)
+      se_matrix <- merge(se_matrix, se_matrix_help, by=0,all=TRUE,sort = FALSE)
       rownames(se_matrix)<-se_matrix$Row.names
       se_matrix$Row.names<-NULL
       se_matrix <- as.matrix(se_matrix)
@@ -564,8 +564,8 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
   # t_p2<-matrix(ncol=ld, nrow=li)
   # freedom2<-matrix(ncol=ld, nrow=li)
   # 
-  # if(out_models==T) output_list[[1]]<-glm_list
-  # #if(out_models==F) output_list[[1]]<-NULL
+  # if(out_models==TRUE) output_list[[1]]<-glm_list
+  # #if(out_models==FALSE) output_list[[1]]<-NULL
   # #output_list[[2]]<-glm_list2
   # 
   # 
@@ -577,7 +577,7 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
   #     bmatrix_diff[j,i]<-bmatrix2[j,i]-bmatrix1[j,i]
   # 
   # 
-  #     if (robust_se == F | is.null(weight_var)==F){
+  #     if (robust_se == FALSE | is.null(weight_var)==FALSE){
   #       pmatrix_diff[j,i]<-summary(glm_list[[1]][[i]])$coefficients[,4][j+li+2]
   #       pmatrix1[j,i]<-summary(glm_list[[2]][[i]])$coefficients[,4][j+1]
   #       pmatrix2[j,i]<-summary(glm_list[[3]][[i]])$coefficients[,4][j+1]
@@ -586,7 +586,7 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
   #       se_matrix[j,i]<- summary(glm_list[[1]][[i]])$coefficients[,2][j+li+2]
   #     }
   # 
-  #     if (robust_se==T & is.null(weight_var)){
+  #     if (robust_se==TRUE & is.null(weight_var)){
   #       pmatrix_diff[j,i]<-lmtest::coeftest(glm_list[[1]][[i]], vcov = sandwich::vcovHC(glm_list[[1]][[i]], type="HC1"))[,4][j+li+2]
   #       pmatrix1[j,i]<-lmtest::coeftest(glm_list[[2]][[i]], vcov = sandwich::vcovHC(glm_list[[2]][[i]], type="HC1"))[,4][j+1]
   #       pmatrix2[j,i]<-lmtest::coeftest(glm_list[[3]][[i]], vcov = sandwich::vcovHC(glm_list[[3]][[i]], type="HC1"))[,4][j+1]
@@ -623,7 +623,7 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
   #boferoni correction
   ### maybe use p.adjust instead ###
 
-  if (is.null(p_adjust)==F) adjust_method<-p_adjust
+  if (is.null(p_adjust)==FALSE) adjust_method<-p_adjust
   if (is.null(p_adjust)) adjust_method<-"bonferroni"
 
   p1_adjusted <- pmatrix1
@@ -641,7 +641,7 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
                                                 n=ncol(pmatrix1)),
                            ncol = ncol(pmatrix1))}
 
-  if (is.null(p_adjust)==F){
+  if (is.null(p_adjust)==FALSE){
     #p1_used<- p1_adjusted
     #p2_used<- p2_adjusted
     p1_used<- pmatrix1
@@ -667,29 +667,29 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
   #bmatrix1_star
   bmatrix1_star<-bmatrix1
   
-  bmatrix1_star[p1_used>=0.05 & is.na(p1_used)==F]<-paste(bmatrix1[p1_used>=0.05 & is.na(p1_used)==F], "   ", sep = "")
-  bmatrix1_star[p1_used<0.05 & p1_used>=0.01 & is.na(p1_used)==F]<-paste(bmatrix1[p1_used<0.05 & p1_used>=0.01 & is.na(p1_used)==F], "*  ", sep = "")
-  bmatrix1_star[p1_used<0.01 & p1_used>=0.001 & is.na(p1_used)==F]<-paste(bmatrix1[p1_used<0.01 & p1_used>=0.001 & is.na(p1_used)==F], "** ", sep = "")
-  bmatrix1_star[p1_used<0.001 & is.na(p1_used)==F]<-paste(bmatrix1[p1_used<0.001 & is.na(p1_used)==F], "***", sep = "")
-  bmatrix1_star[bmatrix1_2>0 & is.na(p1_used)==F]<-paste("",bmatrix1_star[bmatrix1_2>0 & is.na(p1_used)==F],sep = "")
+  bmatrix1_star[p1_used>=0.05 & is.na(p1_used)==FALSE]<-paste(bmatrix1[p1_used>=0.05 & is.na(p1_used)==FALSE], "   ", sep = "")
+  bmatrix1_star[p1_used<0.05 & p1_used>=0.01 & is.na(p1_used)==FALSE]<-paste(bmatrix1[p1_used<0.05 & p1_used>=0.01 & is.na(p1_used)==FALSE], "*  ", sep = "")
+  bmatrix1_star[p1_used<0.01 & p1_used>=0.001 & is.na(p1_used)==FALSE]<-paste(bmatrix1[p1_used<0.01 & p1_used>=0.001 & is.na(p1_used)==FALSE], "** ", sep = "")
+  bmatrix1_star[p1_used<0.001 & is.na(p1_used)==FALSE]<-paste(bmatrix1[p1_used<0.001 & is.na(p1_used)==FALSE], "***", sep = "")
+  bmatrix1_star[bmatrix1_2>0 & is.na(p1_used)==FALSE]<-paste("",bmatrix1_star[bmatrix1_2>0 & is.na(p1_used)==FALSE],sep = "")
 
   #bmatrix2_star
   bmatrix2_star<-bmatrix2
   
-  bmatrix2_star[p2_used>=0.05 & is.na(p2_used)==F]<-paste(bmatrix2[p2_used>=0.05 & is.na(p2_used)==F & is.na(p2_used)==F], "   ", sep = "")
-  bmatrix2_star[p2_used<0.05 & p2_used>=0.01 & is.na(p2_used)==F]<-paste(bmatrix2[p2_used<0.05 & p2_used>=0.01 & is.na(p2_used)==F], "*  ", sep = "")
-  bmatrix2_star[p2_used<0.01 & p2_used>=0.001 & is.na(p2_used)==F]<-paste(bmatrix2[p2_used<0.01 & p2_used>=0.001 & is.na(p2_used)==F], "** ", sep = "")
-  bmatrix2_star[p2_used<0.001 & is.na(p2_used)==F]<-paste(bmatrix2[p2_used<0.001 & is.na(p2_used)==F], "***", sep = "")
-  bmatrix2_star[bmatrix2_2>0 & is.na(p2_used)==F]<-paste("",bmatrix2_star[bmatrix2_2>0 & is.na(p2_used)==F],sep = "")
+  bmatrix2_star[p2_used>=0.05 & is.na(p2_used)==FALSE]<-paste(bmatrix2[p2_used>=0.05 & is.na(p2_used)==FALSE & is.na(p2_used)==FALSE], "   ", sep = "")
+  bmatrix2_star[p2_used<0.05 & p2_used>=0.01 & is.na(p2_used)==FALSE]<-paste(bmatrix2[p2_used<0.05 & p2_used>=0.01 & is.na(p2_used)==FALSE], "*  ", sep = "")
+  bmatrix2_star[p2_used<0.01 & p2_used>=0.001 & is.na(p2_used)==FALSE]<-paste(bmatrix2[p2_used<0.01 & p2_used>=0.001 & is.na(p2_used)==FALSE], "** ", sep = "")
+  bmatrix2_star[p2_used<0.001 & is.na(p2_used)==FALSE]<-paste(bmatrix2[p2_used<0.001 & is.na(p2_used)==FALSE], "***", sep = "")
+  bmatrix2_star[bmatrix2_2>0 & is.na(p2_used)==FALSE]<-paste("",bmatrix2_star[bmatrix2_2>0 & is.na(p2_used)==FALSE],sep = "")
 
   #bmatrix_diff_star
   bmatrix_diff_star<-bmatrix_diff
   
-  bmatrix_diff_star[p_diff_used>=0.05 & is.na(p_diff_used)==F]<-paste(bmatrix_diff[p_diff_used>=0.05 & is.na(p_diff_used)==F], "   ", sep = "")
-  bmatrix_diff_star[p_diff_used<0.05 & p_diff_used>=0.01 & is.na(p_diff_used)==F]<-paste(bmatrix_diff[p_diff_used<0.05 & p_diff_used>=0.01 & is.na(p_diff_used)==F], "*  ", sep = "")
-  bmatrix_diff_star[p_diff_used<0.01 & p_diff_used>=0.001 & is.na(p_diff_used)==F]<-paste(bmatrix_diff[p_diff_used<0.01 & p_diff_used>=0.001 & is.na(p_diff_used)==F], "** ", sep = "")
-  bmatrix_diff_star[p_diff_used<0.001 & is.na(p_diff_used)==F]<-paste(bmatrix_diff[p_diff_used<0.001 & is.na(p_diff_used)==F], "***", sep = "")
-  bmatrix_diff_star[bmatrix_diff_2>0 & is.na(p_diff_used)==F]<-paste("",bmatrix_diff_star[bmatrix_diff_2>0 & is.na(p_diff_used)==F],sep = "")
+  bmatrix_diff_star[p_diff_used>=0.05 & is.na(p_diff_used)==FALSE]<-paste(bmatrix_diff[p_diff_used>=0.05 & is.na(p_diff_used)==FALSE], "   ", sep = "")
+  bmatrix_diff_star[p_diff_used<0.05 & p_diff_used>=0.01 & is.na(p_diff_used)==FALSE]<-paste(bmatrix_diff[p_diff_used<0.05 & p_diff_used>=0.01 & is.na(p_diff_used)==FALSE], "*  ", sep = "")
+  bmatrix_diff_star[p_diff_used<0.01 & p_diff_used>=0.001 & is.na(p_diff_used)==FALSE]<-paste(bmatrix_diff[p_diff_used<0.01 & p_diff_used>=0.001 & is.na(p_diff_used)==FALSE], "** ", sep = "")
+  bmatrix_diff_star[p_diff_used<0.001 & is.na(p_diff_used)==FALSE]<-paste(bmatrix_diff[p_diff_used<0.001 & is.na(p_diff_used)==FALSE], "***", sep = "")
+  bmatrix_diff_star[bmatrix_diff_2>0 & is.na(p_diff_used)==FALSE]<-paste("",bmatrix_diff_star[bmatrix_diff_2>0 & is.na(p_diff_used)==FALSE],sep = "")
 
 
 
@@ -717,8 +717,8 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
 
   if(is.null(p_adjust)) output_list[[17]]<-length(pmatrix_diff[pmatrix_diff>=0.05])/length(pmatrix_diff)
   if(is.null(p_adjust)) output_list[[18]]<-length(pmatrix_diff[pmatrix_diff<0.05])/length(pmatrix_diff)
-  if(is.null(p_adjust)==F)  output_list[[17]]<-length(p_diff_adjusted[p_diff_adjusted>=0.05])/length(p_diff_adjusted)
-  if(is.null(p_adjust)==F)  output_list[[18]]<-length(p_diff_adjusted[p_diff_adjusted<0.05])/length(p_diff_adjusted)
+  if(is.null(p_adjust)==FALSE)  output_list[[17]]<-length(p_diff_adjusted[p_diff_adjusted>=0.05])/length(p_diff_adjusted)
+  if(is.null(p_adjust)==FALSE)  output_list[[18]]<-length(p_diff_adjusted[p_diff_adjusted<0.05])/length(p_diff_adjusted)
 
   names(output_list)<-c("models_interaction",
                         "coefs_data1", "coefs_data2","coefs_difference",
@@ -787,7 +787,7 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
 # #' function for weighting.
 # #' @param nest,nest_bench A logical Vector used in the \code{\link[survey]{svydesign}}
 # #' function for the respective data frame.
-# #' @param robust_se=F A logical value If TRUE instead of normal standard errors,  heteroscedasticity-consistent
+# #' @param robust_se=FALSE A logical value If TRUE instead of normal standard errors,  heteroscedasticity-consistent
 # #' standard errors will be used in the analysis for calculation the sandwitch package and lmtest packages are used.
 # #' @param p_adjust A logical value If TRUE the bonferroni adjusted p-values are used in inference
 # #' statistic.
@@ -810,12 +810,12 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
 # #' 
 
 
-multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula_list=NULL,rm_na="pairwise", out_glmlist=T,
-                            out_df=F, out_models=F, print_p=F, print_se=F, weight=NULL, id=NULL,
+multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula_list=NULL,rm_na="pairwise", out_glmlist=TRUE,
+                            out_df=FALSE, out_models=FALSE, print_p=FALSE, print_se=FALSE, weight=NULL, id=NULL,
                             strata=NULL, nest=FALSE, weight_bench=NULL, id_bench=NULL,
-                            strata_bench=NULL, nest_bench=FALSE, robust_se=F, p_adjust=NULL, 
-                            names_df_benchmark=NULL, family=stats::gaussian(link = "identity"), silence_summary=F, 
-                            nboots=0, parallel=F, adjustment_vars=NULL,
+                            strata_bench=NULL, nest_bench=FALSE, robust_se=FALSE, p_adjust=NULL, 
+                            names_df_benchmark=NULL, family=stats::gaussian(link = "identity"), silence_summary=FALSE, 
+                            nboots=0, parallel=FALSE, adjustment_vars=NULL,
                             raking_targets=NULL, post_targets=NULL){
 
   ### 1 reduce both data frames ###
@@ -828,7 +828,7 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
     old_benchmark<-benchmark
     name_old_benchmark<-deparse(substitute(benchmark))}
   
-  if(inherits(df,"data.frame")==F){
+  if(inherits(df,"data.frame")==FALSE){
     if(is.character(df)){
       old_df<-get(df)
       name_old_df<-df
@@ -838,7 +838,7 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
                     sep = "", collapse = NULL))
   }
   
-  if(inherits(benchmark,"data.frame")==F){
+  if(inherits(benchmark,"data.frame")==FALSE){
     if(is.character(benchmark)){
       old_benchmark<-get(benchmark)
       name_old_benchmark<-benchmark
@@ -858,11 +858,11 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
   if(is.null(formula_list)){
   if (is.null(weight)) df<-reduce_df_glm(df, dependent, independent, rm_na = rm_na, adjustment_vars = adjustment_vars)
   if (is.null(weight_bench)) benchmark<-reduce_df_glm(benchmark, dependent, independent, rm_na = rm_na,strata)
-  if (is.null(weight)==F) df<-reduce_df_glm(df, dependent, independent,  weight_var = weight, id = id, strata=strata, rm_na = rm_na, adjustment_vars = adjustment_vars)
-  if (is.null(weight_bench)==F) benchmark<-reduce_df_glm(benchmark, dependent, independent,  weight_var = weight_bench, id = id_bench, strata=strata_bench, rm_na = rm_na)
+  if (is.null(weight)==FALSE) df<-reduce_df_glm(df, dependent, independent,  weight_var = weight, id = id, strata=strata, rm_na = rm_na, adjustment_vars = adjustment_vars)
+  if (is.null(weight_bench)==FALSE) benchmark<-reduce_df_glm(benchmark, dependent, independent,  weight_var = weight_bench, id = id_bench, strata=strata_bench, rm_na = rm_na)
   }
   
-  if(is.null(formula_list)==F){
+  if(is.null(formula_list)==FALSE){
       var_list<-purrr::map(formula_list,all.vars)
       dep_indep<-function(vars,type="dependent"){
         
@@ -882,8 +882,8 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
     
     if (is.null(weight)) df<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(df, .x,.y, rm_na = rm_na, adjustment_vars = adjustment_vars)[[1]])
     if (is.null(weight_bench)) benchmark<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(benchmark, .x,.y, rm_na = rm_na,strata)[[1]])
-    if (is.null(weight)==F) df<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(df, .x,.y,  weight_var = weight, id = id, strata=strata, rm_na = rm_na, adjustment_vars = adjustment_vars)[[1]])
-    if (is.null(weight_bench)==F) benchmark<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(benchmark, .x,.y,  weight_var = weight_bench, id = id_bench, strata=strata_bench, rm_na = rm_na)[[1]])
+    if (is.null(weight)==FALSE) df<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(df, .x,.y,  weight_var = weight, id = id, strata=strata, rm_na = rm_na, adjustment_vars = adjustment_vars)[[1]])
+    if (is.null(weight_bench)==FALSE) benchmark<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(benchmark, .x,.y,  weight_var = weight_bench, id = id_bench, strata=strata_bench, rm_na = rm_na)[[1]])
  
   }
   
@@ -893,7 +893,7 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
                        strata=strata,strata_bench=strata_bench, 
                        adjustment_vars = adjustment_vars)}
   
-  if(is.null(formula_list)==F){
+  if(is.null(formula_list)==FALSE){
     df_comb<-purrr::map(.x=1:length(dependent),
                         ~combine_dfs(df[.x],benchmark[.x],dependent[[.x]],independent[[.x]],id=id,id_bench=id_bench,
                          weight=weight,weight_bench=weight_bench,
@@ -911,42 +911,42 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
 
   # calculate survey deisgns if weighted
 
-  if (is.null(weight)==F) {
+  if (is.null(weight)==FALSE) {
     design_list<-list()
-    if(is.null(raking_targets)==T & is.null(post_targets)==T) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=F, type="df1")
-    if(is.null(raking_targets)==F) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=F, type="df1",
+    if(is.null(raking_targets)==TRUE & is.null(post_targets)==TRUE) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=FALSE, type="df1")
+    if(is.null(raking_targets)==FALSE) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=FALSE, type="df1",
                                                                            adjustment_vars = adjustment_vars, raking_targets=raking_targets)
-    if(is.null(post_targets)==F) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=F, type="df1",
+    if(is.null(post_targets)==FALSE) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=FALSE, type="df1",
                                                                            adjustment_vars = adjustment_vars, post_targets=post_targets)
-    if(is.null(raking_targets)==T & is.null(post_targets)==T) design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=F, type="interact")
-    if(is.null(raking_targets)==F| is.null(post_targets)==F) design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=F, type="interact", 
+    if(is.null(raking_targets)==TRUE & is.null(post_targets)==TRUE) design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=FALSE, type="interact")
+    if(is.null(raking_targets)==FALSE| is.null(post_targets)==FALSE) design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=FALSE, type="interact", 
                                                                         adj_weight_design = design_list[[2]])
     } else {design_list = list(NULL,NULL)}
     
-  if(is.null(weight_bench)==F){  
-  design_list[[3]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata_bench, nest=F, type="bench")
-  design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata_bench, nest=F, type="interact")
+  if(is.null(weight_bench)==FALSE){  
+  design_list[[3]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata_bench, nest=FALSE, type="bench")
+  design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata_bench, nest=FALSE, type="interact")
   } 
   else {
-    design_list[[3]] <- weighted_design_glm(df_comb,dependent,weight_var=NULL, id=NULL, strata=NULL, nest=F, type="bench")}
+    design_list[[3]] <- weighted_design_glm(df_comb,dependent,weight_var=NULL, id=NULL, strata=NULL, nest=FALSE, type="bench")}
   
-  if (is.null(weight)==T & (is.null(raking_targets)==F | is.null(post_targets)==F)) {
+  if (is.null(weight)==TRUE & (is.null(raking_targets)==FALSE | is.null(post_targets)==FALSE)) {
     
-    if(is.null(raking_targets)==F) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=F, type="rake_df1",
+    if(is.null(raking_targets)==FALSE) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=FALSE, type="rake_df1",
                                             adjustment_vars = adjustment_vars, raking_targets=raking_targets)
-    if(is.null(post_targets)==F) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=F, type="rake_df1",
+    if(is.null(post_targets)==FALSE) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=FALSE, type="rake_df1",
                                                                            adjustment_vars = adjustment_vars, post_targets=post_targets)
     
     
-    design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=F, type="rake_interact", 
+    design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=strata, nest=FALSE, type="rake_interact", 
                                             adj_weight_design = design_list[[2]])
   }
 
-  # if (is.null(weight)==F | is.null(weight_bench)==F) {
+  # if (is.null(weight)==FALSE | is.null(weight_bench)==FALSE) {
   #   design_list2<-list()
-  #   design_list2[[1]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact")
-  #   design_list2[[2]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1")
-  #   design_list2[[3]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="bench")
+  #   design_list2[[1]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="interact")
+  #   design_list2[[2]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="df1")
+  #   design_list2[[3]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="bench")
   # } else {design_list2 = list(NULL,NULL,NULL)}
   
 
@@ -959,7 +959,7 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
    glm_list[[3]]<-run_glm(df_comb = df_comb,dependent,independent, design_list =  design_list[[3]], type="bench",family=family)
     }
   
-  if(is.null(formula_list)==F){
+  if(is.null(formula_list)==FALSE){
     
       glm_list<-list()
       glm_list[[1]]<-purrr::map(.x=1:length(dependent),~run_glm(df_comb = df_comb[.x],dependent[[.x]],independent[[.x]], design_list =  design_list[[1]][.x], type="interact",design_list_df =design_list[[2]][.x],,family=family, formula_list=formula_list[[.x]])[[1]])
@@ -969,7 +969,7 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
 
 
 
-  if (is.null(weight)==F | is.null(weight_bench)==F) weight_var<-T
+  if (is.null(weight)==FALSE | is.null(weight_bench)==FALSE) weight_var<-TRUE
   else weight_var<-NULL
 
   ### 3 build a output list ###
@@ -997,19 +997,19 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
   names(output)[20]<-"independent"
 
   ### add names of the data frames
-  if (is.null(names_df_benchmark)==F) output[[21]]<-names_df_benchmark
+  if (is.null(names_df_benchmark)==FALSE) output[[21]]<-names_df_benchmark
   else output[[21]]<-c(name_old_df,name_old_benchmark)
   names(output)[21]<-"names_df_benchmark"
 
   ### p_adjustment ###
-  if(is.null(p_adjust)==T){
+  if(is.null(p_adjust)==TRUE){
     output[[22]]<-FALSE
   }
-  if(is.null(p_adjust)==F){
-    if (is.character(p_adjust)==T){
+  if(is.null(p_adjust)==FALSE){
+    if (is.character(p_adjust)==TRUE){
       output[[22]]<-p_adjust
     }
-    if (is.character(p_adjust)==F){
+    if (is.character(p_adjust)==FALSE){
       output[[22]]<-"bonferroni"
     }
     
@@ -1023,10 +1023,10 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
     names(output)[23]<-"dataframes"
     output[[23]][[1]]<-old_df
     output[[23]][[2]]<-old_benchmark
-    if (is.null(names_df_benchmark)==F) names(output[[23]])<-names_df_benchmark
+    if (is.null(names_df_benchmark)==FALSE) names(output[[23]])<-names_df_benchmark
     else names(output[[23]])<-c(name_old_df,name_old_benchmark)}
 
-if(silence_summary==F){
+if(silence_summary==FALSE){
   cat("\n")
   cat("Difference in coeficients between sets of respondents \n \n")
 
@@ -1038,7 +1038,7 @@ if(silence_summary==F){
 }
   
   if(isTRUE(print_p)) {
-    if (is.null(p_adjust)==F){
+    if (is.null(p_adjust)==FALSE){
       cat("\n")
       cat("P-Values for every coeficient & model \n \n")
       print(output$p_diff_adjusted)}
@@ -1055,7 +1055,7 @@ if(silence_summary==F){
 
 
   if (out_glmlist==TRUE) output<-output
-  if (out_glmlist==F) output<-output$coefs_difference_stars
+  if (out_glmlist==FALSE) output<-output$coefs_difference_stars
 
   output
 }
@@ -1078,7 +1078,7 @@ if(silence_summary==F){
 # #' @return Prints several infomation of the inputed \code{multi_glm_compare} list-object.
 # #'
 
-summary_glm_compare<-function (glm_comp_object, print_p=F, print_se=F){
+summary_glm_compare<-function (glm_comp_object, print_p=FALSE, print_se=FALSE){
 
   cat("\n")
   cat("Difference in Average Discrete Change (ADC) between samples \n \n")
@@ -1235,11 +1235,11 @@ summary_glm_compare<-function (glm_comp_object, print_p=F, print_se=F){
 
 
 multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_list=NULL, 
-                          family="ols",rm_na="pairwise",out_output_list=T,
-                          out_df=F, out_models=F, print_p=F, print_se=F, weight=NULL, id=NULL,
+                          family="ols",rm_na="pairwise",out_output_list=TRUE,
+                          out_df=FALSE, out_models=FALSE, print_p=FALSE, print_se=FALSE, weight=NULL, id=NULL,
                           strata=NULL, nest=FALSE, weight_bench=NULL, id_bench=NULL,strata_bench=NULL,
-                          nest_bench=FALSE, robust_se=F, p_adjust=NULL, names_df_benchmark=NULL, 
-                          silence_summary=F, nboots=0, parallel = F, adjustment_vars=NULL,
+                          nest_bench=FALSE, robust_se=FALSE, p_adjust=NULL, names_df_benchmark=NULL, 
+                          silence_summary=FALSE, nboots=0, parallel = FALSE, adjustment_vars=NULL,
                           raking_targets=NULL, post_targets=NULL){
 
 
@@ -1341,8 +1341,8 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 # #' @import  plot.matrix
 
 # multi_reg_plotter_old<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, plot_title=NULL,
-#                                 p_value=0.05, breaks=NULL,matrix=F, colors=NULL, variant="one", p_adjust=NULL,
-#                                 note=T,mar=NULL, key=list(side=4), ...){
+#                                 p_value=0.05, breaks=NULL,matrix=FALSE, colors=NULL, variant="one", p_adjust=NULL,
+#                                 note=TRUE,mar=NULL, key=list(side=4), ...){
 # 
 #   ### Build title ###
 #   df_title <- multi_reg_object[[21]][1]
@@ -1361,7 +1361,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #   p_benchmark<-multi_reg_object$P_coefs2
 #   }
 # 
-#   if (is.null(p_adjust)==F){
+#   if (is.null(p_adjust)==FALSE){
 #     sample_diff<-multi_reg_object$p_diff_adjusted
 #     p_df<-multi_reg_object$p1_adjusted
 #     p_benchmark<-multi_reg_object$p2_adjusted
@@ -1456,7 +1456,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", "Different", "High Difference")
 #     note_text<- "Note: Same (green) means that the coeficients are not significant different. \nDifferent (yellow) means, at least one is significant >0 or <0 and both are significant different from each other. \nHigh Difference (red) means all conditions for Difference are true and the coeficients differ in direction \nor one is double the value of the other. \nLevel of Significance is p < 0.05."
 #     if (is.null (mar)) {mar= c(12.5, 6, 2, 6)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 #   if (variant=="two"){
@@ -1464,7 +1464,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", "Diff in direrction","Diff in sig", "Strong Diff")
 #     note_text<-"Note: Same (green) means no difference of any type. \nDiff in direction (yellow) means no significant difference between coefs, but they differ in direction. \nDiff in Significance (orange) means no significant difference but one is significant < or > 0 while the other is not. \nSignificant Difference (red) means, both coeficients differ significant from each other. \nLevel of Significance is p < 0.05"
 #     if (is.null (mar)) {mar= c(12.5, 6, 2, 7.5)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 #   if (variant=="three"){
@@ -1472,7 +1472,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", "Diff in strength", "Diff in Direrction","Diff in significance")
 #     note_text<-"Note: Same (green) means there is no meaningful difference of any type. \nDiff in Strength (yellow) means that one coef is > double the value of the other. \nDiff in Direction (orange) means that one coef is positive while the other is negative \nDiff in Significance (red) means that one is significant < or > 0 while the other is not. \nLevel of Significance is p < 0.05"
 #     if (is.null (mar)) {mar= c(12.5, 6, 2, 5.5)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 #   if (variant=="four"){
@@ -1480,7 +1480,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", Diff in Significance")
 #     note_text<-"Note: Same (green) means there is no difference in significance. \nDiff in Significance (red) means that one coefcient is significant < or > 0 while the other is not. \nLevel of Significance is p < 0.05"
 #     if (is.null (mar)) {mar= c(11.5, 6, 2, 6.5)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 #   if (variant=="five"){
@@ -1488,7 +1488,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", Diff in Direction")
 #     note_text<-"Note: Same (green) means there is no difference in direction. \nDiff in Direction (red) means that one coeficient is <0 while the other is >0."
 #     if (is.null (mar)) {mar= c(10.5, 6, 2, 5.5)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 #   if (variant=="six"){
@@ -1496,11 +1496,11 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", Diff in Strength")
 #     note_text<-"Note: Same (green) means there is no difference in strength. \nDiff in Strength (red) means that one coeficient has double the value of the other."
 #     if (is.null (mar)) {mar= c(10.5, 6, 2, 5.5)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 # 
-#   opar <- graphics::par(no.readonly=T)      # make a copy of current settings
+#   opar <- graphics::par(no.readonly=TRUE)      # make a copy of current settings
 # 
 #   if (matrix == FALSE & variant =="one") graphics::par(mar = mar,las=2,...,cex.axis=0.75)
 #   if (matrix == FALSE & variant =="two") graphics::par(mar = mar ,las=2, ..., cex.axis=0.75) # bottom,left,top,right
@@ -1509,12 +1509,12 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #   if (matrix == FALSE & variant =="five") graphics::par(mar = mar ,las=2, ..., cex.axis=0.75) # bottom,left,top,right
 #   if (matrix == FALSE & variant =="six") graphics::par(mar = mar ,las=2, ..., cex.axis=0.75) # bottom,left,top,right
 #   if (matrix == FALSE) comparison_plot <- plot(comp_matrix, col = colors, breaks = breaks, main = plot_title, label_y="", label_x="", key=key)
-#   if (matrix == FALSE & variant =="one" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
-#   if (matrix == FALSE & variant =="two" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
-#   if (matrix == FALSE & variant =="three" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
-#   if (matrix == FALSE & variant =="four" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
-#   if (matrix == FALSE & variant =="five" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
-#   if (matrix == FALSE & variant =="six" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="one" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="two" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="three" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="four" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="five" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="six" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
 # 
 #   par(opar) #reset to original par
 #   return(comparison_plot)
@@ -1590,9 +1590,9 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 # #' @export
 # 
 # multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, plot_title=NULL,
-#                             p_value=0.05, breaks=NULL,plot_data=F, colors=NULL, variant="one", p_adjust=NULL,
-#                             note=T, grid="white", diff_perc=F, diff_perc_size=4.5,
-#                             perc_diff_transparance=0, diff_perc_position= "top_right", label_x=NULL, label_y=NULL,missings_x=T){
+#                             p_value=0.05, breaks=NULL,plot_data=FALSE, colors=NULL, variant="one", p_adjust=NULL,
+#                             note=TRUE, grid="white", diff_perc=FALSE, diff_perc_size=4.5,
+#                             perc_diff_transparance=0, diff_perc_position= "top_right", label_x=NULL, label_y=NULL,missings_x=TRUE){
 # 
 #   ### Build title ###
 #   df_title <- multi_reg_object[[21]][1]
@@ -1611,7 +1611,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     p_benchmark<-multi_reg_object$P_coefs2
 #   }
 # 
-#   if (is.null(p_adjust)==F){
+#   if (is.null(p_adjust)==FALSE){
 #     sample_diff<-multi_reg_object$p_diff_adjusted
 #     p_df<-multi_reg_object$P_coefs1
 #     p_benchmark<-multi_reg_object$P_coefs2
@@ -1744,11 +1744,11 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 # 
 #   ### Get breaks in % ###
 # 
-#   if(diff_perc==T) {
-#     percental_difference_b1<-length(comp_matrix[comp_matrix == breaks[1] & is.na(comp_matrix)==F ])/ length(comp_matrix[is.na(comp_matrix)==F])
-#     percental_difference_b2<-length(comp_matrix[comp_matrix == breaks[2] & is.na(comp_matrix)==F ])/ length(comp_matrix[is.na(comp_matrix)==F])
-#     if (length(breaks)>2) percental_difference_b3<-length(comp_matrix[comp_matrix == breaks[3] & is.na(comp_matrix)==F ])/ length(comp_matrix[is.na(comp_matrix)==F])
-#     if (length(breaks)>3) percental_difference_b4<-length(comp_matrix[comp_matrix == breaks[4] & is.na(comp_matrix)==F ])/ length(comp_matrix[is.na(comp_matrix)==F])
+#   if(diff_perc==TRUE) {
+#     percental_difference_b1<-length(comp_matrix[comp_matrix == breaks[1] & is.na(comp_matrix)==FALSE ])/ length(comp_matrix[is.na(comp_matrix)==FALSE])
+#     percental_difference_b2<-length(comp_matrix[comp_matrix == breaks[2] & is.na(comp_matrix)==FALSE ])/ length(comp_matrix[is.na(comp_matrix)==FALSE])
+#     if (length(breaks)>2) percental_difference_b3<-length(comp_matrix[comp_matrix == breaks[3] & is.na(comp_matrix)==FALSE ])/ length(comp_matrix[is.na(comp_matrix)==FALSE])
+#     if (length(breaks)>3) percental_difference_b4<-length(comp_matrix[comp_matrix == breaks[4] & is.na(comp_matrix)==FALSE ])/ length(comp_matrix[is.na(comp_matrix)==FALSE])
 # 
 #     diff_summary<-paste("Different Correlations in % : \n",breaks[1]," :",(round((percental_difference_b1), digits = 3)*100),"% \n",
 #                         breaks[2]," :",(round(percental_difference_b2, digits = 3)*100),"%")
@@ -1788,7 +1788,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     {if (grid != "none") ggplot2::geom_tile(colour= grid, lwd =1,linetype=1)}+
 #     {if (grid == "none") ggplot2::geom_tile()}+
 #     {if (grid != "white" & grid != "none") ggplot2::geom_tile(data = na_matrix, colour = "white", lwd=1,linetype=1)}+
-#     {if(missings_x==T) ggplot2::geom_point(data=subset(comp_matrix_df, comp_matrix_df$value=="X"),shape=4, size=5, show.legend = FALSE)}+
+#     {if(missings_x==TRUE) ggplot2::geom_point(data=subset(comp_matrix_df, comp_matrix_df$value=="X"),shape=4, size=5, show.legend = FALSE)}+
 #     ggplot2::coord_fixed()+
 #     ggplot2::scale_fill_manual(values=colors, name="", na.translate = FALSE, drop=FALSE)+
 #     ggplot2::scale_y_discrete(name="", limits = rev(levels(comp_matrix_df$x)), labels= label_x, breaks=unique(comp_matrix_df$x), drop=FALSE)+
@@ -1801,10 +1801,10 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #                    plot.caption=ggplot2::element_text(hjust = 0))+
 #     ggplot2::ggtitle(plot_title)
 # 
-#   if(note==T) comparison_plot<-comparison_plot + ggplot2::labs(caption = note_text)
+#   if(note==TRUE) comparison_plot<-comparison_plot + ggplot2::labs(caption = note_text)
 # 
 # 
-#   if (diff_perc==T) {
+#   if (diff_perc==TRUE) {
 #     if (diff_perc_position== "top_left") {
 #     comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = -Inf, y = Inf, hjust = 0, vjust = 1, label = diff_summary$label),
 #                                                              fill = ggplot2::alpha("white", perc_diff_transparance), color = ggplot2::alpha("black", 1), size= diff_perc_size)}
@@ -1826,8 +1826,8 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 # 
 # 
 # 
-#   if (plot_data==F) return (comparison_plot)
-#   if (plot_data==T) return (comp_matrix_df)
+#   if (plot_data==FALSE) return (comparison_plot)
+#   if (plot_data==TRUE) return (comp_matrix_df)
 # }
 
 
@@ -1937,11 +1937,11 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 # #' @export
 # 
 # plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=NULL,
-#                          p_value=0.05, breaks=NULL,plot_data=F, colors=NULL, variant="one", p_adjust=NULL,
-#                          note=F, grid="white", diff_perc=T, diff_perc_size=4.5,
-#                          perc_diff_transparance=0, diff_perc_position= "top_right", gradient=F,
+#                          p_value=0.05, breaks=NULL,plot_data=FALSE, colors=NULL, variant="one", p_adjust=NULL,
+#                          note=FALSE, grid="white", diff_perc=TRUE, diff_perc_size=4.5,
+#                          perc_diff_transparance=0, diff_perc_position= "top_right", gradient=FALSE,
 #                          sum_weights_indep=NULL,sum_weights_dep=NULL, label_x=NULL, label_y=NULL,
-#                          missings_x=T){
+#                          missings_x=TRUE){
 # 
 # 
 # 
@@ -2009,7 +2009,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     help<-multi_reg_plotter(multi_reg_object=curr_df, plot_title=plot_title,
 #                             p_value=p_value, breaks=breaks, colors=colors, variant=variant, p_adjust=p_adjust,
 #                             note=note, diff_perc=diff_perc, diff_perc_size=diff_perc_size,
-#                             plot_data=T, missings_x=missings_x)
+#                             plot_data=TRUE, missings_x=missings_x)
 # 
 # 
 # 
@@ -2025,13 +2025,13 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     ########################
 # 
 #     if (is.null(plots_label)) help$samp<-multi_compare_objects[i]
-#     if (is.null(plots_label)==F) help$samp<-plots_label[i]
+#     if (is.null(plots_label)==FALSE) help$samp<-plots_label[i]
 # 
 #     ##########################
 #     ### add plots together ###
 #     ##########################
 # 
-#     if (is.null(plot_df)==F) plot_df<-rbind(plot_df,help)
+#     if (is.null(plot_df)==FALSE) plot_df<-rbind(plot_df,help)
 #     if(is.null(plot_df)) plot_df=help
 #     }
 # 
@@ -2046,11 +2046,11 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #   ### Calculate percentage of difference ###
 #   ##########################################
 # 
-#   if(diff_perc==T) {
-#   #  percental_difference_b1<-length(help$value[help$value == breaks[1] & is.na(help$value)==F ])/ length(help$value[is.na(help$value)==F])
-#   #  percental_difference_b2<-length(help$value[help$value == breaks[2] & is.na(help$value)==F ])/ length(help$value[is.na(help$value)==F])
-#   #  if (length(breaks)>2) percental_difference_b3<-length(help$value[help$value == breaks[3] & is.na(help$value)==F ])/ length(help$value[is.na(help$value)==F])
-#   #  if (length(breaks)>3) percental_difference_b4<-length(help$value[help$value == breaks[4] & is.na(help$value)==F ])/ length(help$value[is.na(help$value)==F])
+#   if(diff_perc==TRUE) {
+#   #  percental_difference_b1<-length(help$value[help$value == breaks[1] & is.na(help$value)==FALSE ])/ length(help$value[is.na(help$value)==FALSE])
+#   #  percental_difference_b2<-length(help$value[help$value == breaks[2] & is.na(help$value)==FALSE ])/ length(help$value[is.na(help$value)==FALSE])
+#   #  if (length(breaks)>2) percental_difference_b3<-length(help$value[help$value == breaks[3] & is.na(help$value)==FALSE ])/ length(help$value[is.na(help$value)==FALSE])
+#   #  if (length(breaks)>3) percental_difference_b4<-length(help$value[help$value == breaks[4] & is.na(help$value)==FALSE ])/ length(help$value[is.na(help$value)==FALSE])
 # 
 #   #  diff_summary<-paste(breaks[1]," :",(round((percental_difference_b1), digits = 3)*100),"% \n",
 #   #                      breaks[2]," :",(round(percental_difference_b2, digits = 3)*100),"%")
@@ -2061,7 +2061,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     summary_df<-difference_summary2(results_object=plot_df,breaks=breaks,sum_weights_indep=sum_weights_indep,sum_weights_dep=sum_weights_dep)}
 # 
 #   #if (is.null(plots_label)) summary_df[i,]<- c(multi_compare_objects[i], diff_summary)
-#   #if (is.null(plots_label)==F) summary_df[i,]<- c(plots_label[i], diff_summary)
+#   #if (is.null(plots_label)==FALSE) summary_df[i,]<- c(plots_label[i], diff_summary)
 # 
 # 
 # 
@@ -2078,7 +2078,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #   #######################################
 # 
 #   if (is.null(plots_label)) plot_df$samp <- factor(plot_df$samp, levels = multi_compare_objects)
-#   if (is.null(plots_label)==F) plot_df$samp <- factor(plot_df$samp, levels = plots_label)
+#   if (is.null(plots_label)==FALSE) plot_df$samp <- factor(plot_df$samp, levels = plots_label)
 # 
 # 
 #   ############
@@ -2087,9 +2087,9 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 # 
 #   comparison_plot<-
 #     ggplot2::ggplot(data=plot_df, ggplot2::aes(x = plot_df[,"y"], y = plot_df[,"x"], fill = factor(plot_df[,"value"], levels = breaks))) +
-#     {if (gradient==T) ggplot2::aes(alpha= as.numeric(gradient))}+
+#     {if (gradient==TRUE) ggplot2::aes(alpha= as.numeric(gradient))}+
 #     ggplot2::geom_tile(colour= grid, lwd =1,linetype=1)+
-#     {if(nrow(plot_df[plot_df$value=="X",])>0 & missings_x==T) ggplot2::geom_point(data=plot_df[plot_df$value=="X",],
+#     {if(nrow(plot_df[plot_df$value=="X",])>0 & missings_x==TRUE) ggplot2::geom_point(data=plot_df[plot_df$value=="X",],
 #                                                                   x=plot_df[plot_df$value=="X",]$y,
 #                                                                   y=plot_df[plot_df$value=="X",]$x,
 #                                                                   fill=factor(plot_df[plot_df$value=="X",]$value, levels = breaks),
@@ -2110,16 +2110,16 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 #     ggplot2::facet_wrap(~ factor(samp))
 # 
 # 
-#   if(note==T) comparison_plot<-comparison_plot + ggplot2::labs(caption = note_text)
+#   if(note==TRUE) comparison_plot<-comparison_plot + ggplot2::labs(caption = note_text)
 # 
 # 
-#   #if (diff_perc==T) {
+#   #if (diff_perc==TRUE) {
 #   #  comparison_plot <- comparison_plot + ggplot2::geom_label(x=Inf, y=Inf,
 #   #                                                           ggplot2::aes(label = label,  hjust = 1, vjust = 1), data=summary_df,
 #   #                                                           fill = ggplot2::alpha("white", perc_diff_transparance), color = ggplot2::alpha("black", 1), size= diff_perc_size)}
 # 
 # 
-#   if (diff_perc==T) {
+#   if (diff_perc==TRUE) {
 #     if (diff_perc_position== "top_left") {
 #       comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = -Inf, y = Inf, hjust = 0, vjust = 1), data=summary_df, 
 #                                                                label=summary_df$label,
@@ -2147,8 +2147,8 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 # 
 #   }
 # 
-#   if (plot_data==T) return(plot_df)
-#   if (plot_data==F) return(comparison_plot)
+#   if (plot_data==TRUE) return(plot_df)
+#   if (plot_data==FALSE) return(comparison_plot)
 # 
 # }
 
@@ -2171,7 +2171,7 @@ empty_finder2<-function(df){
         if ((length(df$value[df[,1]==varnames1[i] & df[,2]==varnames2[j] & df[,5]==sampnames[k]])==0) &
             (any((df[,1]==varnames1[i] & df[,2]==varnames2[j] & df[,5]!=sampnames[k])))) df<-rbind(df, c(varnames1[i],varnames2[j],"X",NA,sampnames[k]))
         if ((length(df$value[df[,1]==varnames1[i] & df[,2]==varnames2[j] & df[,5]==sampnames[k]])==0) &
-            (any((df[,1]==varnames1[i] & df[,2]==varnames2[j] & is.na(df[,3]) & df[,5]!=sampnames[k])))==F) df<-rbind(df, c(varnames1[i],varnames2[j],"X",NA,sampnames[k]))
+            (any((df[,1]==varnames1[i] & df[,2]==varnames2[j] & is.na(df[,3]) & df[,5]!=sampnames[k])))==FALSE) df<-rbind(df, c(varnames1[i],varnames2[j],"X",NA,sampnames[k]))
 
       }
 
@@ -2235,16 +2235,16 @@ empty_finder2<-function(df){
 # 
 #     ### build a summary for every sample ###
 # 
-#     percental_difference_b1<-sum(results_object$sum_weight[results_object$value == breaks[1] & is.na(results_object$value)==F
+#     percental_difference_b1<-sum(results_object$sum_weight[results_object$value == breaks[1] & is.na(results_object$value)==FALSE
 #                                                            & results_object$samp==samps[i] & results_object$value != "X"])/
-#       sum(results_object$sum_weight[is.na(results_object$value)==F & results_object$samp==samps[i] & results_object$value != "X"])
-#     percental_difference_b2<-sum(results_object$sum_weight[results_object$value == breaks[2] & is.na(results_object$value)==F
+#       sum(results_object$sum_weight[is.na(results_object$value)==FALSE & results_object$samp==samps[i] & results_object$value != "X"])
+#     percental_difference_b2<-sum(results_object$sum_weight[results_object$value == breaks[2] & is.na(results_object$value)==FALSE
 #                                                            & results_object$samp==samps[i] & results_object$value != "X"])/
-#       sum(results_object$sum_weight[is.na(results_object$value)==F & results_object$samp==samps[i] & results_object$value != "X"])
+#       sum(results_object$sum_weight[is.na(results_object$value)==FALSE & results_object$samp==samps[i] & results_object$value != "X"])
 #     if (length(breaks)>2) {
-#       percental_difference_b3<-sum(results_object$sum_weight[results_object$value == breaks[3] & is.na(results_object$value)==F
+#       percental_difference_b3<-sum(results_object$sum_weight[results_object$value == breaks[3] & is.na(results_object$value)==FALSE
 #                                                              & results_object$samp==samps[i] & results_object$value != "X"])/
-#         sum(results_object$sum_weight[is.na(results_object$value)==F & results_object$samp==samps[i] & results_object$value != "X"])}
+#         sum(results_object$sum_weight[is.na(results_object$value)==FALSE & results_object$samp==samps[i] & results_object$value != "X"])}
 # 
 #     diff_summary<-paste(breaks[1]," :",(round((percental_difference_b1), digits = 3)*100),"% \n",
 #                         breaks[2]," :",(round(percental_difference_b2, digits = 3)*100),"%")
@@ -2297,7 +2297,7 @@ return(dependent)
 
 
 
-# multireg_merge<-function(multi_reg_object1, multi_reg_object2, p_adjust=T){
+# multireg_merge<-function(multi_reg_object1, multi_reg_object2, p_adjust=TRUE){
 # 
 #   for (i in 2:16) {
 # 
@@ -2312,7 +2312,7 @@ return(dependent)
 #       rownames(multi_reg_object1[[i]])<-rownames(multi_reg_object1[[i-3]])
 #     }
 #     if (i>=11 & i<14) {
-#       if (p_adjust==T ){
+#       if (p_adjust==TRUE ){
 #         help<- formatC(multi_reg_object1[[i-9]], format = "e", digits = 2)
 # 
 #         multi_reg_object1[[i]][multi_reg_object1[[i-3]]>0.05]<-
@@ -2329,7 +2329,7 @@ return(dependent)
 #         colnames(multi_reg_object1[[i]])<-colnames(multi_reg_object1[[i-3]])
 #         rownames(multi_reg_object1[[i]])<-rownames(multi_reg_object1[[i-3]])
 #       }
-#       if (p_adjust==F) {
+#       if (p_adjust==FALSE) {
 #         help<- formatC(multi_reg_object1[[i-9]], format = "e", digits = 2)
 # 
 #         multi_reg_object1[[i]][multi_reg_object1[[i-6]]>0.05]<-
@@ -2349,10 +2349,10 @@ return(dependent)
 #     }
 #   }
 # 
-#   if(p_adjust==F) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>0.05])/length(multi_reg_object1[[7]])
-#   if(p_adjust==F) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05])/length(multi_reg_object1[[7]])
-#   if(p_adjust==T)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>0.05])/length(multi_reg_object1[[10]])
-#   if(p_adjust==T)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05])/length(multi_reg_object1[[10]])
+#   if(p_adjust==FALSE) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>0.05])/length(multi_reg_object1[[7]])
+#   if(p_adjust==FALSE) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05])/length(multi_reg_object1[[7]])
+#   if(p_adjust==TRUE)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>0.05])/length(multi_reg_object1[[10]])
+#   if(p_adjust==TRUE)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05])/length(multi_reg_object1[[10]])
 # 
 #   multi_reg_object1[[19]]<-c(multi_reg_object1[[19]],multi_reg_object2[[19]])
 # 
@@ -2406,7 +2406,7 @@ return(dependent)
 #'  plot_multi_compare("merged_object")                                       
 #' 
 #' @export
-multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F){
+multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=FALSE){
   
   if(!is.null(multi_reg_object1[[1]])| !is.null(multi_reg_object2[[1]])) {
     multi_reg_object1[[1]]<-c(multi_reg_object1[[1]],multi_reg_object2[[1]])}
@@ -2423,7 +2423,7 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
       #data2$varnames<-multi_reg_object2[[20]]
       
       
-      merged<-merge(data1,data2, by = 0,all=T,sort=F)
+      merged<-merge(data1,data2, by = 0,all=TRUE,sort=FALSE)
       rownames(merged)<-merged$Row.names
       merged$Row.names<-NULL
       
@@ -2445,7 +2445,7 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
       #data1$varnames<-multi_reg_object1[[20]]
       #data2$varnames<-multi_reg_object2[[20]]
       
-      merged<-merge(data1,data2, by = 0,all=T,sort=F)
+      merged<-merge(data1,data2, by = 0,all=TRUE,sort=FALSE)
       rownames(merged)<-merged$Row.names
       merged$Row.names<-NULL
       
@@ -2453,7 +2453,7 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
       #rownames(multi_reg_object1[[i]])<-multi_reg_object2[[20]]
       #colnames(multi_reg_object1[[i]])<-c(multi_reg_object1$dependent,multi_reg_object2$dependent)
       
-      if (p_adjust==T & is.character(p_adjust)==T) p_method<-p_adjust
+      if (p_adjust==TRUE & is.character(p_adjust)==TRUE) p_method<-p_adjust
       else p_method<-"bonferroni"
       
       for (j in 1:nrow(multi_reg_object1[[i]])){
@@ -2470,17 +2470,17 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
       help<- formatC(multi_reg_object1[[i-9]], format = "e", digits = 2)
       
       
-      multi_reg_object1[[i]][multi_reg_object1[[i-6]]>=0.05 & is.na(multi_reg_object1[[i-6]])==F]<-
-        paste(help[multi_reg_object1[[i-6]]>=0.05 & is.na(multi_reg_object1[[i-6]])==F], "   ", sep = "")
+      multi_reg_object1[[i]][multi_reg_object1[[i-6]]>=0.05 & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+        paste(help[multi_reg_object1[[i-6]]>=0.05 & is.na(multi_reg_object1[[i-6]])==FALSE], "   ", sep = "")
       
-      multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & is.na(multi_reg_object1[[i-6]])==F]<-
-        paste(help[multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & is.na(multi_reg_object1[[i-6]])==F], "*  ", sep = "")
+      multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+        paste(help[multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & is.na(multi_reg_object1[[i-6]])==FALSE], "*  ", sep = "")
       
-      multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & is.na(multi_reg_object1[[i-6]])==F]<-
-        paste(help[multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & is.na(multi_reg_object1[[i-6]])==F], "** ", sep = "")
+      multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+        paste(help[multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & is.na(multi_reg_object1[[i-6]])==FALSE], "** ", sep = "")
       
-      multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.001 & is.na(multi_reg_object1[[i-6]])==F]<-
-        paste(help[multi_reg_object1[[i-6]]<0.001 & is.na(multi_reg_object1[[i-6]])==F], "***", sep = "")
+      multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.001 & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+        paste(help[multi_reg_object1[[i-6]]<0.001 & is.na(multi_reg_object1[[i-6]])==FALSE], "***", sep = "")
       multi_reg_object1[[i]][help>0]<-paste(" ",multi_reg_object1[[i]][help>0],sep = "")
       
       multi_reg_object1[[i]]<-noquote(matrix(multi_reg_object1[[i]], ncol = ncol(multi_reg_object1[[i-6]]), nrow = nrow(multi_reg_object1[[i-6]])))
@@ -2494,21 +2494,21 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
     
     if (i==13){
       
-      if (p_adjust==T | is.character(p_adjust)==T){
+      if (p_adjust==TRUE | is.character(p_adjust)==TRUE){
         help<- formatC(multi_reg_object1[[4]], format = "e", digits = 2)
         
         
-        multi_reg_object1[[i]][multi_reg_object1[[i-3]]>=0.05 & is.na(multi_reg_object1[[i-3]])==F]<-
-          paste(help[multi_reg_object1[[i-3]]>=0.05 & is.na(multi_reg_object1[[i-3]])==F], "   ", sep = "")
+        multi_reg_object1[[i]][multi_reg_object1[[i-3]]>=0.05 & is.na(multi_reg_object1[[i-3]])==FALSE]<-
+          paste(help[multi_reg_object1[[i-3]]>=0.05 & is.na(multi_reg_object1[[i-3]])==FALSE], "   ", sep = "")
         
-        multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.05 & multi_reg_object1[[i-3]]>=0.01 & is.na(multi_reg_object1[[i-3]])==F]<-
-          paste(help[multi_reg_object1[[i-3]]<0.05 & multi_reg_object1[[i-3]]>=0.01 & is.na(multi_reg_object1[[i-3]])==F], "*  ", sep = "")
+        multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.05 & multi_reg_object1[[i-3]]>=0.01 & is.na(multi_reg_object1[[i-3]])==FALSE]<-
+          paste(help[multi_reg_object1[[i-3]]<0.05 & multi_reg_object1[[i-3]]>=0.01 & is.na(multi_reg_object1[[i-3]])==FALSE], "*  ", sep = "")
         
-        multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.01 & multi_reg_object1[[i-3]]>=0.001 & is.na(multi_reg_object1[[i-3]])==F]<-
-          paste(help[multi_reg_object1[[i-3]]<0.01 & multi_reg_object1[[i-3]]>=0.001 & is.na(multi_reg_object1[[i-3]])==F], "** ", sep = "")
+        multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.01 & multi_reg_object1[[i-3]]>=0.001 & is.na(multi_reg_object1[[i-3]])==FALSE]<-
+          paste(help[multi_reg_object1[[i-3]]<0.01 & multi_reg_object1[[i-3]]>=0.001 & is.na(multi_reg_object1[[i-3]])==FALSE], "** ", sep = "")
         
-        multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.001 & is.na(multi_reg_object1[[i-3]])==F]<-
-          paste(help[multi_reg_object1[[i-3]]<0.001 & is.na(multi_reg_object1[[i-3]])==F], "***", sep = "")
+        multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.001 & is.na(multi_reg_object1[[i-3]])==FALSE]<-
+          paste(help[multi_reg_object1[[i-3]]<0.001 & is.na(multi_reg_object1[[i-3]])==FALSE], "***", sep = "")
         multi_reg_object1[[i]][help>0]<-paste(" ",multi_reg_object1[[i]][help>0],sep = "")
         
         multi_reg_object1[[i]]<-noquote(matrix(multi_reg_object1[[i]], ncol = ncol(multi_reg_object1[[i-3]]), nrow = nrow(multi_reg_object1[[i-3]])))
@@ -2516,24 +2516,24 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
         rownames(multi_reg_object1[[i]])<-rownames(multi_reg_object1[[i-3]])
       }
       
-      if (p_adjust==F) {
+      if (p_adjust==FALSE) {
         help<- formatC(multi_reg_object1[[4]], format = "e", digits = 2)
         #help[help==" NA"]<-NA
         #multi_reg_object1[[i]]<-c(rep(NA,28))
         
-        multi_reg_object1[[i]][multi_reg_object1[[i-6]]>=0.05 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F]<-
-          paste(help[multi_reg_object1[[i-6]]>=0.05 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F], "   ", sep = "")
+        multi_reg_object1[[i]][multi_reg_object1[[i-6]]>=0.05 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+          paste(help[multi_reg_object1[[i-6]]>=0.05 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE], "   ", sep = "")
         
-        multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F]<-
-          paste(help[multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F], "*  ", sep = "")
+        multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+          paste(help[multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE], "*  ", sep = "")
         
-        multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F]<-
-          paste(help[multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F], "** ", sep = "")
+        multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+          paste(help[multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE], "** ", sep = "")
         
-        multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F]<-
-          paste(help[multi_reg_object1[[i-6]]<0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F] , "***", sep = "")
+        multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+          paste(help[multi_reg_object1[[i-6]]<0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE] , "***", sep = "")
         
-        multi_reg_object1[[i]][help>0 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F]<-paste(" ",multi_reg_object1[[i]][help>0 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F],sep = "")
+        multi_reg_object1[[i]][help>0 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE]<-paste(" ",multi_reg_object1[[i]][help>0 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE],sep = "")
         
         
         multi_reg_object1[[i]]<-noquote(matrix(multi_reg_object1[[i]], ncol = ncol(multi_reg_object1[[i-3]]), nrow = nrow(multi_reg_object1[[i-3]])))
@@ -2544,13 +2544,13 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
     
   }
   
-  if(p_adjust==F) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
+  if(p_adjust==FALSE) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
       length(multi_reg_object1[[7]][!is.na(multi_reg_object1[[7]])])
-  if(p_adjust==F) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05 & !is.na(multi_reg_object1[[7]])])/
+  if(p_adjust==FALSE) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05 & !is.na(multi_reg_object1[[7]])])/
       length(multi_reg_object1[[7]][!is.na(multi_reg_object1[[7]])])
-  if(p_adjust==T)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
+  if(p_adjust==TRUE)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
       length(multi_reg_object1[[10]][!is.na(multi_reg_object1[[7]])])
-  if(p_adjust==T)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05 & !is.na(multi_reg_object1[[7]])])/
+  if(p_adjust==TRUE)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05 & !is.na(multi_reg_object1[[7]])])/
       length(multi_reg_object1[[10]][!is.na(multi_reg_object1[[7]])])
   
   multi_reg_object1[[19]]<-c(multi_reg_object1[[19]],multi_reg_object2[[19]])
@@ -2562,7 +2562,7 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
 }
 
 
-# multi_compare_merge_old <- function(multi_reg_object1, multi_reg_object2, p_adjust=F){
+# multi_compare_merge_old <- function(multi_reg_object1, multi_reg_object2, p_adjust=FALSE){
 # 
 #   multi_reg_object1[[1]]<-c(multi_reg_object1[[1]],multi_reg_object2[[1]])
 # return(multi_reg_object1)
@@ -2606,7 +2606,7 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
 #       rownames(multi_reg_object1[[i]])<-multi_reg_object2[[20]]
 #       colnames(multi_reg_object1[[i]])<-c(multi_reg_object1$dependent,multi_reg_object2$dependent)
 # 
-#       if(p_adjust==T)p_method<-p_adjust
+#       if(p_adjust==TRUE)p_method<-p_adjust
 #       else p_method<-"bonferroni"
 # 
 #       multi_reg_object1[[i]]<- matrix(stats::p.adjust(p = multi_reg_object1[[i-3]], method = p_method),
@@ -2644,7 +2644,7 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
 # 
 #     if (i==13){
 # 
-#       if (p_adjust!=F){
+#       if (p_adjust!=FALSE){
 #         help<- formatC(multi_reg_object1[[4]], format = "e", digits = 2)
 # 
 # 
@@ -2666,7 +2666,7 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
 #         rownames(multi_reg_object1[[i]])<-rownames(multi_reg_object1[[i-3]])
 #       }
 # 
-#       if (p_adjust==F) {
+#       if (p_adjust==FALSE) {
 #         help<- formatC(multi_reg_object1[[4]], format = "e", digits = 2)
 #         #help[help==" NA"]<-NA
 #         #multi_reg_object1[[i]]<-c(rep(NA,28))
@@ -2694,13 +2694,13 @@ multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F
 # 
 #   }
 # 
-#   if(p_adjust==F) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==FALSE) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[7]][!is.na(multi_reg_object1[[7]])])
-#   if(p_adjust==F) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==FALSE) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[7]][!is.na(multi_reg_object1[[7]])])
-#   if(p_adjust==T)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==TRUE)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[10]][!is.na(multi_reg_object1[[7]])])
-#   if(p_adjust==T)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==TRUE)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[10]][!is.na(multi_reg_object1[[7]])])
 # 
 #   multi_reg_object1[[19]]<-c(multi_reg_object1[[19]],multi_reg_object2[[19]])
@@ -2723,9 +2723,9 @@ multi_boot_sub<-function(df,nboots=2000,benchmark,dependent,independent,
   ### Prepare datasets
   if(is.null(formula_list)){
   if (is.null(weight_df)) df<-reduce_df_glm(df, dependent, independent, rm_na = rm_na, adjustment_vars=adjustment_vars)
-  if (is.null(weight_df)==F) df<-reduce_df_glm(df, dependent, independent,  weight_var = weight_df, id = ids, rm_na = rm_na,adjustment_vars=adjustment_vars)}
+  if (is.null(weight_df)==FALSE) df<-reduce_df_glm(df, dependent, independent,  weight_var = weight_df, id = ids, rm_na = rm_na,adjustment_vars=adjustment_vars)}
   
-  if(is.null(formula_list)==F){
+  if(is.null(formula_list)==FALSE){
     var_list<-purrr::map(formula_list,all.vars)
     dep_indep<-function(vars,type="dependent"){
       
@@ -2741,61 +2741,61 @@ multi_boot_sub<-function(df,nboots=2000,benchmark,dependent,independent,
     independent<-purrr::map(var_list,~dep_indep(.,"independent"))
     
     if (is.null(weight_df)) df<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(df, .x,.y, rm_na = rm_na, adjustment_vars = adjustment_vars)[[1]])
-    if (is.null(weight_df)==F) df<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(df, .x,.y,  weight_var = weight, id = id, strata=strata, rm_na = rm_na, adjustment_vars = adjustment_vars)[[1]])
+    if (is.null(weight_df)==FALSE) df<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(df, .x,.y,  weight_var = weight, id = id, strata=strata, rm_na = rm_na, adjustment_vars = adjustment_vars)[[1]])
     
   }
   
   df<-purrr::map(df,~dplyr::mutate(.x,sample_ident=0))
   
   ### Prepare weigthed dfs with and without raking 
-  if (is.null(weight_df)==F) {
+  if (is.null(weight_df)==FALSE) {
     design_list<-list()
     
-    if(is.null(raking_targets)==T &
-       is.null(post_targets)==T) design_list <- weighted_design_glm(df,dependent,weight_var="df_weights", 
+    if(is.null(raking_targets)==TRUE &
+       is.null(post_targets)==TRUE) design_list <- weighted_design_glm(df,dependent,weight_var="df_weights", 
                                                                    id="id_df", strata=NULL, 
-                                                                   nest=F, type="df1",
+                                                                   nest=FALSE, type="df1",
                                                                    nboots=nboots)
     
-    if(is.null(raking_targets)==F) design_list <- weighted_design_glm(df,dependent,weight_var="df_weights", 
+    if(is.null(raking_targets)==FALSE) design_list <- weighted_design_glm(df,dependent,weight_var="df_weights", 
                                                                    id="id_df", strata=NULL, 
-                                                                   nest=F, type="df1", 
+                                                                   nest=FALSE, type="df1", 
                                                                    adjustment_vars = adjustment_vars, 
                                                                    raking_targets = raking_targets,
                                                                    nboots=nboots)
     
-    if(is.null(post_targets)==F) design_list <- weighted_design_glm(df,dependent,weight_var="df_weights", 
+    if(is.null(post_targets)==FALSE) design_list <- weighted_design_glm(df,dependent,weight_var="df_weights", 
                                                                    id="id_df", strata=NULL, 
-                                                                   nest=F, type="df1", 
+                                                                   nest=FALSE, type="df1", 
                                                                    adjustment_vars = adjustment_vars, 
                                                                    post_targets = post_targets,
                                                                    nboots=nboots)
 
   } else {
-    if(is.null(post_targets)==T & 
-       is.null(raking_targets)==T) design_list <- weighted_design_glm(df,dependent,weight_var=NULL, 
+    if(is.null(post_targets)==TRUE & 
+       is.null(raking_targets)==TRUE) design_list <- weighted_design_glm(df,dependent,weight_var=NULL, 
                                                                     id=NULL, strata=NULL, 
-                                                                    nest=F, type="df1",
+                                                                    nest=FALSE, type="df1",
                                                                     nboots=nboots)
     
-    if(is.null(raking_targets)==F) design_list <- weighted_design_glm(df,dependent,weight_var=NULL, 
+    if(is.null(raking_targets)==FALSE) design_list <- weighted_design_glm(df,dependent,weight_var=NULL, 
                                              id=NULL, strata=NULL, 
-                                             nest=F, type="df1", 
+                                             nest=FALSE, type="df1", 
                                              adjustment_vars = adjustment_vars, 
                                              raking_targets = raking_targets,
                                              nboots=nboots)
-    if(is.null(post_targets)==F) design_list <- weighted_design_glm(df,dependent,weight_var=NULL, 
+    if(is.null(post_targets)==FALSE) design_list <- weighted_design_glm(df,dependent,weight_var=NULL, 
                                                                       id=NULL, strata=NULL, 
-                                                                      nest=F, type="df1", 
+                                                                      nest=FALSE, type="df1", 
                                                                       adjustment_vars = adjustment_vars, 
                                                                       post_targets = post_targets,
                                                                       nboots=nboots)}
   
   
   # ### prepare unweighted dfs for raking
-  # if(is.null(weight_df)==T  & is.null(adjustment_vars)==F){
+  # if(is.null(weight_df)==TRUE  & is.null(adjustment_vars)==FALSE){
   #   ### fix for a random set of ids ###
-  #   design_list <- weighted_design_glm(df,dependent,weight_var=NULL, id=NULL, strata=strata, nest=F, type="rake_df1", 
+  #   design_list <- weighted_design_glm(df,dependent,weight_var=NULL, id=NULL, strata=strata, nest=FALSE, type="rake_df1", 
   #                                      adjustment_vars = adjustment_vars,raking_targets = raking_targets,nboots=nboots)
   #   }
   
@@ -2808,7 +2808,7 @@ multi_boot_sub<-function(df,nboots=2000,benchmark,dependent,independent,
     glm_list<-run_glm(df_comb = NULL,dependent,independent, design_list =  design_list, type="df1",replicates = TRUE,family = family)
     }
   
-if(is.null(formula_list)==F){
+if(is.null(formula_list)==FALSE){
     #glm_list<-list()
   
     glm_list<-purrr::map(.x=1:length(dependent),
@@ -2821,9 +2821,9 @@ if(is.null(formula_list)==F){
 }
  
   
-  get_b_function<-function(glm_list,i,forms=F,max_indep=F){
+  get_b_function<-function(glm_list,i,forms=FALSE,max_indep=FALSE){
 
-    if(forms==F){
+    if(forms==FALSE){
       #out<-glm_list[[2]][[i]][[1]][-1]
       
       out<-t(glm_list[[i]]$replicates)
@@ -2831,7 +2831,7 @@ if(is.null(formula_list)==F){
       
     }
     
-    if(forms==T){
+    if(forms==TRUE){
       out<-t(glm_list[[i]][[1]]$replicates)
       out<-out[2:nrow(out),]
       while(nrow(out)<max_indep){
@@ -2846,15 +2846,15 @@ if(is.null(formula_list)==F){
   
   if(is.null(formula_list)){
   out<-sapply(1:length(dependent),get_b_function, glm_list=glm_list,
-              forms=F)
+              forms=FALSE)
   }
   
-  if(is.null(formula_list)==F){
+  if(is.null(formula_list)==FALSE){
     independent<-purrr::map(formula_list,~attr(terms(.), "term.labels"))
     uni_indep<- unique(unlist(independent))
     max_indep<- length(uni_indep)
     out<-sapply(1:length(unlist(dependent)),get_b_function, glm_list=glm_list,
-                forms=T,max_indep=max_indep)
+                forms=TRUE,max_indep=max_indep)
   }
   
   # ### interaction coefficients ###
@@ -2879,16 +2879,16 @@ if(is.null(formula_list)==F){
 # multi_boot_sub<-function(df,i=NULL,benchmark,dependent,independent,ids = NULL,
 #                          id_bench = NULL,weight_df = NULL,weight_bench = NULL,
 #                          stratas = NULL, strata_bench = NULL, rm_na = "pairwise",
-#                          method = "ols", bootstrap=F, adjustment_vars=NULL,
+#                          method = "ols", bootstrap=FALSE, adjustment_vars=NULL,
 #                          raking_targets=NULL){
 #   
-#   if (bootstrap==T) df<-df[i,]
+#   if (bootstrap==TRUE) df<-df[i,]
 #   
 #   
 #   if (is.null(weight_df)) df<-reduce_df_glm(df, dependent, independent, rm_na = rm_na, adjustment_vars=adjustment_vars)
 #   if (is.null(weight_bench)) benchmark<-reduce_df_glm(benchmark, dependent, independent, rm_na = rm_na)
-#   if (is.null(weight_df)==F) df<-reduce_df_glm(df, dependent, independent,  weight_var = weight_df, id = ids, rm_na = rm_na,adjustment_vars=adjustment_vars)
-#   if (is.null(weight_bench)==F) benchmark<-reduce_df_glm(benchmark, dependent, independent,  weight_var = weight_bench, id = id_bench, rm_na = rm_na)
+#   if (is.null(weight_df)==FALSE) df<-reduce_df_glm(df, dependent, independent,  weight_var = weight_df, id = ids, rm_na = rm_na,adjustment_vars=adjustment_vars)
+#   if (is.null(weight_bench)==FALSE) benchmark<-reduce_df_glm(benchmark, dependent, independent,  weight_var = weight_bench, id = id_bench, rm_na = rm_na)
 #   
 #   
 #   
@@ -2900,34 +2900,34 @@ if(is.null(formula_list)==F){
 #   
 #   # calculate survey deisgns if weighted
 #   
-#   if (is.null(weight_df)==F) {
+#   if (is.null(weight_df)==FALSE) {
 #     design_list<-list()
 #     
-#     if(is.null(adjustment_vars)==T) design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact")
-#     if(is.null(adjustment_vars)==T) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1")
+#     if(is.null(adjustment_vars)==TRUE) design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="interact")
+#     if(is.null(adjustment_vars)==TRUE) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="df1")
 #     
-#     if(is.null(adjustment_vars)==F) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1", 
+#     if(is.null(adjustment_vars)==FALSE) design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="df1", 
 #                                                                         adjustment_vars = adjustment_vars, raking_targets = raking_targets)
-#     if(is.null(adjustment_vars)==F) design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact",
+#     if(is.null(adjustment_vars)==FALSE) design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="interact",
 #                                                                         raked_design = design_list[[2]])
 #     
 #   } else {design_list = list(NULL,NULL,NULL)}
 #   
-#   if(is.null(weight_df)==T  & is.null(adjustment_vars)==F){
+#   if(is.null(weight_df)==TRUE  & is.null(adjustment_vars)==FALSE){
 #     ### fix for a random set of ids ###
-#     design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var=NULL, id=NULL, strata=strata, nest=F, type="rake_df1", 
+#     design_list[[2]] <- weighted_design_glm(df_comb,dependent,weight_var=NULL, id=NULL, strata=strata, nest=FALSE, type="rake_df1", 
 #                                             adjustment_vars = adjustment_vars,raking_targets = raking_targets)
-#     design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var=NULL, id=NULL, strata=strata, nest=F, type="rake_interact", 
+#     design_list[[1]] <- weighted_design_glm(df_comb,dependent,weight_var=NULL, id=NULL, strata=strata, nest=FALSE, type="rake_interact", 
 #                                             raked_design = design_list[[2]])
 #     
 #     
 #     
 #   }
 #   
-#   # if (is.null(weight_df)==F | is.null(weight_bench)==F) {
+#   # if (is.null(weight_df)==FALSE | is.null(weight_bench)==FALSE) {
 #   #   design_list2<-list()
-#   #   design_list2[[1]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact")
-#   #   design_list2[[2]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1")
+#   #   design_list2[[1]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="interact")
+#   #   design_list2[[2]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="df1")
 #   # } else {design_list2 = list(NULL,NULL,NULL)}
 #   
 #   
@@ -2978,19 +2978,19 @@ multi_boot<-function(df,benchmark,dependent,independent,formula_list=NULL,
                      id_bench = NULL,weight = NULL,weight_bench = NULL,
                      strata = NULL, strata_bench = NULL, rm_na = "pairwise",
                      family=stats::gaussian(link = "identity"), nboots=1000, 
-                     parallel=F, ref=NULL,
+                     parallel=FALSE, ref=NULL,
                      adjustment_vars=NULL,
                      raking_targets=NULL, 
                      post_targets=NULL){
   
-  if (parallel==T) para<-"snow"
-  if (parallel==F) para<-"no"
+  if (parallel==TRUE) para<-"snow"
+  if (parallel==FALSE) para<-"no"
   
   # boot_out<-boot(df,statistic = multi_boot_sub, R = nboots, benchmark = benchmark, 
   #                dependent=dependent,independent = independent, ids = id, 
   #                stratas=strata, weight_df = weight, id_bench= id_bench,
   #                weight_bench=weight_bench,strata_bench = strata_bench, 
-  #                rm_na = "pairwise", bootstrap=T, 
+  #                rm_na = "pairwise", bootstrap=TRUE, 
   #                ncpus = (parallel::detectCores()-1), parallel = para, 
   #                adjustment_vars=adjustment_vars, 
   #                raking_targets=raking_targets)
@@ -3029,7 +3029,7 @@ multi_boot<-function(df,benchmark,dependent,independent,formula_list=NULL,
   }
   
 
-  if(is.null(formula_list)==F){
+  if(is.null(formula_list)==FALSE){
     independent<-purrr::map(formula_list,~attr(terms(.), "term.labels"))
     uni_indep<- unique(unlist(independent))
     max_indep<- length(uni_indep)
@@ -3103,31 +3103,31 @@ boot_pvalues_multi_main<-function(boot_object,dependent, independent, type="df_p
                                   ref=NULL,max_indep=NULL){
   
   sub_boot_pvalues_multi_row<-function(boot_object,start,ncoef,col,
-                                       ref=NULL,type="p",warning=F,
+                                       ref=NULL,type="p",warning=FALSE,
                                        dependent=NULL,independent=NULL,
                                        max_indep=NULL){
     
     coefs<-seq(start,nrow(boot_object),ncoef)
     vec<-c(unlist(boot_object[coefs,col]))
     
-    if(is.null(ref)==F)ref_coef<-ref[ncoef,col]
+    if(is.null(ref)==FALSE)ref_coef<-ref[ncoef,col]
     if(is.null(ref))ref_coef<-0
     
     
-    if(type=="p" & warning==T) out<-boot_pvalues3_multi(vec,reference=ref_coef,
+    if(type=="p" & warning==TRUE) out<-boot_pvalues3_multi(vec,reference=ref_coef,
                                                         col_numb = col,
                                                         row_numb = ncoef,
                                                         row = independent,
                                                         col = dependent,
                                                         max_indep=max_indep)
     
-    if(type=="p" & warning==F) out<-boot_pvalues3_multi(vec,reference=ref_coef)
+    if(type=="p" & warning==FALSE) out<-boot_pvalues3_multi(vec,reference=ref_coef)
     if(type=="se") out<-subfunc_multi_se(vec,ref=ref_coef)
     out
   }
   
   sub_boot_pvalues_multi_col<-function(boot_object,ncoef,col,ref=NULL,type="p",
-                                       warning=F,dependent=NULL,independent=NULL,
+                                       warning=FALSE,dependent=NULL,independent=NULL,
                                        max_indep=NULL){
     
     purrr::map_dbl(.x=c(1:ncoef),~sub_boot_pvalues_multi_row(boot_object,.x,ncoef,col=col,ref=ref,
@@ -3143,7 +3143,7 @@ boot_pvalues_multi_main<-function(boot_object,dependent, independent, type="df_p
   
   if(type=="df_p"){
     out<-purrr::map(.x=c(1:l_dep),~sub_boot_pvalues_multi_col(boot_object,l_indep,.x,
-                                                       warning = T,
+                                                       warning = TRUE,
                                                        dependent=dependent,
                                                        independent=independent,
                                                        max_indep=max_indep))
@@ -3171,17 +3171,17 @@ boot_pvalues_multi_main<-function(boot_object,dependent, independent, type="df_p
 boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
                               row=NULL,col=NULL,
                               col_numb=NULL,row_numb=NULL,
-                              bench=F,max_indep=NULL){
+                              bench=FALSE,max_indep=NULL){
   
   #boot_object[boot_object %in% "NaN"]<-NA
   #if(!is.null(r)) r[r%in%"NaN"]<-NA
   in_interval <-TRUE
   alpha<-0
   
-  if(is.null(max_indep)==F) {model_less<-length(row)-max_indep
+  if(is.null(max_indep)==FALSE) {model_less<-length(row)-max_indep
   ### check if boot_object contains na ###
   
-  if(sum(is.na(boot_object)) > 0 & is.null(col_numb)==F & model_less==0){
+  if(sum(is.na(boot_object)) > 0 & is.null(col_numb)==FALSE & model_less==0){
     
     warning(paste(sum(is.na(boot_object)), "of the", length(boot_object),
                   "bootstraps contain zero combined cases for the variable pair of:",
@@ -3196,13 +3196,13 @@ boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
   ### get p_values up to 0.00001
   while(in_interval){
     alpha <- alpha + 0.001
-    if(is.null(ref)) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=T),stats::quantile(boot_object, probs=(alpha/2),na.rm=T))
+    if(is.null(ref)) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
     
-    if(is.null(ref)==F){
+    if(is.null(ref)==FALSE){
       diff<- boot_object - ref
-      cis<-c(stats::quantile(diff, probs=(1-(alpha/2)),na.rm=T),stats::quantile(diff, probs=(alpha/2),na.rm=T))
-      # lower_ci<- ((ref) - (mean(boot_object,na.rm=T)) - (ref))- (stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object)))))
-      # upper_ci<- ((ref) - (mean(boot_object,na.rm=T)) - (ref))+ (stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object)))))
+      cis<-c(stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(diff, probs=(alpha/2),na.rm=TRUE))
+      # lower_ci<- ((ref) - (mean(boot_object,na.rm=TRUE)) - (ref))- (stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object)))))
+      # upper_ci<- ((ref) - (mean(boot_object,na.rm=TRUE)) - (ref))+ (stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object)))))
       # cis<-c(lower_ci,upper_ci)
     }
     
@@ -3214,10 +3214,10 @@ boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
   
   while(in_interval){
     alpha <- alpha + 0.00001
-    if(is.null(ref)==T) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=T),stats::quantile(boot_object, probs=(alpha/2),na.rm=T))
-    if(is.null(ref)==F){
+    if(is.null(ref)==TRUE) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
+    if(is.null(ref)==FALSE){
       diff<- boot_object - ref
-      cis<-c(stats::quantile(diff, probs=(1-(alpha/2)),na.rm=T),stats::quantile(diff, probs=(alpha/2),na.rm=T))
+      cis<-c(stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(diff, probs=(alpha/2),na.rm=TRUE))
       #lower_ci<- (ref) - (mean(boot_object) - (ref))- (stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object)))))
       #upper_ci<- (ref) - (mean(boot_object) - (ref))+ (stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object)))))
       #cis<-c(lower_ci,upper_ci)
@@ -3231,7 +3231,7 @@ boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
 #   
 #   subfunc_boot_pvalues_multi<-function(boot_object,i){
 #     
-#     if(is.na(as.vector(boot_object$t0)[i])==F){
+#     if(is.na(as.vector(boot_object$t0)[i])==FALSE){
 #       alpha<-boot.pval::boot.pval(boot_object, type="perc",theta_null=0,index = i)}
 #     
 #     else {alpha<-c(NA)}
@@ -3245,14 +3245,14 @@ boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
 #   
 #   if(type=="df"|type=="interact"){
 #   ps<-sapply(i,subfunc_boot_pvalues_multi, boot_object=boot_object)
-#   ps<-matrix(ps,ncol=length(dependent),byrow = F)
+#   ps<-matrix(ps,ncol=length(dependent),byrow = FALSE)
 #   colnames(ps)<-dependent
 #   rownames(ps)<-independent
 #   return(ps)}
 #   
 #   if(type=="se_df"| type=="se_interact"){
 #     se<-sapply(i,subfunc_multi_se, boot_object=boot_object)
-#     se<-matrix(se,ncol=length(dependent),byrow = F)
+#     se<-matrix(se,ncol=length(dependent),byrow = FALSE)
 #     colnames(se)<-dependent
 #     rownames(se)<-independent
 #   return(se)}
@@ -3260,30 +3260,30 @@ boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
 
 
 subfunc_multi_se<-function(boot_object,ref=NULL){
-  boot_object[abs(boot_object)>1000*stats::quantile(abs(boot_object),0.99,na.rm=T)]<-NA
-  if(is.null(ref)) se<-stats::sd(boot_object,na.rm = T)
-  if(is.null(ref)==F) se<-stats::sd((boot_object-ref),na.rm = T)
+  boot_object[abs(boot_object)>1000*stats::quantile(abs(boot_object),0.99,na.rm=TRUE)]<-NA
+  if(is.null(ref)) se<-stats::sd(boot_object,na.rm = TRUE)
+  if(is.null(ref)==FALSE) se<-stats::sd((boot_object-ref),na.rm = TRUE)
   se
 }
 
 
 
 
-extract_interaction_results<-function(glm_model, robust_se=F){
+extract_interaction_results<-function(glm_model, robust_se=FALSE){
   
   
-  if(robust_se == F) model_summary <- summary(glm_model)
-  if(robust_se == T) model_summary<- lmtest::coeftest(glm_model, vcov = sandwich::vcovHC(glm_model, type="HC1"))
+  if(robust_se == FALSE) model_summary <- summary(glm_model)
+  if(robust_se == TRUE) model_summary<- lmtest::coeftest(glm_model, vcov = sandwich::vcovHC(glm_model, type="HC1"))
   
   # Extract the interaction coefficients, standard errors, and p-values
-  if(robust_se == F){
+  if(robust_se == FALSE){
     interaction_coeffs <- stats::coef(glm_model)
     interaction_se <- model_summary$coefficients[, "Std. Error"]
     interaction_pvalues <- model_summary$coefficients[, 4]
   }
   
   
-  if(robust_se == T){
+  if(robust_se == TRUE){
     interaction_coeffs <- model_summary[, "Estimate"]
     interaction_se <- model_summary[, "Std. Error"]
     interaction_pvalues <- model_summary[, 4]

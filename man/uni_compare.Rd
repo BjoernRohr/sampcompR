@@ -116,13 +116,13 @@ new names of the \code{dfs} and \code{benchmarks}, that is also used in plot.}
 
 \item{summet_size}{A number to determine the size of the displayed \code{summetric} in the plot.}
 
-\item{silence}{If \code{silence = F} a warning will be displayed, if variables a
+\item{silence}{If \code{silence = FALSE} a warning will be displayed, if variables a
 re excluded from either the data frame or benchmark, for not existing in both.}
 
 \item{conf_level}{A numeric value between zero and one to determine the confidence level of the confidence
 interval.}
 
-\item{conf_adjustment}{If \code{conf_adjustment = T} the confidence level of the confidence interval will be
+\item{conf_adjustment}{If \code{conf_adjustment = TRUE} the confidence level of the confidence interval will be
 adjusted with a Bonferroni adjustment, to account for the problem of multiple comparisons.}
 
 \item{weight, weight_bench}{A character vector determining variables to weight the \code{dfs} or
@@ -193,7 +193,7 @@ univar_comp<-sampcompR::uni_compare(dfs = c("north","white"),
  
 }
 \references{
-Felderer, B., Kirchner, A., & Kreuter, F. (2019). The Effect of Survey Mode on Data
+Felderer, B., Kirchner, A., & Kreuter, FALSE. (2019). The Effect of Survey Mode on Data
 Quality: Disentangling Nonresponse and Measurement Error Bias. Journal of Official
 Statistics, 35(1), 93–115. https://doi.org/10.2478/jos-2019-0005
 }

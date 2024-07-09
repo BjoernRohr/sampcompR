@@ -4,7 +4,7 @@
 \alias{dataequalizer}
 \title{Equalize dataframes}
 \usage{
-dataequalizer(target_df, source_df, variables = NULL, silence = F)
+dataequalizer(target_df, source_df, variables = NULL, silence = FALSE)
 }
 \arguments{
 \item{target_df}{A data frame}

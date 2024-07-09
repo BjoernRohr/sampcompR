@@ -1,7 +1,7 @@
 ###########################################################################
 ###
-###		Subject:	A Function to Calculate and compare linear regression
-###		Date: 		February 2022
+###		Subject:	A FALSEunction to Calculate and compare linear regression
+###		Date: 		FALSEebruary 2022
 ###		Author: 	Bjoern Rohr
 ### 	Version:  	1.00
 ###
@@ -16,7 +16,7 @@
 
 
 # ##################################################
-# ### 1 Function to reduce df to seperate models ###
+# ### 1 FALSEunction to reduce df to seperate models ###
 # ##################################################
 # 
 # reduce_df_ols <- function (df,dependent,independent, rm_na="pairwise", weight_var = NULL, id = NULL, strata=NULL){
@@ -26,22 +26,22 @@
 #   dependent<-dependent[dependent %in% colnames(df)]
 # 
 #   variables<-c(dependent,independent)
-#   if (is.null(weight_var)==F) weighting<-c(weight_var,id)
-#   if (is.null(strata)==F) weighting<-c(weighting,strata)
+#   if (is.null(weight_var)==FALSE) weighting<-c(weight_var,id)
+#   if (is.null(strata)==FALSE) weighting<-c(weighting,strata)
 # 
 # 
 #   if (is.null(weight_var)) df<-subset(df, select=c(variables))
-#   if (is.null(weight_var)==F) df<-subset(df, select=c(variables,weighting))
+#   if (is.null(weight_var)==FALSE) df<-subset(df, select=c(variables,weighting))
 #   #reduce df to dependent or independent variables
 #   if(rm_na=="listwise") df<-stats::na.omit(df)
 # 
 #   #reduce df to the model
 #   for (i in 1:length(dependent)){
 #     if (is.null(weight_var)) dataframe<-subset(df,select = c(dependent[i],independent))
-#     if (is.null(weight_var)==F) dataframe<-subset(df,select = c(dependent[i],independent, weighting))
-#     if (is.null(weight_var)==F) names(dataframe)[names(dataframe)==weight_var]<-"df_weights"
-#     if (is.null(weight_var)==F & is.null(id)==F) names(dataframe)[names(dataframe)==id]<-"id_df"
-#     if (is.null(weight_var)==F & is.null(strata)==F) names(dataframe)[names(dataframe)==strata]<-"strata_df"
+#     if (is.null(weight_var)==FALSE) dataframe<-subset(df,select = c(dependent[i],independent, weighting))
+#     if (is.null(weight_var)==FALSE) names(dataframe)[names(dataframe)==weight_var]<-"df_weights"
+#     if (is.null(weight_var)==FALSE & is.null(id)==FALSE) names(dataframe)[names(dataframe)==id]<-"id_df"
+#     if (is.null(weight_var)==FALSE & is.null(strata)==FALSE) names(dataframe)[names(dataframe)==strata]<-"strata_df"
 #     if (rm_na=="pairwise") dataframe<-stats::na.omit(dataframe)
 #     df_list[[i]]<-dataframe}
 # 
@@ -63,20 +63,20 @@
 #     dataframe2$sample_ident<-1
 #     
 #     ### normalize the weights if they are present ###
-#     if (is.null(weight)==F) dataframe1$df_weights<- dataframe1$df_weights/(sum(dataframe1$df_weights)/nrow(dataframe1))
-#     if (is.null(weight_bench)==F) dataframe2$df_weights<- dataframe2$df_weights/(sum(dataframe2$df_weights)/nrow(dataframe2))
+#     if (is.null(weight)==FALSE) dataframe1$df_weights<- dataframe1$df_weights/(sum(dataframe1$df_weights)/nrow(dataframe1))
+#     if (is.null(weight_bench)==FALSE) dataframe2$df_weights<- dataframe2$df_weights/(sum(dataframe2$df_weights)/nrow(dataframe2))
 #     
 #     
-#     if ((is.null(weight)==F | is.null(weight_bench)==F) & is.null(id)) dataframe1$id_df<-id_df<-1:nrow(dataframe1)
-#     if (is.null(weight_bench)==F & is.null(weight)) dataframe1$df_weights<-1
+#     if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(id)) dataframe1$id_df<-id_df<-1:nrow(dataframe1)
+#     if (is.null(weight_bench)==FALSE & is.null(weight)) dataframe1$df_weights<-1
 # 
 #     
-#     if ((is.null(weight)==F | is.null(weight_bench)==F) & is.null(id_bench)) dataframe2$id_df<-id_benchmark<-1:nrow(dataframe2)
-#     if (is.null(weight)==F & is.null(weight_bench)) dataframe2$df_weights<-1
+#     if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(id_bench)) dataframe2$id_df<-id_benchmark<-1:nrow(dataframe2)
+#     if (is.null(weight)==FALSE & is.null(weight_bench)) dataframe2$df_weights<-1
 # 
 #     
 #     comb_data<-rbind(dataframe1,dataframe2)
-#     if(is.null(weight)==F | is.null(weight_bench)==F) comb_data$id_df[comb_data$sample_ident==1]<-comb_data$id_df[comb_data$sample_ident==1]+max(comb_data$id_df[comb_data$sample_ident==0])
+#     if(is.null(weight)==FALSE | is.null(weight_bench)==FALSE) comb_data$id_df[comb_data$sample_ident==1]<-comb_data$id_df[comb_data$sample_ident==1]+max(comb_data$id_df[comb_data$sample_ident==0])
 #     comb_df[[i]]<-comb_data
 #   }
 # 
@@ -158,29 +158,29 @@
 #     if(method=="ols"){
 #       if(type=="interact"){
 #         if(is.null(design_list)) ols_next<- stats::glm(stats::as.formula(form), data = comb_data, family = stats::gaussian(link = "identity"))
-#         if(is.null(design_list)==F) ols_next<- weighted_glm_ols (comb_data, design=design_list[[i]], formula= form)}
+#         if(is.null(design_list)==FALSE) ols_next<- weighted_glm_ols (comb_data, design=design_list[[i]], formula= form)}
 # 
 #       if(type=="df1"){
 #         if(is.null(design_list)) ols_next<- stats::glm(stats::as.formula(form), data = comb_data[comb_data$sample_ident==0,], family = stats::gaussian(link = "identity"))
-#         if(is.null(design_list)==F) ols_next<- weighted_glm_ols (comb_data, design=design_list[[i]], formula= form)}
+#         if(is.null(design_list)==FALSE) ols_next<- weighted_glm_ols (comb_data, design=design_list[[i]], formula= form)}
 # 
 #       if(type=="bench"){
 #         if(is.null(design_list)) ols_next<- stats::glm(stats::as.formula(form), data = comb_data[comb_data$sample_ident==1,], family = stats::gaussian(link = "identity"))
-#         if(is.null(design_list)==F) ols_next<- weighted_glm_ols (comb_data, design=design_list[[i]], formula= form)}
+#         if(is.null(design_list)==FALSE) ols_next<- weighted_glm_ols (comb_data, design=design_list[[i]], formula= form)}
 #     }
 # 
 #     if(method=="logit"){
 #       if(type=="interact"){
 #         if(is.null(design_list)) ols_next<- stats::glm(stats::as.formula(form), data = comb_data, family = stats::binomial(link = "logit"))
-#         if(is.null(design_list)==F) ols_next<- weighted_glm_ols (comb_data, design=design_list[[i]], formula= form, method= "logit")}
+#         if(is.null(design_list)==FALSE) ols_next<- weighted_glm_ols (comb_data, design=design_list[[i]], formula= form, method= "logit")}
 # 
 #       if(type=="df1"){
 #         if(is.null(design_list)) ols_next<- stats::glm(stats::as.formula(form), data = comb_data[comb_data$sample_ident==0,], family = stats::binomial(link = "logit"))
-#         if(is.null(design_list)==F) ols_next<- weighted_glm_ols (comb_data[comb_data$sample_ident==0,], design=design_list[[i]], formula= form, method= "logit")}
+#         if(is.null(design_list)==FALSE) ols_next<- weighted_glm_ols (comb_data[comb_data$sample_ident==0,], design=design_list[[i]], formula= form, method= "logit")}
 # 
 #       if(type=="bench"){
 #         if(is.null(design_list)) ols_next<- stats::glm(stats::as.formula(form), data = comb_data[comb_data$sample_ident==1,], family = stats::binomial(link = "logit"))
-#         if(is.null(design_list)==F) ols_next<- weighted_glm_ols (comb_data[comb_data$sample_ident==1,], design=design_list[[i]], formula= form, method= "logit")}
+#         if(is.null(design_list)==FALSE) ols_next<- weighted_glm_ols (comb_data[comb_data$sample_ident==1,], design=design_list[[i]], formula= form, method= "logit")}
 #     }
 # 
 #     ols_list[[i]]<-ols_next
@@ -197,11 +197,11 @@
 # ###############################
 # 
 # 
-# final_ols_list<-function(ols_list, dependent,independent,weight_var=NULL,robust_se=F, 
+# final_ols_list<-function(ols_list, dependent,independent,weight_var=NULL,robust_se=FALSE, 
 #                          p_adjust=NULL, nboots=0, df=NULL,benchmark=NULL,
 #                          id=NULL,id_bench=NULL, weight = NULL,weight_bench = NULL,
 #                          strata = NULL, strata_bench = NULL, rm_na = "pairwise", 
-#                          method="ols", parallel=F, out_models=F){
+#                          method="ols", parallel=FALSE, out_models=FALSE){
 # 
 #   output_list<-list()
 #   ld<-length(dependent)
@@ -227,8 +227,8 @@
 #   t_p2<-matrix(ncol=ld, nrow=li)
 #   freedom2<-matrix(ncol=ld, nrow=li)
 # 
-#   if(out_models==T) output_list[[1]]<-ols_list
-#   #if(out_models==F) output_list[[1]]<-NULL
+#   if(out_models==TRUE) output_list[[1]]<-ols_list
+#   #if(out_models==FALSE) output_list[[1]]<-NULL
 #   #output_list[[2]]<-ols_list2
 # 
 # 
@@ -240,7 +240,7 @@
 #       bmatrix_diff[j,i]<-bmatrix2[j,i]-bmatrix1[j,i]
 # 
 # 
-#       if (robust_se==F | isTRUE(weight_var)){
+#       if (robust_se==FALSE | isTRUE(weight_var)){
 #         pmatrix_diff[j,i]<-summary(ols_list[[1]][[i]])$coefficients[,4][j+li+2]
 #         pmatrix1[j,i]<-summary(ols_list[[2]][[i]])$coefficients[,4][j+1]
 #         pmatrix2[j,i]<-summary(ols_list[[3]][[i]])$coefficients[,4][j+1]
@@ -249,7 +249,7 @@
 #         se_matrix[j,i]<- summary(ols_list[[1]][[i]])$coefficients[,2][j+li+2]
 #       }
 # 
-#       if (robust_se==T & is.null(weight_var)){
+#       if (robust_se==TRUE & is.null(weight_var)){
 #         pmatrix_diff[j,i]<-lmtest::coeftest(ols_list[[1]][[i]], vcov = sandwich::vcovHC(ols_list[[1]][[i]], type="HC1"))[,4][j+li+2]
 #         pmatrix1[j,i]<-lmtest::coeftest(ols_list[[2]][[i]], vcov = sandwich::vcovHC(ols_list[[2]][[i]], type="HC1"))[,4][j+1]
 #         pmatrix2[j,i]<-lmtest::coeftest(ols_list[[3]][[i]], vcov = sandwich::vcovHC(ols_list[[3]][[i]], type="HC1"))[,4][j+1]
@@ -281,7 +281,7 @@
 #   #boferoni correction
 #   ### maybe use p.adjust instead ###
 # 
-#   if (is.null(p_adjust)==F) adjust_method<-p_adjust
+#   if (is.null(p_adjust)==FALSE) adjust_method<-p_adjust
 #   if (is.null(p_adjust)) adjust_method<-"bonferroni"
 # 
 #   p1_adjusted <- pmatrix1
@@ -299,7 +299,7 @@
 #                                                 n=ncol(pmatrix1)),
 #                            ncol = ncol(pmatrix1))}
 # 
-#   if (is.null(p_adjust)==F){
+#   if (is.null(p_adjust)==FALSE){
 #     #p1_used<- p1_adjusted
 #     #p2_used<- p2_adjusted
 #     p1_used<- pmatrix1
@@ -369,8 +369,8 @@
 # 
 #   if(is.null(p_adjust)) output_list[[17]]<-length(pmatrix_diff[pmatrix_diff>=0.05])/length(pmatrix_diff)
 #   if(is.null(p_adjust)) output_list[[18]]<-length(pmatrix_diff[pmatrix_diff<0.05])/length(pmatrix_diff)
-#   if(is.null(p_adjust)==F)  output_list[[17]]<-length(p_diff_adjusted[p_diff_adjusted>=0.05])/length(p_diff_adjusted)
-#   if(is.null(p_adjust)==F)  output_list[[18]]<-length(p_diff_adjusted[p_diff_adjusted<0.05])/length(p_diff_adjusted)
+#   if(is.null(p_adjust)==FALSE)  output_list[[17]]<-length(p_diff_adjusted[p_diff_adjusted>=0.05])/length(p_diff_adjusted)
+#   if(is.null(p_adjust)==FALSE)  output_list[[18]]<-length(p_diff_adjusted[p_diff_adjusted<0.05])/length(p_diff_adjusted)
 # 
 #   names(output_list)<-c("models_interaction",
 #                         "coefs_data1", "coefs_data2","coefs_difference",
@@ -397,9 +397,9 @@
 
 # #' Compares set of respondents using OLS-models fit in two models.
 # #' 
-# #' \code{multi_ols_compare} This Function compares the coefficients of one OLS-Regression-Model
+# #' \code{multi_ols_compare} This FALSEunction compares the coefficients of one OLS-Regression-Model
 # #' in one set of respondents with the coefficients of an identical model in 
-# #' another set of respondents. First, both sets of respondents
+# #' another set of respondents. FALSEirst, both sets of respondents
 # #' will be attached to each other in one data frame and the model will be 
 # #' calculated on the combined set of respondents.
 # #' A Dummy will be used as an interaction term, to look for differences in the set of respondents.
@@ -414,7 +414,7 @@
 # #' One model will be computed for every dependent variable (y) provided.
 # #' @param independent A list of strings containing the independent variables (x) for comparison.
 # #' Every independent variable will be used in every model to estimate the dependent variable (y)
-# #' @param rm_na To compute the chow test missings must be removed.  For this two
+# #' @param rm_na To compute the chow test missings must be removed.  FALSEor this two
 # #' options are currently supportet. If \code{rm_na = "pairwise"} NAs will be removed
 # #' seperately for every model. Only cases containing NA on one of the variables used
 # #' in the respective model will be removed (all independent variables but only
@@ -438,7 +438,7 @@
 # #' function for weighting.
 # #' @param nest,nest_bench A logical Vector used in the \code{\link[survey]{svydesign}}
 # #' function for the respective data frame.
-# #' @param robust_se=F A logical value If TRUE instead of normal standard errors,  heteroscedasticity-consistent
+# #' @param robust_se=FALSE A logical value If TRUE instead of normal standard errors,  heteroscedasticity-consistent
 # #' standard errors will be used in the analysis for calculation the sandwitch package and lmtest packages are used.
 # #' @param p_adjust A logical value If TRUE the bonferroni adjusted p-values are used in inference
 # #' statistic.
@@ -455,17 +455,17 @@
 # #' 
 # #' 
 # #' 
-# #' @importFrom survey svydesign
+# #' @importFALSErom survey svydesign
 # #' 
 # #' 
 # #' 
 # 
 # 
-# multi_ols_compare<-function(df,benchmark,independent,dependent,rm_na="pairwise", out_olslist=T,
-#                             out_df=F, out_models=F, print_p=F, print_se=F, weight=NULL, id=NULL,
+# multi_ols_compare<-function(df,benchmark,independent,dependent,rm_na="pairwise", out_olslist=TRUE,
+#                             out_df=FALSE, out_models=FALSE, print_p=FALSE, print_se=FALSE, weight=NULL, id=NULL,
 #                             strata=NULL, nest=FALSE, weight_bench=NULL, id_bench=NULL,
-#                             strata_bench=NULL, nest_bench=FALSE, robust_se=F, p_adjust=NULL, 
-#                             names_df_benchmark=NULL, method="ols", silence_summary=F, nboots=0, parallel=F){
+#                             strata_bench=NULL, nest_bench=FALSE, robust_se=FALSE, p_adjust=NULL, 
+#                             names_df_benchmark=NULL, method="ols", silence_summary=FALSE, nboots=0, parallel=FALSE){
 # 
 #   ### 1 reduce both data frames ###
 #   ### 1 reduce both data frames ###
@@ -477,7 +477,7 @@
 #     old_benchmark<-benchmark
 #     name_old_benchmark<-deparse(substitute(benchmark))}
 #   
-#   if(inherits(df,"data.frame")==F){
+#   if(inherits(df,"data.frame")==FALSE){
 #     if(is.character(df)){
 #       old_df<-get(df)
 #       name_old_df<-df
@@ -487,7 +487,7 @@
 #                     sep = "", collapse = NULL))
 #   }
 #   
-#   if(inherits(benchmark,"data.frame")==F){
+#   if(inherits(benchmark,"data.frame")==FALSE){
 #     if(is.character(benchmark)){
 #       old_benchmark<-get(benchmark)
 #       name_old_benchmark<-benchmark
@@ -506,8 +506,8 @@
 #   
 #   if (is.null(weight)) df<-reduce_df_ols(df, dependent, independent, rm_na = rm_na)
 #   if (is.null(weight_bench)) benchmark<-reduce_df_ols(benchmark, dependent, independent, rm_na = rm_na)
-#   if (is.null(weight)==F) df<-reduce_df_ols(df, dependent, independent,  weight_var = weight, id = id, rm_na = rm_na)
-#   if (is.null(weight_bench)==F) benchmark<-reduce_df_ols(benchmark, dependent, independent,  weight_var = weight_bench, id = id_bench, rm_na = rm_na)
+#   if (is.null(weight)==FALSE) df<-reduce_df_ols(df, dependent, independent,  weight_var = weight, id = id, rm_na = rm_na)
+#   if (is.null(weight_bench)==FALSE) benchmark<-reduce_df_ols(benchmark, dependent, independent,  weight_var = weight_bench, id = id_bench, rm_na = rm_na)
 # 
 # 
 #   df_comb<-combine_dfs(df,benchmark,dependent,independent,id=id,id_bench=id_bench,
@@ -520,19 +520,19 @@
 # 
 #   # calculate survey deisgns if weighted
 # 
-#   if (is.null(weight)==F | is.null(weight_bench)==F) {
+#   if (is.null(weight)==FALSE | is.null(weight_bench)==FALSE) {
 #     design_list<-list()
-#     design_list[[1]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact")
-#     design_list[[2]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1")
-#     design_list[[3]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="bench")
+#     design_list[[1]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="interact")
+#     design_list[[2]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="df1")
+#     design_list[[3]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="bench")
 # 
 #   } else {design_list = list(NULL,NULL,NULL)}
 # 
-#   if (is.null(weight)==F | is.null(weight_bench)==F) {
+#   if (is.null(weight)==FALSE | is.null(weight_bench)==FALSE) {
 #     design_list2<-list()
-#     design_list2[[1]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact")
-#     design_list2[[2]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1")
-#     design_list2[[3]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="bench")
+#     design_list2[[1]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="interact")
+#     design_list2[[2]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="df1")
+#     design_list2[[3]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="bench")
 #   } else {design_list2 = list(NULL,NULL,NULL)}
 # 
 # 
@@ -563,7 +563,7 @@
 # 
 # 
 # 
-#   if (is.null(weight)==F | is.null(weight_bench)==F) weight_var<-T
+#   if (is.null(weight)==FALSE | is.null(weight_bench)==FALSE) weight_var<-TRUE
 #   else weight_var<-NULL
 # 
 #   ### 3 build a output list ###
@@ -586,19 +586,19 @@
 #   names(output)[20]<-"independent"
 # 
 #   ### add names of the data frames
-#   if (is.null(names_df_benchmark)==F) output[[21]]<-names_df_benchmark
+#   if (is.null(names_df_benchmark)==FALSE) output[[21]]<-names_df_benchmark
 #   else output[[21]]<-c(name_old_df,name_old_benchmark)
 #   names(output)[21]<-"names_df_benchmark"
 # 
 #   ### p_adjustment ###
-#   if(is.null(p_adjust)==T){
+#   if(is.null(p_adjust)==TRUE){
 #     output[[22]]<-FALSE
 #   }
-#   if(is.null(p_adjust)==F){
-#     if (is.character(p_adjust)==T){
+#   if(is.null(p_adjust)==FALSE){
+#     if (is.character(p_adjust)==TRUE){
 #       output[[22]]<-p_adjust
 #     }
-#     if (is.character(p_adjust)==F){
+#     if (is.character(p_adjust)==FALSE){
 #       output[[22]]<-"bonferroni"
 #     }
 #     
@@ -612,10 +612,10 @@
 #     names(output)[23]<-"dataframes"
 #     output[[23]][[1]]<-old_df
 #     output[[23]][[2]]<-old_benchmark
-#     if (is.null(names_df_benchmark)==F) names(output[[23]])<-names_df_benchmark
+#     if (is.null(names_df_benchmark)==FALSE) names(output[[23]])<-names_df_benchmark
 #     else names(output[[23]])<-c(name_old_df,name_old_benchmark)}
 # 
-# if(silence_summary==F){
+# if(silence_summary==FALSE){
 #   cat("\n")
 #   cat("Difference in coeficients between sets of respondents \n \n")
 # 
@@ -627,7 +627,7 @@
 # }
 #   
 #   if(isTRUE(print_p)) {
-#     if (is.null(p_adjust)==F){
+#     if (is.null(p_adjust)==FALSE){
 #       cat("\n")
 #       cat("P-Values for every coeficient & model \n \n")
 #       print(output$p_diff_adjusted)}
@@ -644,7 +644,7 @@
 # 
 # 
 #   if (out_olslist==TRUE) output<-output
-#   if (out_olslist==F) output<-output$coefs_difference_stars
+#   if (out_olslist==FALSE) output<-output$coefs_difference_stars
 # 
 #   output
 # }
@@ -667,7 +667,7 @@
 # #' @return Prints several infomation of the inputed \code{multi_ols_compare} list-object.
 # #'
 # 
-# summary_ols_compare<-function (ols_comp_object, print_p=F, print_se=F){
+# summary_ols_compare<-function (ols_comp_object, print_p=FALSE, print_se=FALSE){
 # 
 #   cat("\n")
 #   cat("Difference in Average Discrete Change (ADC) between samples \n \n")
@@ -699,7 +699,7 @@
 # #' Compares data frames using different regression methods.
 # #'
 # #' \code{multi_compare} compares data frames using regression models based on 
-# #' differing methods. For now, only OLS-Regression and Logit-Regression are 
+# #' differing methods. FALSEor now, only OLS-Regression and Logit-Regression are 
 # #' implemented. 
 # #'
 # #' @param df,benchmark A data frame containing the set of respondents or 
@@ -712,7 +712,7 @@
 # #' Every independent variable will be used in every model to estimate the dependent variable (y)
 # #' @param method A character string for the method used for comparison. It can either be "ols"
 # #' (Default), or "logit".
-# #' @param rm_na A character to determine how to handle missing values.  For this two
+# #' @param rm_na A character to determine how to handle missing values.  FALSEor this two
 # #' options are  supportet. If \code{rm_na = "pairwise"} NAs will be removed
 # #' seperately for every model. Only cases containing NA on one of the variables used
 # #' in the respective model will be removed (all independent variables but only
@@ -781,11 +781,11 @@
 # #' 
 
 # 
-# multi_compare<-function(df,benchmark,independent,dependent, method,rm_na="pairwise", out_output_list=T,
-#                         out_df=F, out_models=F, print_p=F, print_se=F, weight=NULL, id=NULL,
+# multi_compare<-function(df,benchmark,independent,dependent, method,rm_na="pairwise", out_output_list=TRUE,
+#                         out_df=FALSE, out_models=FALSE, print_p=FALSE, print_se=FALSE, weight=NULL, id=NULL,
 #                         strata=NULL, nest=FALSE, weight_bench=NULL, id_bench=NULL,strata_bench=NULL,
-#                         nest_bench=FALSE, robust_se=F, p_adjust=NULL, names_df_benchmark=NULL, 
-#                         silence_summary=F, nboots=0, parallel = F){
+#                         nest_bench=FALSE, robust_se=FALSE, p_adjust=NULL, names_df_benchmark=NULL, 
+#                         silence_summary=FALSE, nboots=0, parallel = FALSE){
 # 
 # 
 #   if (is.null(names_df_benchmark)) names_df_benchmark<-c (deparse(substitute(df)), deparse(substitute(benchmark)))
@@ -830,7 +830,7 @@
 
 
 ###########################################################################################
-### multi_reg_plotter: A Function to visualize the results of multi_reg_compare objects ###
+### multi_reg_plotter: A FALSEunction to visualize the results of multi_reg_compare objects ###
 ###########################################################################################
 
 ### Documentation of the multi_reg_plotter_old ###
@@ -868,8 +868,8 @@
 # #' @import  plot.matrix
 
 # multi_reg_plotter_old<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, plot_title=NULL,
-#                                 p_value=0.05, breaks=NULL,matrix=F, colors=NULL, variant="one", p_adjust=NULL,
-#                                 note=T,mar=NULL, key=list(side=4), ...){
+#                                 p_value=0.05, breaks=NULL,matrix=FALSE, colors=NULL, variant="one", p_adjust=NULL,
+#                                 note=TRUE,mar=NULL, key=list(side=4), ...){
 # 
 #   ### Build title ###
 #   df_title <- multi_reg_object[[21]][1]
@@ -888,7 +888,7 @@
 #   p_benchmark<-multi_reg_object$P_coefs2
 #   }
 # 
-#   if (is.null(p_adjust)==F){
+#   if (is.null(p_adjust)==FALSE){
 #     sample_diff<-multi_reg_object$p_diff_adjusted
 #     p_df<-multi_reg_object$p1_adjusted
 #     p_benchmark<-multi_reg_object$p2_adjusted
@@ -983,7 +983,7 @@
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", "Different", "High Difference")
 #     note_text<- "Note: Same (green) means that the coeficients are not significant different. \nDifferent (yellow) means, at least one is significant >0 or <0 and both are significant different from each other. \nHigh Difference (red) means all conditions for Difference are true and the coeficients differ in direction \nor one is double the value of the other. \nLevel of Significance is p < 0.05."
 #     if (is.null (mar)) {mar= c(12.5, 6, 2, 6)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 #   if (variant=="two"){
@@ -991,7 +991,7 @@
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", "Diff in direrction","Diff in sig", "Strong Diff")
 #     note_text<-"Note: Same (green) means no difference of any type. \nDiff in direction (yellow) means no significant difference between coefs, but they differ in direction. \nDiff in Significance (orange) means no significant difference but one is significant < or > 0 while the other is not. \nSignificant Difference (red) means, both coeficients differ significant from each other. \nLevel of Significance is p < 0.05"
 #     if (is.null (mar)) {mar= c(12.5, 6, 2, 7.5)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 #   if (variant=="three"){
@@ -999,7 +999,7 @@
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", "Diff in strength", "Diff in Direrction","Diff in significance")
 #     note_text<-"Note: Same (green) means there is no meaningful difference of any type. \nDiff in Strength (yellow) means that one coef is > double the value of the other. \nDiff in Direction (orange) means that one coef is positive while the other is negative \nDiff in Significance (red) means that one is significant < or > 0 while the other is not. \nLevel of Significance is p < 0.05"
 #     if (is.null (mar)) {mar= c(12.5, 6, 2, 5.5)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 #   if (variant=="four"){
@@ -1007,7 +1007,7 @@
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", Diff in Significance")
 #     note_text<-"Note: Same (green) means there is no difference in significance. \nDiff in Significance (red) means that one coefcient is significant < or > 0 while the other is not. \nLevel of Significance is p < 0.05"
 #     if (is.null (mar)) {mar= c(11.5, 6, 2, 6.5)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 #   if (variant=="five"){
@@ -1015,7 +1015,7 @@
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", Diff in Direction")
 #     note_text<-"Note: Same (green) means there is no difference in direction. \nDiff in Direction (red) means that one coeficient is <0 while the other is >0."
 #     if (is.null (mar)) {mar= c(10.5, 6, 2, 5.5)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 #   if (variant=="six"){
@@ -1023,11 +1023,11 @@
 #     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", Diff in Strength")
 #     note_text<-"Note: Same (green) means there is no difference in strength. \nDiff in Strength (red) means that one coeficient has double the value of the other."
 #     if (is.null (mar)) {mar= c(10.5, 6, 2, 5.5)}
-#     if (is.null (mar)==F){mar=mar}
+#     if (is.null (mar)==FALSE){mar=mar}
 #     }
 # 
 # 
-#   opar <- graphics::par(no.readonly=T)      # make a copy of current settings
+#   opar <- graphics::par(no.readonly=TRUE)      # make a copy of current settings
 # 
 #   if (matrix == FALSE & variant =="one") graphics::par(mar = mar,las=2,...,cex.axis=0.75)
 #   if (matrix == FALSE & variant =="two") graphics::par(mar = mar ,las=2, ..., cex.axis=0.75) # bottom,left,top,right
@@ -1036,12 +1036,12 @@
 #   if (matrix == FALSE & variant =="five") graphics::par(mar = mar ,las=2, ..., cex.axis=0.75) # bottom,left,top,right
 #   if (matrix == FALSE & variant =="six") graphics::par(mar = mar ,las=2, ..., cex.axis=0.75) # bottom,left,top,right
 #   if (matrix == FALSE) comparison_plot <- plot(comp_matrix, col = colors, breaks = breaks, main = plot_title, label_y="", label_x="", key=key)
-#   if (matrix == FALSE & variant =="one" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
-#   if (matrix == FALSE & variant =="two" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
-#   if (matrix == FALSE & variant =="three" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
-#   if (matrix == FALSE & variant =="four" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
-#   if (matrix == FALSE & variant =="five" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
-#   if (matrix == FALSE & variant =="six" & note == T) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="one" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="two" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="three" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="four" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="five" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
+#   if (matrix == FALSE & variant =="six" & note == TRUE) graphics::mtext(note_text, side = 1, line = (mar[1]-1.5), cex = 0.8, adj=0, las=0)
 # 
 #   par(opar) #reset to original par
 #   return(comparison_plot)
@@ -1055,7 +1055,7 @@
 
 
 ###########################################################################################
-### multi_reg_plotter: A Function to visualize the results of multi_reg_compare objects ###
+### multi_reg_plotter: A FALSEunction to visualize the results of multi_reg_compare objects ###
 ###########################################################################################
 
 ### Documentation of the multi_reg_plotter ###
@@ -1111,15 +1111,15 @@
 # #'
 # #' @return Returns a heatmatrix-like plot created with ggplot, to vizualize the multivariate differences. On the y-axis
 # #' the indepent variables are displayed, while on the x-axis the independent variables are displayed. Depending on the
-# #' variant, the displayed tile colors must be interpreted differently. For more information on interpretation look at
+# #' variant, the displayed tile colors must be interpreted differently. FALSEor more information on interpretation look at
 # #' \code{variant}.
 # #'
 # #' @export
 
 multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, plot_title=NULL,
-                            p_value=0.05, breaks=NULL,plot_data=F, colors=NULL, variant="one", p_adjust=NULL,
-                            note=T, grid="white", diff_perc=F, diff_perc_size=4.5,
-                            perc_diff_transparance=0, diff_perc_position= "top_right", label_x=NULL, label_y=NULL,missings_x=T){
+                            p_value=0.05, breaks=NULL,plot_data=FALSE, colors=NULL, variant="one", p_adjust=NULL,
+                            note=TRUE, grid="white", diff_perc=FALSE, diff_perc_size=4.5,
+                            perc_diff_transparance=0, diff_perc_position= "top_right", label_x=NULL, label_y=NULL,missings_x=TRUE){
 
   ### Build title ###
   df_title <- multi_reg_object[[21]][1]
@@ -1138,7 +1138,7 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
     p_benchmark<-multi_reg_object$P_coefs2
   }
 
-  if (is.null(p_adjust)==F){
+  if (is.null(p_adjust)==FALSE){
     sample_diff<-multi_reg_object$p_diff_adjusted
     p_df<-multi_reg_object$P_coefs1
     p_benchmark<-multi_reg_object$P_coefs2
@@ -1271,11 +1271,11 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
 
   ### Get breaks in % ###
 
-  if(diff_perc==T) {
-    percental_difference_b1<-length(comp_matrix[comp_matrix == breaks[1] & is.na(comp_matrix)==F ])/ length(comp_matrix[is.na(comp_matrix)==F])
-    percental_difference_b2<-length(comp_matrix[comp_matrix == breaks[2] & is.na(comp_matrix)==F ])/ length(comp_matrix[is.na(comp_matrix)==F])
-    if (length(breaks)>2) percental_difference_b3<-length(comp_matrix[comp_matrix == breaks[3] & is.na(comp_matrix)==F ])/ length(comp_matrix[is.na(comp_matrix)==F])
-    if (length(breaks)>3) percental_difference_b4<-length(comp_matrix[comp_matrix == breaks[4] & is.na(comp_matrix)==F ])/ length(comp_matrix[is.na(comp_matrix)==F])
+  if(diff_perc==TRUE) {
+    percental_difference_b1<-length(comp_matrix[comp_matrix == breaks[1] & is.na(comp_matrix)==FALSE ])/ length(comp_matrix[is.na(comp_matrix)==FALSE])
+    percental_difference_b2<-length(comp_matrix[comp_matrix == breaks[2] & is.na(comp_matrix)==FALSE ])/ length(comp_matrix[is.na(comp_matrix)==FALSE])
+    if (length(breaks)>2) percental_difference_b3<-length(comp_matrix[comp_matrix == breaks[3] & is.na(comp_matrix)==FALSE ])/ length(comp_matrix[is.na(comp_matrix)==FALSE])
+    if (length(breaks)>3) percental_difference_b4<-length(comp_matrix[comp_matrix == breaks[4] & is.na(comp_matrix)==FALSE ])/ length(comp_matrix[is.na(comp_matrix)==FALSE])
 
     diff_summary<-paste("Different Correlations in % : \n",breaks[1]," :",(round((percental_difference_b1), digits = 3)*100),"% \n",
                         breaks[2]," :",(round(percental_difference_b2, digits = 3)*100),"%")
@@ -1316,7 +1316,7 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
     {if (grid != "none") ggplot2::geom_tile(colour= grid, lwd =1,linetype=1)}+
     {if (grid == "none") ggplot2::geom_tile()}+
     {if (grid != "white" & grid != "none") ggplot2::geom_tile(data = na_matrix, colour = "white", lwd=1,linetype=1)}+
-    {if(missings_x==T) ggplot2::geom_point(data=subset(comp_matrix_df, comp_matrix_df$value=="X"),shape=4, size=5, show.legend = FALSE)}+
+    {if(missings_x==TRUE) ggplot2::geom_point(data=subset(comp_matrix_df, comp_matrix_df$value=="X"),shape=4, size=5, show.legend = FALSE)}+
     ggplot2::coord_fixed()+
     ggplot2::scale_fill_manual(values=colors, name="", na.translate = FALSE, drop=FALSE)+
     ggplot2::scale_y_discrete(name="", limits = rev(levels(comp_matrix_df$x)), labels= label_x, breaks=unique(comp_matrix_df$x), drop=FALSE)+
@@ -1329,10 +1329,10 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
                    plot.caption=ggplot2::element_text(hjust = 0))+
     ggplot2::ggtitle(plot_title)
 
-  if(note==T) comparison_plot<-comparison_plot + ggplot2::labs(caption = note_text)
+  if(note==TRUE) comparison_plot<-comparison_plot + ggplot2::labs(caption = note_text)
 
 
-  if (diff_perc==T) {
+  if (diff_perc==TRUE) {
     if (diff_perc_position== "top_left") {
     comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = -Inf, y = Inf, hjust = 0, vjust = 1, label = diff_summary$label),
                                                              fill = ggplot2::alpha("white", perc_diff_transparance), color = ggplot2::alpha("black", 1), size= diff_perc_size)}
@@ -1354,8 +1354,8 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
 
 
 
-  if (plot_data==F) return (comparison_plot)
-  if (plot_data==T) return (comp_matrix_df)
+  if (plot_data==FALSE) return (comparison_plot)
+  if (plot_data==TRUE) return (comp_matrix_df)
 }
 
 
@@ -1447,7 +1447,7 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
 #' displayed separately with ggplot's facet_wrap function. On the y-axis, the 
 #' independent variables are displayed, while on the x-axis the independent 
 #' variables are displayed. Depending on the variant, the displayed tile colors 
-#' must be interpreted differently. For more information on interpretation look 
+#' must be interpreted differently. FALSEor more information on interpretation look 
 #' at \code{variant}.
 #'
 #'
@@ -1481,11 +1481,11 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
 #' @export
 
 plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=NULL,
-                         p_value=0.05, breaks=NULL,plot_data=F, colors=NULL, variant="one", p_adjust=NULL,
-                         note=F, grid="white", diff_perc=T, diff_perc_size=4.5, ncol_facet=3,
-                         perc_diff_transparance=0, diff_perc_position= "top_right", gradient=F,
+                         p_value=0.05, breaks=NULL,plot_data=FALSE, colors=NULL, variant="one", p_adjust=NULL,
+                         note=FALSE, grid="white", diff_perc=TRUE, diff_perc_size=4.5, ncol_facet=3,
+                         perc_diff_transparance=0, diff_perc_position= "top_right", gradient=FALSE,
                          sum_weights_indep=NULL,sum_weights_dep=NULL, label_x=NULL, label_y=NULL,
-                         missings_x=T){
+                         missings_x=TRUE){
 
 
 
@@ -1553,7 +1553,7 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
     help<-multi_reg_plotter(multi_reg_object=curr_df, plot_title=plot_title,
                             p_value=p_value, breaks=breaks, colors=colors, variant=variant, p_adjust=p_adjust,
                             note=note, diff_perc=diff_perc, diff_perc_size=diff_perc_size,
-                            plot_data=T, missings_x=missings_x)
+                            plot_data=TRUE, missings_x=missings_x)
 
 
 
@@ -1569,13 +1569,13 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
     ########################
 
     if (is.null(plots_label)) help$samp<-multi_compare_objects[i]
-    if (is.null(plots_label)==F) help$samp<-plots_label[i]
+    if (is.null(plots_label)==FALSE) help$samp<-plots_label[i]
 
     ##########################
     ### add plots together ###
     ##########################
 
-    if (is.null(plot_df)==F) plot_df<-rbind(plot_df,help)
+    if (is.null(plot_df)==FALSE) plot_df<-rbind(plot_df,help)
     if(is.null(plot_df)) plot_df=help
     }
 
@@ -1590,11 +1590,11 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
   ### Calculate percentage of difference ###
   ##########################################
 
-  if(diff_perc==T) {
-  #  percental_difference_b1<-length(help$value[help$value == breaks[1] & is.na(help$value)==F ])/ length(help$value[is.na(help$value)==F])
-  #  percental_difference_b2<-length(help$value[help$value == breaks[2] & is.na(help$value)==F ])/ length(help$value[is.na(help$value)==F])
-  #  if (length(breaks)>2) percental_difference_b3<-length(help$value[help$value == breaks[3] & is.na(help$value)==F ])/ length(help$value[is.na(help$value)==F])
-  #  if (length(breaks)>3) percental_difference_b4<-length(help$value[help$value == breaks[4] & is.na(help$value)==F ])/ length(help$value[is.na(help$value)==F])
+  if(diff_perc==TRUE) {
+  #  percental_difference_b1<-length(help$value[help$value == breaks[1] & is.na(help$value)==FALSE ])/ length(help$value[is.na(help$value)==FALSE])
+  #  percental_difference_b2<-length(help$value[help$value == breaks[2] & is.na(help$value)==FALSE ])/ length(help$value[is.na(help$value)==FALSE])
+  #  if (length(breaks)>2) percental_difference_b3<-length(help$value[help$value == breaks[3] & is.na(help$value)==FALSE ])/ length(help$value[is.na(help$value)==FALSE])
+  #  if (length(breaks)>3) percental_difference_b4<-length(help$value[help$value == breaks[4] & is.na(help$value)==FALSE ])/ length(help$value[is.na(help$value)==FALSE])
 
   #  diff_summary<-paste(breaks[1]," :",(round((percental_difference_b1), digits = 3)*100),"% \n",
   #                      breaks[2]," :",(round(percental_difference_b2, digits = 3)*100),"%")
@@ -1607,7 +1607,7 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
                                     sum_weights_dep=sum_weights_dep)}
 
   #if (is.null(plots_label)) summary_df[i,]<- c(multi_compare_objects[i], diff_summary)
-  #if (is.null(plots_label)==F) summary_df[i,]<- c(plots_label[i], diff_summary)
+  #if (is.null(plots_label)==FALSE) summary_df[i,]<- c(plots_label[i], diff_summary)
 
 
 
@@ -1624,7 +1624,7 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
   #######################################
 
   if (is.null(plots_label)) plot_df$samp <- factor(plot_df$samp, levels = multi_compare_objects)
-  if (is.null(plots_label)==F) plot_df$samp <- factor(plot_df$samp, levels = plots_label)
+  if (is.null(plots_label)==FALSE) plot_df$samp <- factor(plot_df$samp, levels = plots_label)
 
 
   ############
@@ -1633,9 +1633,9 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
 
   comparison_plot<-
     ggplot2::ggplot(data=plot_df, ggplot2::aes(x = plot_df[,"y"], y = plot_df[,"x"], fill = factor(plot_df[,"value"], levels = breaks))) +
-    {if (gradient==T) ggplot2::aes(alpha= as.numeric(gradient))}+
+    {if (gradient==TRUE) ggplot2::aes(alpha= as.numeric(gradient))}+
     ggplot2::geom_tile(colour= grid, lwd =1,linetype=1)+
-    {if(nrow(plot_df[plot_df$value=="X",])>0 & missings_x==T) ggplot2::geom_point(data=plot_df[plot_df$value=="X",],
+    {if(nrow(plot_df[plot_df$value=="X",])>0 & missings_x==TRUE) ggplot2::geom_point(data=plot_df[plot_df$value=="X",],
                                                                   x=plot_df[plot_df$value=="X",]$y,
                                                                   y=plot_df[plot_df$value=="X",]$x,
                                                                   fill=factor(plot_df[plot_df$value=="X",]$value, levels = breaks),
@@ -1656,16 +1656,16 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
     ggplot2::facet_wrap(~ factor(samp),ncol = ncol_facet)
 
 
-  if(note==T) comparison_plot<-comparison_plot + ggplot2::labs(caption = note_text)
+  if(note==TRUE) comparison_plot<-comparison_plot + ggplot2::labs(caption = note_text)
 
 
-  #if (diff_perc==T) {
+  #if (diff_perc==TRUE) {
   #  comparison_plot <- comparison_plot + ggplot2::geom_label(x=Inf, y=Inf,
   #                                                           ggplot2::aes(label = label,  hjust = 1, vjust = 1), data=summary_df,
   #                                                           fill = ggplot2::alpha("white", perc_diff_transparance), color = ggplot2::alpha("black", 1), size= diff_perc_size)}
 
 
-  if (diff_perc==T) {
+  if (diff_perc==TRUE) {
     label=summary_df$label
     if (diff_perc_position== "top_left") {
       comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = rep(-Inf,length(label)), 
@@ -1710,8 +1710,8 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
 
   }
 
-  if (plot_data==T) return(plot_df)
-  if (plot_data==F) return(comparison_plot)
+  if (plot_data==TRUE) return(plot_df)
+  if (plot_data==FALSE) return(comparison_plot)
 
 }
 
@@ -1734,7 +1734,7 @@ empty_finder2<-function(df){
         if ((length(df$value[df[,1]==varnames1[i] & df[,2]==varnames2[j] & df[,5]==sampnames[k]])==0) &
             (any((df[,1]==varnames1[i] & df[,2]==varnames2[j] & df[,5]!=sampnames[k])))) df<-rbind(df, c(varnames1[i],varnames2[j],"X",NA,sampnames[k]))
         if ((length(df$value[df[,1]==varnames1[i] & df[,2]==varnames2[j] & df[,5]==sampnames[k]])==0) &
-            (any((df[,1]==varnames1[i] & df[,2]==varnames2[j] & is.na(df[,3]) & df[,5]!=sampnames[k])))==F) df<-rbind(df, c(varnames1[i],varnames2[j],"X",NA,sampnames[k]))
+            (any((df[,1]==varnames1[i] & df[,2]==varnames2[j] & is.na(df[,3]) & df[,5]!=sampnames[k])))==FALSE) df<-rbind(df, c(varnames1[i],varnames2[j],"X",NA,sampnames[k]))
 
       }
 
@@ -1798,16 +1798,16 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 
     ### build a summary for every sample ###
 
-    percental_difference_b1<-sum(results_object$sum_weight[results_object$value == breaks[1] & is.na(results_object$value)==F
+    percental_difference_b1<-sum(results_object$sum_weight[results_object$value == breaks[1] & is.na(results_object$value)==FALSE
                                                            & results_object$samp==samps[i] & results_object$value != "X"])/
-      sum(results_object$sum_weight[is.na(results_object$value)==F & results_object$samp==samps[i] & results_object$value != "X"])
-    percental_difference_b2<-sum(results_object$sum_weight[results_object$value == breaks[2] & is.na(results_object$value)==F
+      sum(results_object$sum_weight[is.na(results_object$value)==FALSE & results_object$samp==samps[i] & results_object$value != "X"])
+    percental_difference_b2<-sum(results_object$sum_weight[results_object$value == breaks[2] & is.na(results_object$value)==FALSE
                                                            & results_object$samp==samps[i] & results_object$value != "X"])/
-      sum(results_object$sum_weight[is.na(results_object$value)==F & results_object$samp==samps[i] & results_object$value != "X"])
+      sum(results_object$sum_weight[is.na(results_object$value)==FALSE & results_object$samp==samps[i] & results_object$value != "X"])
     if (length(breaks)>2) {
-      percental_difference_b3<-sum(results_object$sum_weight[results_object$value == breaks[3] & is.na(results_object$value)==F
+      percental_difference_b3<-sum(results_object$sum_weight[results_object$value == breaks[3] & is.na(results_object$value)==FALSE
                                                              & results_object$samp==samps[i] & results_object$value != "X"])/
-        sum(results_object$sum_weight[is.na(results_object$value)==F & results_object$samp==samps[i] & results_object$value != "X"])}
+        sum(results_object$sum_weight[is.na(results_object$value)==FALSE & results_object$samp==samps[i] & results_object$value != "X"])}
 
     
     
@@ -1871,7 +1871,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 
 
 
-# multireg_merge<-function(multi_reg_object1, multi_reg_object2, p_adjust=T){
+# multireg_merge<-function(multi_reg_object1, multi_reg_object2, p_adjust=TRUE){
 # 
 #   for (i in 2:16) {
 # 
@@ -1886,7 +1886,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #       rownames(multi_reg_object1[[i]])<-rownames(multi_reg_object1[[i-3]])
 #     }
 #     if (i>=11 & i<14) {
-#       if (p_adjust==T ){
+#       if (p_adjust==TRUE ){
 #         help<- formatC(multi_reg_object1[[i-9]], format = "e", digits = 2)
 # 
 #         multi_reg_object1[[i]][multi_reg_object1[[i-3]]>0.05]<-
@@ -1903,7 +1903,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #         colnames(multi_reg_object1[[i]])<-colnames(multi_reg_object1[[i-3]])
 #         rownames(multi_reg_object1[[i]])<-rownames(multi_reg_object1[[i-3]])
 #       }
-#       if (p_adjust==F) {
+#       if (p_adjust==FALSE) {
 #         help<- formatC(multi_reg_object1[[i-9]], format = "e", digits = 2)
 # 
 #         multi_reg_object1[[i]][multi_reg_object1[[i-6]]>0.05]<-
@@ -1923,10 +1923,10 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #     }
 #   }
 # 
-#   if(p_adjust==F) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>0.05])/length(multi_reg_object1[[7]])
-#   if(p_adjust==F) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05])/length(multi_reg_object1[[7]])
-#   if(p_adjust==T)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>0.05])/length(multi_reg_object1[[10]])
-#   if(p_adjust==T)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05])/length(multi_reg_object1[[10]])
+#   if(p_adjust==FALSE) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>0.05])/length(multi_reg_object1[[7]])
+#   if(p_adjust==FALSE) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05])/length(multi_reg_object1[[7]])
+#   if(p_adjust==TRUE)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>0.05])/length(multi_reg_object1[[10]])
+#   if(p_adjust==TRUE)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05])/length(multi_reg_object1[[10]])
 # 
 #   multi_reg_object1[[19]]<-c(multi_reg_object1[[19]],multi_reg_object2[[19]])
 # 
@@ -1980,7 +1980,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 # #' 
 # #' @export
 # 
-# multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=F){
+# multi_compare_merge <- function(multi_reg_object1, multi_reg_object2, p_adjust=FALSE){
 #   
 #   if(!is.null(multi_reg_object1[[1]])| !is.null(multi_reg_object2[[1]])) {
 #     multi_reg_object1[[1]]<-c(multi_reg_object1[[1]],multi_reg_object2[[1]])}
@@ -1997,7 +1997,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #       #data2$varnames<-multi_reg_object2[[20]]
 #       
 #       
-#       merged<-merge(data1,data2, by = 0,all=T,sort=F)
+#       merged<-merge(data1,data2, by = 0,all=TRUE,sort=FALSE)
 #       rownames(merged)<-merged$Row.names
 #       merged$Row.names<-NULL
 #       
@@ -2019,7 +2019,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #       #data1$varnames<-multi_reg_object1[[20]]
 #       #data2$varnames<-multi_reg_object2[[20]]
 #       
-#       merged<-merge(data1,data2, by = 0,all=T,sort=F)
+#       merged<-merge(data1,data2, by = 0,all=TRUE,sort=FALSE)
 #       rownames(merged)<-merged$Row.names
 #       merged$Row.names<-NULL
 #       
@@ -2027,7 +2027,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #       #rownames(multi_reg_object1[[i]])<-multi_reg_object2[[20]]
 #       #colnames(multi_reg_object1[[i]])<-c(multi_reg_object1$dependent,multi_reg_object2$dependent)
 #       
-#       if (p_adjust==T & is.character(p_adjust)==T) p_method<-p_adjust
+#       if (p_adjust==TRUE & is.character(p_adjust)==TRUE) p_method<-p_adjust
 #       else p_method<-"bonferroni"
 #       
 #       for (j in 1:nrow(multi_reg_object1[[i]])){
@@ -2044,17 +2044,17 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #       help<- formatC(multi_reg_object1[[i-9]], format = "e", digits = 2)
 #       
 #       
-#       multi_reg_object1[[i]][multi_reg_object1[[i-6]]>=0.05 & is.na(multi_reg_object1[[i-6]])==F]<-
-#         paste(help[multi_reg_object1[[i-6]]>=0.05 & is.na(multi_reg_object1[[i-6]])==F], "   ", sep = "")
+#       multi_reg_object1[[i]][multi_reg_object1[[i-6]]>=0.05 & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+#         paste(help[multi_reg_object1[[i-6]]>=0.05 & is.na(multi_reg_object1[[i-6]])==FALSE], "   ", sep = "")
 #       
-#       multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & is.na(multi_reg_object1[[i-6]])==F]<-
-#         paste(help[multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & is.na(multi_reg_object1[[i-6]])==F], "*  ", sep = "")
+#       multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+#         paste(help[multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & is.na(multi_reg_object1[[i-6]])==FALSE], "*  ", sep = "")
 #       
-#       multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & is.na(multi_reg_object1[[i-6]])==F]<-
-#         paste(help[multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & is.na(multi_reg_object1[[i-6]])==F], "** ", sep = "")
+#       multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+#         paste(help[multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & is.na(multi_reg_object1[[i-6]])==FALSE], "** ", sep = "")
 #       
-#       multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.001 & is.na(multi_reg_object1[[i-6]])==F]<-
-#         paste(help[multi_reg_object1[[i-6]]<0.001 & is.na(multi_reg_object1[[i-6]])==F], "***", sep = "")
+#       multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.001 & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+#         paste(help[multi_reg_object1[[i-6]]<0.001 & is.na(multi_reg_object1[[i-6]])==FALSE], "***", sep = "")
 #       multi_reg_object1[[i]][help>0]<-paste(" ",multi_reg_object1[[i]][help>0],sep = "")
 #       
 #       multi_reg_object1[[i]]<-noquote(matrix(multi_reg_object1[[i]], ncol = ncol(multi_reg_object1[[i-6]]), nrow = nrow(multi_reg_object1[[i-6]])))
@@ -2068,21 +2068,21 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #     
 #     if (i==13){
 #       
-#       if (p_adjust==T | is.character(p_adjust)==T){
+#       if (p_adjust==TRUE | is.character(p_adjust)==TRUE){
 #         help<- formatC(multi_reg_object1[[4]], format = "e", digits = 2)
 #         
 #         
-#         multi_reg_object1[[i]][multi_reg_object1[[i-3]]>=0.05 & is.na(multi_reg_object1[[i-3]])==F]<-
-#           paste(help[multi_reg_object1[[i-3]]>=0.05 & is.na(multi_reg_object1[[i-3]])==F], "   ", sep = "")
+#         multi_reg_object1[[i]][multi_reg_object1[[i-3]]>=0.05 & is.na(multi_reg_object1[[i-3]])==FALSE]<-
+#           paste(help[multi_reg_object1[[i-3]]>=0.05 & is.na(multi_reg_object1[[i-3]])==FALSE], "   ", sep = "")
 #         
-#         multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.05 & multi_reg_object1[[i-3]]>=0.01 & is.na(multi_reg_object1[[i-3]])==F]<-
-#           paste(help[multi_reg_object1[[i-3]]<0.05 & multi_reg_object1[[i-3]]>=0.01 & is.na(multi_reg_object1[[i-3]])==F], "*  ", sep = "")
+#         multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.05 & multi_reg_object1[[i-3]]>=0.01 & is.na(multi_reg_object1[[i-3]])==FALSE]<-
+#           paste(help[multi_reg_object1[[i-3]]<0.05 & multi_reg_object1[[i-3]]>=0.01 & is.na(multi_reg_object1[[i-3]])==FALSE], "*  ", sep = "")
 #         
-#         multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.01 & multi_reg_object1[[i-3]]>=0.001 & is.na(multi_reg_object1[[i-3]])==F]<-
-#           paste(help[multi_reg_object1[[i-3]]<0.01 & multi_reg_object1[[i-3]]>=0.001 & is.na(multi_reg_object1[[i-3]])==F], "** ", sep = "")
+#         multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.01 & multi_reg_object1[[i-3]]>=0.001 & is.na(multi_reg_object1[[i-3]])==FALSE]<-
+#           paste(help[multi_reg_object1[[i-3]]<0.01 & multi_reg_object1[[i-3]]>=0.001 & is.na(multi_reg_object1[[i-3]])==FALSE], "** ", sep = "")
 #         
-#         multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.001 & is.na(multi_reg_object1[[i-3]])==F]<-
-#           paste(help[multi_reg_object1[[i-3]]<0.001 & is.na(multi_reg_object1[[i-3]])==F], "***", sep = "")
+#         multi_reg_object1[[i]][multi_reg_object1[[i-3]]<0.001 & is.na(multi_reg_object1[[i-3]])==FALSE]<-
+#           paste(help[multi_reg_object1[[i-3]]<0.001 & is.na(multi_reg_object1[[i-3]])==FALSE], "***", sep = "")
 #         multi_reg_object1[[i]][help>0]<-paste(" ",multi_reg_object1[[i]][help>0],sep = "")
 #         
 #         multi_reg_object1[[i]]<-noquote(matrix(multi_reg_object1[[i]], ncol = ncol(multi_reg_object1[[i-3]]), nrow = nrow(multi_reg_object1[[i-3]])))
@@ -2090,24 +2090,24 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #         rownames(multi_reg_object1[[i]])<-rownames(multi_reg_object1[[i-3]])
 #       }
 #       
-#       if (p_adjust==F) {
+#       if (p_adjust==FALSE) {
 #         help<- formatC(multi_reg_object1[[4]], format = "e", digits = 2)
 #         #help[help==" NA"]<-NA
 #         #multi_reg_object1[[i]]<-c(rep(NA,28))
 #         
-#         multi_reg_object1[[i]][multi_reg_object1[[i-6]]>=0.05 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F]<-
-#           paste(help[multi_reg_object1[[i-6]]>=0.05 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F], "   ", sep = "")
+#         multi_reg_object1[[i]][multi_reg_object1[[i-6]]>=0.05 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+#           paste(help[multi_reg_object1[[i-6]]>=0.05 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE], "   ", sep = "")
 #         
-#         multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F]<-
-#           paste(help[multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F], "*  ", sep = "")
+#         multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+#           paste(help[multi_reg_object1[[i-6]]<0.05 & multi_reg_object1[[i-6]]>=0.01 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE], "*  ", sep = "")
 #         
-#         multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F]<-
-#           paste(help[multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F], "** ", sep = "")
+#         multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+#           paste(help[multi_reg_object1[[i-6]]<0.01 & multi_reg_object1[[i-6]]>=0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE], "** ", sep = "")
 #         
-#         multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F]<-
-#           paste(help[multi_reg_object1[[i-6]]<0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F] , "***", sep = "")
+#         multi_reg_object1[[i]][multi_reg_object1[[i-6]]<0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE]<-
+#           paste(help[multi_reg_object1[[i-6]]<0.001 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE] , "***", sep = "")
 #         
-#         multi_reg_object1[[i]][help>0 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F]<-paste(" ",multi_reg_object1[[i]][help>0 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==F],sep = "")
+#         multi_reg_object1[[i]][help>0 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE]<-paste(" ",multi_reg_object1[[i]][help>0 & !is.na(help) & is.na(multi_reg_object1[[i-6]])==FALSE],sep = "")
 #         
 #         
 #         multi_reg_object1[[i]]<-noquote(matrix(multi_reg_object1[[i]], ncol = ncol(multi_reg_object1[[i-3]]), nrow = nrow(multi_reg_object1[[i-3]])))
@@ -2118,13 +2118,13 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #     
 #   }
 #   
-#   if(p_adjust==F) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==FALSE) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[7]][!is.na(multi_reg_object1[[7]])])
-#   if(p_adjust==F) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==FALSE) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[7]][!is.na(multi_reg_object1[[7]])])
-#   if(p_adjust==T)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==TRUE)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[10]][!is.na(multi_reg_object1[[7]])])
-#   if(p_adjust==T)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==TRUE)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[10]][!is.na(multi_reg_object1[[7]])])
 #   
 #   multi_reg_object1[[19]]<-c(multi_reg_object1[[19]],multi_reg_object2[[19]])
@@ -2136,7 +2136,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 # }
 
 
-# multi_compare_merge_old <- function(multi_reg_object1, multi_reg_object2, p_adjust=F){
+# multi_compare_merge_old <- function(multi_reg_object1, multi_reg_object2, p_adjust=FALSE){
 # 
 #   multi_reg_object1[[1]]<-c(multi_reg_object1[[1]],multi_reg_object2[[1]])
 # return(multi_reg_object1)
@@ -2180,7 +2180,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #       rownames(multi_reg_object1[[i]])<-multi_reg_object2[[20]]
 #       colnames(multi_reg_object1[[i]])<-c(multi_reg_object1$dependent,multi_reg_object2$dependent)
 # 
-#       if(p_adjust==T)p_method<-p_adjust
+#       if(p_adjust==TRUE)p_method<-p_adjust
 #       else p_method<-"bonferroni"
 # 
 #       multi_reg_object1[[i]]<- matrix(stats::p.adjust(p = multi_reg_object1[[i-3]], method = p_method),
@@ -2218,7 +2218,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 # 
 #     if (i==13){
 # 
-#       if (p_adjust!=F){
+#       if (p_adjust!=FALSE){
 #         help<- formatC(multi_reg_object1[[4]], format = "e", digits = 2)
 # 
 # 
@@ -2240,7 +2240,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #         rownames(multi_reg_object1[[i]])<-rownames(multi_reg_object1[[i-3]])
 #       }
 # 
-#       if (p_adjust==F) {
+#       if (p_adjust==FALSE) {
 #         help<- formatC(multi_reg_object1[[4]], format = "e", digits = 2)
 #         #help[help==" NA"]<-NA
 #         #multi_reg_object1[[i]]<-c(rep(NA,28))
@@ -2268,13 +2268,13 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 # 
 #   }
 # 
-#   if(p_adjust==F) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==FALSE) multi_reg_object1[[17]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[7]][!is.na(multi_reg_object1[[7]])])
-#   if(p_adjust==F) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==FALSE) multi_reg_object1[[18]]<-length(multi_reg_object1[[7]][multi_reg_object1[[7]]<0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[7]][!is.na(multi_reg_object1[[7]])])
-#   if(p_adjust==T)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==TRUE)  multi_reg_object1[[17]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]>=0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[10]][!is.na(multi_reg_object1[[7]])])
-#   if(p_adjust==T)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05 & !is.na(multi_reg_object1[[7]])])/
+#   if(p_adjust==TRUE)  multi_reg_object1[[18]]<-length(multi_reg_object1[[10]][multi_reg_object1[[10]]<0.05 & !is.na(multi_reg_object1[[7]])])/
 #       length(multi_reg_object1[[10]][!is.na(multi_reg_object1[[7]])])
 # 
 #   multi_reg_object1[[19]]<-c(multi_reg_object1[[19]],multi_reg_object2[[19]])
@@ -2289,15 +2289,15 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 # multi_boot_sub<-function(df,i=NULL,benchmark,dependent,independent,ids = NULL,
 #                          id_bench = NULL,weight_df = NULL,weight_bench = NULL,
 #                          stratas = NULL, strata_bench = NULL, rm_na = "pairwise",
-#                          method = "ols", bootstrap=F){
+#                          method = "ols", bootstrap=FALSE){
 #   
-#   if (bootstrap==T) df<-df[i,]
+#   if (bootstrap==TRUE) df<-df[i,]
 #   
 #   
 #   if (is.null(weight_df)) df<-reduce_df_ols(df, dependent, independent, rm_na = rm_na)
 #   if (is.null(weight_bench)) benchmark<-reduce_df_ols(benchmark, dependent, independent, rm_na = rm_na)
-#   if (is.null(weight_df)==F) df<-reduce_df_ols(df, dependent, independent,  weight_var = weight_df, id = ids, rm_na = rm_na)
-#   if (is.null(weight_bench)==F) benchmark<-reduce_df_ols(benchmark, dependent, independent,  weight_var = weight_bench, id = id_bench, rm_na = rm_na)
+#   if (is.null(weight_df)==FALSE) df<-reduce_df_ols(df, dependent, independent,  weight_var = weight_df, id = ids, rm_na = rm_na)
+#   if (is.null(weight_bench)==FALSE) benchmark<-reduce_df_ols(benchmark, dependent, independent,  weight_var = weight_bench, id = id_bench, rm_na = rm_na)
 #   
 #   
 #   
@@ -2308,17 +2308,17 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #   
 #   # calculate survey deisgns if weighted
 #   
-#   if (is.null(weight_df)==F | is.null(weight_bench)==F) {
+#   if (is.null(weight_df)==FALSE | is.null(weight_bench)==FALSE) {
 #     design_list<-list()
-#     design_list[[1]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact")
-#     design_list[[2]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1")
+#     design_list[[1]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="interact")
+#     design_list[[2]] <- weighted_design_ols(df_comb,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="df1")
 # 
 #   } else {design_list = list(NULL,NULL,NULL)}
 #   
-#   # if (is.null(weight_df)==F | is.null(weight_bench)==F) {
+#   # if (is.null(weight_df)==FALSE | is.null(weight_bench)==FALSE) {
 #   #   design_list2<-list()
-#   #   design_list2[[1]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="interact")
-#   #   design_list2[[2]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=F, type="df1")
+#   #   design_list2[[1]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="interact")
+#   #   design_list2[[2]] <- weighted_design_ols(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="df1")
 #   # } else {design_list2 = list(NULL,NULL,NULL)}
 #   
 #   
@@ -2367,16 +2367,16 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 # multi_boot<-function(df,benchmark,dependent,independent,id = NULL,
 #                      id_bench = NULL,weight = NULL,weight_bench = NULL,
 #                      strata = NULL, strata_bench = NULL, rm_na = "pairwise",
-#                      method = "ols", nboots=1000, parallel=F){
+#                      method = "ols", nboots=1000, parallel=FALSE){
 #   
-#   if (parallel==T) para<-"snow"
-#   if (parallel==F) para<-"no"
+#   if (parallel==TRUE) para<-"snow"
+#   if (parallel==FALSE) para<-"no"
 #   
 #   boot_out<-boot(df,statistic = multi_boot_sub, R = nboots, benchmark = benchmark, 
 #                  dependent=dependent,independent = independent, ids = id, 
 #                  stratas=strata, weight_df = weight, id_bench= id_bench,
 #                  weight_bench=weight_bench,strata_bench = strata_bench, 
-#                  rm_na = "pairwise", bootstrap=T, 
+#                  rm_na = "pairwise", bootstrap=TRUE, 
 #                  ncpus = (parallel::detectCores()-1), parallel = para)
 #   
 #   
@@ -2412,7 +2412,7 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #   
 #   subfunc_boot_pvalues_multi<-function(boot_object,i){
 #     
-#     if(is.na(as.vector(boot_object$t0)[i])==F){
+#     if(is.na(as.vector(boot_object$t0)[i])==FALSE){
 #       alpha<-boot.pval::boot.pval(boot_object, type="perc",theta_null=0,index = i)}
 #     
 #     else {alpha<-c(NA)}
@@ -2426,14 +2426,14 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 #   
 #   if(type=="df"|type=="interact"){
 #   ps<-sapply(i,subfunc_boot_pvalues_multi, boot_object=boot_object)
-#   ps<-matrix(ps,ncol=length(dependent),byrow = F)
+#   ps<-matrix(ps,ncol=length(dependent),byrow = FALSE)
 #   colnames(ps)<-dependent
 #   rownames(ps)<-independent
 #   return(ps)}
 #   
 #   if(type=="se_df"| type=="se_interact"){
 #     se<-sapply(i,subfunc_multi_se, boot_object=boot_object)
-#     se<-matrix(se,ncol=length(dependent),byrow = F)
+#     se<-matrix(se,ncol=length(dependent),byrow = FALSE)
 #     colnames(se)<-dependent
 #     rownames(se)<-independent
 #   return(se)}

@@ -16,11 +16,23 @@
 
 #' sampcompR: A package for the comparison of samples
 #'
-#' The sampcompR package provides a bundle of functions, to easily analyze and
-#' visualise differences between Samples or Subsamples on three levels. The
-#' comparisons can be univariate, bivariate or multivariate. Visualization is
-#' based on \code{\link[ggplot2:ggplot]{ggplot}}
-#' and can be edited as other plots of ggplot afterwards.
+#' Easily analyze and visualize differences between samples (e.g., benchmark 
+#' comparisons, nonresponse comparisons in surveys) on three levels. The 
+#' comparisons can be univariate, bivariate or multivariate. On univariate 
+#' level the variables of interest of a survey and a comparison survey 
+#' (i.e. benchmark) are compared, by calculating one of several difference 
+#' measures (e.g., relative difference in mean), and an average difference 
+#' between the surveys. On bivariate level a function can calculate significant 
+#' differences in correlations for the surveys. And on multivariate levels a 
+#' function can calculate significant differences in model coefficients between 
+#' the surveys of comparison. All of those differences can be easily plotted 
+#' and outputted as a table. Visualization is based on 
+#' \code{\link[ggplot2:ggplot]{ggplot}} and can be edited as other plots of 
+#' ggplot afterwards. For more  detailed information on the methods and 
+#' example use see: Rohr, B., Silber, H., & Felderer, B. (2024). „Comparing the 
+#' Accuracy of Univariate, Bivariate, and Multivariate Estimates across 
+#' Probability and Non-Probability Surveys with Population Benchmarks“  
+#' https://doi.org/10.31235/osf.io/n6ehf.
 #'
 #' @section sampcompR functions:
 #' \describe{

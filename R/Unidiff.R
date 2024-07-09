@@ -87,11 +87,11 @@
 #' @param name_dfs,name_benchmarks A character string or vector of character strings containing the
 #' new names of the \code{dfs} and \code{benchmarks}, that is also used in plot.
 #' @param summet_size A number to determine the size of the displayed \code{summetric} in the plot.
-#' @param silence If \code{silence = F} a warning will be displayed, if variables a
+#' @param silence If \code{silence = FALSE} a warning will be displayed, if variables a
 #' re excluded from either the data frame or benchmark, for not existing in both.
 #' @param conf_level A numeric value between zero and one to determine the confidence level of the confidence
 #' interval.
-#' @param conf_adjustment If \code{conf_adjustment = T} the confidence level of the confidence interval will be
+#' @param conf_adjustment If \code{conf_adjustment = TRUE} the confidence level of the confidence interval will be
 #' adjusted with a Bonferroni adjustment, to account for the problem of multiple comparisons.
 #' @param weight,weight_bench A character vector determining variables to weight the \code{dfs} or
 #' \code{benchmarks}. They have to be part of the respective data frame. If only one character is provided,
@@ -126,7 +126,7 @@
 #' named identical in both data frames.
 #' 
 #' @references 
-#' Felderer, B., Kirchner, A., & Kreuter, F. (2019). The Effect of Survey Mode on Data 
+#' Felderer, B., Kirchner, A., & Kreuter, FALSE. (2019). The Effect of Survey Mode on Data 
 #' Quality: Disentangling Nonresponse and Measurement Error Bias. Journal of Official 
 #' Statistics, 35(1), 93–115. https://doi.org/10.2478/jos-2019-0005
 #' 
@@ -185,9 +185,9 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
     
     ### check if benchmarks have similar variables ###
     if (length(benchmarks)==length(dfs)){
-        if ((any(names(get(dfs[i])) %in% names(get(benchmarks[i]))))==F) stop(dfs[i], " has no common variable with ", benchmarks[i],".")}
-    if ((length(benchmarks)==length(dfs))==F){
-        if ((any(names(get(dfs[i])) %in% names(get(benchmarks[1])))==F)) stop(dfs[i], " has no common variable with ",benchmarks[1],".")}
+        if ((any(names(get(dfs[i])) %in% names(get(benchmarks[i]))))==FALSE) stop(dfs[i], " has no common variable with ", benchmarks[i],".")}
+    if ((length(benchmarks)==length(dfs))==FALSE){
+        if ((any(names(get(dfs[i])) %in% names(get(benchmarks[1])))==FALSE)) stop(dfs[i], " has no common variable with ",benchmarks[1],".")}
   }
 
   for (i in 1:length(benchmarks)){
@@ -196,15 +196,15 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
         inherits(get(benchmarks[i]),"list")==FALSE) stop(paste(benchmarks[i], " must be a data frame or a list",
                                                         sep = "", collapse = NULL))
     if (inherits(get(benchmarks[i]),"list") & 
-        is.null(weight_bench)==F) stop(paste(benchmarks[i]), " if benchmark is a list of tables, weighting needs to be permored, when generating the list.")
+        is.null(weight_bench)==FALSE) stop(paste(benchmarks[i]), " if benchmark is a list of tables, weighting needs to be permored, when generating the list.")
   }
 
   ### Check if funct is either a function, character, vector of functions or vector of characters.
   if(length(funct)==1){
-    if (is.function(funct)==F){
+    if (is.function(funct)==FALSE){
       if ((funct%in% c("d_mean","ad_mean","d_prop","ad_prop","prop_modecat","abs_prop_modecat",
                       "avg_prop_diff","avg_abs_prop_diff","rel_mean","rel_prop","ad_median",
-                      "ad_mode","abs_rel_mean","abs_rel_prop"))==F) {
+                      "ad_mode","abs_rel_mean","abs_rel_prop"))==FALSE) {
         stop("funct must either be a function applicable as statistic in the boot package, or
              a character vector indicating one of the predefined functions.")
       }
@@ -215,10 +215,10 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
       if(is.null(variables)) stop("if funct>1, funct has to be of the same length as variables.")
       if(length(funct)!= length(variables)) stop("if funct>1, funct has to be of the same length as variables.")
       for (i in 1:length(funct)) {
-        if (is.function(funct)==F){
+        if (is.function(funct)==FALSE){
           if ((funct%in% c("d_mean","ad_mean","d_prop","ad_prop","prop_modecat","abs_prop_modecat",
                            "avg_prop_diff","avg_abs_prop_diff","rel_mean","rel_prop","ad_median",
-                           "ad_mode","abs_rel_mean","abs_rel_prop"))==F) {
+                           "ad_mode","abs_rel_mean","abs_rel_prop"))==FALSE) {
             stop("funct must either be a function applicable as statistic in the boot package, or
              a character vector indicating one of the predefined functions.")
           }
@@ -262,7 +262,7 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
   }
 
   # ### check for ci-type ###
-  # if((ci_type %in% c("perc","norm"))==F) stop('ci_type must either be "perc" or "norm".')
+  # if((ci_type %in% c("perc","norm"))==FALSE) stop('ci_type must either be "perc" or "norm".')
 
   ### Check if data frame is logical
   if (is.logical(data) == FALSE) stop("data must be of type logical")
@@ -284,8 +284,8 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
 
 
   ### check for weight var ###
-  if(is.null(weight)==F) if(is.null(id)) stop("if a weight var is provided for the data frame also a id is needed")
-  if(is.null(weight_bench)==F) if(is.null(id_bench)) stop("if a weight var is provided for the benchmark also id_bench is needed")
+  if(is.null(weight)==FALSE) if(is.null(id)) stop("if a weight var is provided for the data frame also a id is needed")
+  if(is.null(weight_bench)==FALSE) if(is.null(id_bench)) stop("if a weight var is provided for the benchmark also id_bench is needed")
 
 
   
@@ -302,17 +302,17 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
 
   ### Get Names of data frameS ###
 
-  if (is.null(name_dfs)==F) names<-name_dfs else names=NULL
+  if (is.null(name_dfs)==FALSE) names<-name_dfs else names=NULL
   name_dfs<-dfs
-  if (is.null(names)==F) name_dfs[1:(length(names))] <- names
+  if (is.null(names)==FALSE) name_dfs[1:(length(names))] <- names
 
 
 
 
-  if (is.null(name_benchmarks)==F) names<-name_benchmarks else names=NULL
+  if (is.null(name_benchmarks)==FALSE) names<-name_benchmarks else names=NULL
   name_benchmarks<-benchmarks
 
-  if (is.null(names)==F) name_benchmarks[1:(length(names))] <- names
+  if (is.null(names)==FALSE) name_benchmarks[1:(length(names))] <- names
 
 
 
@@ -330,13 +330,13 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
 
   ### prepare weights ###
   
-  if(is.null(id)==F) if(length(id)>=1 & length(id)<length(dfs)) id<-rep(id,length(dfs))
-  if(is.null(weight)==F) if(length(weight)>=1 & length(weight)<length(dfs)) weight<-rep(weight,length(dfs))
-  if(is.null(strata)==F) if(length(strata)>=1 & length(strata)<length(dfs)) strata<-rep(strata,length(dfs))
+  if(is.null(id)==FALSE) if(length(id)>=1 & length(id)<length(dfs)) id<-rep(id,length(dfs))
+  if(is.null(weight)==FALSE) if(length(weight)>=1 & length(weight)<length(dfs)) weight<-rep(weight,length(dfs))
+  if(is.null(strata)==FALSE) if(length(strata)>=1 & length(strata)<length(dfs)) strata<-rep(strata,length(dfs))
   
-  if(is.null(id_bench)==F) if(length(id_bench)>=1 & length(id_bench)<length(dfs)) id_bench<-rep(id_bench,length(dfs))
-  if(is.null(weight_bench)==F) if(length(weight_bench)>=1 & length(weight_bench)<length(dfs)) weight_bench<-rep(weight_bench,length(dfs))
-  if(is.null(strata_bench)==F) if(length(strata_bench)>=1 & length(strata_bench)<length(dfs)) strata_bench<-rep(strata_bench,length(dfs))
+  if(is.null(id_bench)==FALSE) if(length(id_bench)>=1 & length(id_bench)<length(dfs)) id_bench<-rep(id_bench,length(dfs))
+  if(is.null(weight_bench)==FALSE) if(length(weight_bench)>=1 & length(weight_bench)<length(dfs)) weight_bench<-rep(weight_bench,length(dfs))
+  if(is.null(strata_bench)==FALSE) if(length(strata_bench)>=1 & length(strata_bench)<length(dfs)) strata_bench<-rep(strata_bench,length(dfs))
   
   
   #################################
@@ -364,26 +364,26 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
    bench_list[[i]]<- dataequalizer(target_df = df_list[[i]], source_df = bench_list[[i]],
                                    variables = variables, silence = silence)
    
-   if(is.null(weight)==F){
-     if (is.na(weight[i])==F) df_list[[i]][,weight[i]]<-get(dfs[i])[,weight[i]]
+   if(is.null(weight)==FALSE){
+     if (is.na(weight[i])==FALSE) df_list[[i]][,weight[i]]<-get(dfs[i])[,weight[i]]
    }
-   if(is.null(id)==F){
-     if (is.na(id[i])==F) df_list[[i]][,id[i]]<-get(dfs[i])[,id[i]]
+   if(is.null(id)==FALSE){
+     if (is.na(id[i])==FALSE) df_list[[i]][,id[i]]<-get(dfs[i])[,id[i]]
    }
-   if(is.null(strata)==F){
-     if (is.na(strata[i])==F) df_list[[i]][,strata[i]]<-get(dfs[i])[,strata[i]]
+   if(is.null(strata)==FALSE){
+     if (is.na(strata[i])==FALSE) df_list[[i]][,strata[i]]<-get(dfs[i])[,strata[i]]
    }
-   if(is.null(adjustment_vars)==F)df_list[[i]]<-cbind(df_list[[i]],get(dfs[i])[,adjustment_vars[[i]]])
+   if(is.null(adjustment_vars)==FALSE)df_list[[i]]<-cbind(df_list[[i]],get(dfs[i])[,adjustment_vars[[i]]])
    
    
-   if(is.null(id_bench)==F){
-     if (is.na(id_bench[i])==F) bench_list[[i]][,id_bench[i]]<-get(benchmarks[i])[,id_bench[i]]
+   if(is.null(id_bench)==FALSE){
+     if (is.na(id_bench[i])==FALSE) bench_list[[i]][,id_bench[i]]<-get(benchmarks[i])[,id_bench[i]]
    }
-   if(is.null(weight_bench)==F){
-     if (is.na(weight_bench[i])==F) bench_list[[i]][,weight_bench[i]]<-get(benchmarks[i])[,weight_bench[i]]
+   if(is.null(weight_bench)==FALSE){
+     if (is.na(weight_bench[i])==FALSE) bench_list[[i]][,weight_bench[i]]<-get(benchmarks[i])[,weight_bench[i]]
    }
-   if(is.null(strata_bench)==F){
-     if (is.na(strata_bench[i])==F) bench_list[[i]][,strata_bench[i]]<-get(benchmarks[i])[,strata_bench[i]]
+   if(is.null(strata_bench)==FALSE){
+     if (is.na(strata_bench[i])==FALSE) bench_list[[i]][,strata_bench[i]]<-get(benchmarks[i])[,strata_bench[i]]
    }
    
    
@@ -531,14 +531,14 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
   
   
   for (i in 1:length(dfs)){
-  if (is.null(response_identificator)==F){if(is.na(response_identificator[i])==F) 
+  if (is.null(response_identificator)==FALSE){if(is.na(response_identificator[i])==FALSE) 
     
     R_indicator<-R_indicator_func(get(dfs[i]),response_identificator=response_identificator,
                                   variables=R_variables,
                                   weight = weight[i],id=id[i],strata=strata[i])
   }
   if(is.null(response_identificator)) R_indicator<-NA
-  if(is.null(response_identificator)==F) {if(is.na(response_identificator[i])==F) R_indicator<-NA}
+  if(is.null(response_identificator)==FALSE) {if(is.na(response_identificator[i])==FALSE) R_indicator<-NA}
 
     
     results$R_indicator[results$sample==i]<-R_indicator
@@ -569,7 +569,7 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
 
   Plot <- ggplot2::ggplot(data = results$data, ggplot2::aes(x = results$data$t_vec, y = factor(results$data$varnames), col = factor(results$data$sample), shape = factor(results$data$sample), group = factor(results$data$sample))) +
     ggplot2::geom_point(position = ggplot2::position_dodge(width = 1), stat = "identity", size = 3) +
-    {if (isTRUE(conf_adjustment)==F) ggplot2::geom_errorbar(data = results$data, ggplot2::aes( xmin = results$data$ci_lower, xmax = results$data$ci_upper, width = 0.2), position = ggplot2::position_dodge(width = 1))} +
+    {if (isTRUE(conf_adjustment)==FALSE) ggplot2::geom_errorbar(data = results$data, ggplot2::aes( xmin = results$data$ci_lower, xmax = results$data$ci_upper, width = 0.2), position = ggplot2::position_dodge(width = 1))} +
     {if (isTRUE(conf_adjustment)) ggplot2::geom_errorbar(data = results$data, ggplot2::aes( xmin = results$data$ci_lower_adjusted, xmax = results$data$ci_upper_adjusted, width = 0.2), position = ggplot2::position_dodge(width = 1))} +
     ggplot2::scale_y_discrete(limits = rev(unique(results$data$varnames)),labels= varlabels, breaks=unique(results$data$varnames)) +
     ggplot2::geom_vline(xintercept = 0) +
@@ -619,17 +619,17 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   ### loop to bootstrap for every Variable in data frame ###
   ##########################################################
   
-  if(is.null(variables)==F)variables<-colnames(x)[colnames(x)%in% variables]
+  if(is.null(variables)==FALSE)variables<-colnames(x)[colnames(x)%in% variables]
   if(is.null(variables))variables<-colnames(x)
   
-  if(is.null(ids)==F) {if(is.na(ids)==F) variables<-variables[!variables %in% ids]}
-  if(is.null(weights)==F) {if(is.na(weights)==F) variables<-variables[!variables %in% weights]}
-  if(is.null(strata)==F) {if(is.na(strata)==F) variables<-variables[!variables %in% strata]}
-  #if(is.null(adjustment_vars)==F) {variables<-variables[!variables %in% adjustment_vars]}
+  if(is.null(ids)==FALSE) {if(is.na(ids)==FALSE) variables<-variables[!variables %in% ids]}
+  if(is.null(weights)==FALSE) {if(is.na(weights)==FALSE) variables<-variables[!variables %in% weights]}
+  if(is.null(strata)==FALSE) {if(is.na(strata)==FALSE) variables<-variables[!variables %in% strata]}
+  #if(is.null(adjustment_vars)==FALSE) {variables<-variables[!variables %in% adjustment_vars]}
   
-  if(is.null(ids_bench)==F) {if(is.na(ids_bench)==F) variables<-variables[!variables %in% ids_bench]}
-  if(is.null(weights_bench)==F) {if(is.na(weights_bench)==F) variables<-variables[!variables %in% weights_bench]}
-  if(is.null(strata_bench)==F) {if(is.na(strata_bench)==F) variables<-variables[!variables %in% strata_bench]}
+  if(is.null(ids_bench)==FALSE) {if(is.na(ids_bench)==FALSE) variables<-variables[!variables %in% ids_bench]}
+  if(is.null(weights_bench)==FALSE) {if(is.na(weights_bench)==FALSE) variables<-variables[!variables %in% weights_bench]}
+  if(is.null(strata_bench)==FALSE) {if(is.na(strata_bench)==FALSE) variables<-variables[!variables %in% strata_bench]}
   
   
   svy_boot<-boot_svy_mean(data = x,variables = variables,nboots = nboots,
@@ -655,10 +655,10 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   if(nboots==0){
     svy_boot2<-svy_boot[[length(svy_boot)]]
     means_bench2<-means_bench[[length(means_bench)]]
-    abs<-F
+    abs<-FALSE
     
       if (func_name %in% c("abs_rel_mean", "abs_rel_prop",
-                           "ad_mean","ad_median","ad_prop")){abs=T}
+                           "ad_mean","ad_median","ad_prop")){abs=TRUE}
     
       lower_ci<- se_mean_diff(svy_boot2,means_bench2, 
                               conf_level=(1-alpha),value = "lower_ci", abs=abs, method=func_name,
@@ -713,7 +713,7 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   data$ci_upper<-upper_ci
   data$ci_level<- 1-alpha
 
-  if (is.null(conf_adjustment)==F){
+  if (is.null(conf_adjustment)==FALSE){
 
     data$ci_lower_adjusted<-lower_ci_adjusted
     data$ci_upper_adjusted<-upper_ci_adjusted
@@ -732,7 +732,7 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   if (is.null(conf_adjustment)){
     names(data) <- c("t_vec", "se_vec", "varnames","ci_lower","ci_upper","ci_level","n_df","n_bench")}
 
-  if (is.null(conf_adjustment)==F){
+  if (is.null(conf_adjustment)==FALSE){
     names(data) <- c("t_vec", "se_vec", "varnames","ci_lower","ci_upper","ci_level", "ci_lower_adjusted",
                      "ci_upper_adjusted","adjusted_ci_level","n_df","n_bench")}
 
@@ -744,7 +744,7 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
 }
 
 
-se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=F, method="d_mean",
+se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=FALSE, method="d_mean",
                        id=NULL,weight=NULL,strata=NULL,id_bench=NULL,weight_bench=NULL,
                        strata_bench=NULL, variables){
   
@@ -754,27 +754,27 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=F, metho
   if(inherits(df2,"data.frame")){
     design_bench<-get_survey_design(df2, id=id_bench,weight=weight_bench,strata=strata_bench)}
   
-  if(inherits(df1,"data.frame")==F){
+  if(inherits(df1,"data.frame")==FALSE){
     design_df<-df1}
-  if(inherits(df1,"data.frame")==F){
+  if(inherits(df1,"data.frame")==FALSE){
     design_bench<-df2
   }
   
   
   ### ci function for single variables ###
   se_mean_diff_var<-function(variable, design_df, design_bench,
-                             conf_level =0.95,value="lower_ci", abs=F, method="d_mean"){
+                             conf_level =0.95,value="lower_ci", abs=FALSE, method="d_mean"){
     
     ### prepare relevant values for weighted and unweighted 
     
     n_df<- length(stats::na.omit(design_df$variables[,variable]))
     n_bench<- length(stats::na.omit(design_bench$variables[,variable]))
     
-    variance_df<- survey::svyvar(stats::reformulate(variable),design_df, na.rm=T)
-    variance_bench<- survey::svyvar(stats::reformulate(variable),design_bench, na.rm=T)
+    variance_df<- survey::svyvar(stats::reformulate(variable),design_df, na.rm=TRUE)
+    variance_bench<- survey::svyvar(stats::reformulate(variable),design_bench, na.rm=TRUE)
     
-    mean_df<- survey::svymean(stats::reformulate(variable),design_df, na.rm=T)
-    mean_bench<- survey::svymean(stats::reformulate(variable),design_bench, na.rm=T)
+    mean_df<- survey::svymean(stats::reformulate(variable),design_df, na.rm=TRUE)
+    mean_bench<- survey::svymean(stats::reformulate(variable),design_bench, na.rm=TRUE)
     
     table_df<- survey::svytable(stats::reformulate(variable),design_df)
     table_bench<- survey::svytable(stats::reformulate(variable),design_bench)
@@ -787,12 +787,12 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=F, metho
       #SE<- sqrt(stats::var(var1)/length(var1)+stats::var(var2)/length(var2))
       SE<- sqrt(variance_df/n_df)
       
-      if(abs==F){
+      if(abs==FALSE){
         upper<- mean_df - mean_bench + stats::qnorm(1-alpha/2) * SE
         lower<- mean_df - mean_bench - stats::qnorm(1-alpha/2) * SE
       }
       
-      if (abs==T){
+      if (abs==TRUE){
         upper<- abs(mean_df - mean_bench) + stats::qnorm(1-alpha/2) * SE
         lower<- abs(mean_df - mean_bench) - stats::qnorm(1-alpha/2) * SE
       }
@@ -801,16 +801,16 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=F, metho
     if (method=="d_median"|method=="ad_median") {
       #SE<- sqrt(stats::var(var1)/length(var1)+stats::var(var2)/length(var2))
       SE<- sqrt(variance_df/n_df)
-      median_df<-as.numeric(survey::svyquantile(stats::reformulate(variable),design_df, quantiles=0.5,na.rm=T)[[variable]][1])
-      median_bench<-as.numeric(survey::svyquantile(stats::reformulate(variable),design_bench, quantiles=0.5,na.rm=T)[[variable]][1])
+      median_df<-as.numeric(survey::svyquantile(stats::reformulate(variable),design_df, quantiles=0.5,na.rm=TRUE)[[variable]][1])
+      median_bench<-as.numeric(survey::svyquantile(stats::reformulate(variable),design_bench, quantiles=0.5,na.rm=TRUE)[[variable]][1])
       
       
-      if(abs==F){
+      if(abs==FALSE){
         upper<- median_df - median_bench + stats::qnorm(1-alpha/2) * SE
         lower<- median_df - median_bench - stats::qnorm(1-alpha/2) * SE
       }
       
-      if (abs==T){
+      if (abs==TRUE){
         upper<- abs(median_df - median_bench) + stats::qnorm(1-alpha/2) * SE
         lower<- abs(median_df - median_bench) - stats::qnorm(1-alpha/2) * SE
       }
@@ -827,12 +827,12 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=F, metho
       #SE<- sqrt(p1*(1-p1)/length(var1)+p2*(1-p2)/length(var2))
       SE<- sqrt(p1*(1-p1)/n_df)
       
-      if(abs==F){
+      if(abs==FALSE){
         upper<- p1-p2 + stats::qnorm(1-alpha/2) * SE
         lower<- p1-p2 - stats::qnorm(1-alpha/2) * SE}
       
       
-      if (abs==T){
+      if (abs==TRUE){
         upper<- abs(p1-p2) + stats::qnorm(1-alpha/2) * SE
         lower<- abs(p1-p2) - stats::qnorm(1-alpha/2) * SE}
       
@@ -851,7 +851,7 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=F, metho
       SE<- sqrt(mean((a-avg_abs_prop_diff)^2)/n_df)
       
       
-      if (abs==T){
+      if (abs==TRUE){
         upper<- abs(avg_abs_prop_diff) + stats::qnorm(1-alpha/2) * SE
         lower<- abs(avg_abs_prop_diff) - stats::qnorm(1-alpha/2) * SE}
       
@@ -870,12 +870,12 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=F, metho
       SE<-sqrt(var_rel)/sqrt(n_df)
       rel_diff_mean<- (mean_df - mean_bench) / (mean_bench)
       
-      if(abs==F){
+      if(abs==FALSE){
         upper<- rel_diff_mean + stats::qnorm(1-alpha/2) * SE
         lower<- rel_diff_mean - stats::qnorm(1-alpha/2) * SE}
       
       
-      if (abs==T){
+      if (abs==TRUE){
         upper<- abs(rel_diff_mean) + stats::qnorm(1-alpha/2) * SE
         lower<- abs(rel_diff_mean) - stats::qnorm(1-alpha/2) * SE}
       
@@ -897,23 +897,23 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=F, metho
 
 get_survey_design<-function(df, id=NULL,weight=NULL,strata=NULL){
   
-  if (is.null(id)==F) {
-    if(is.na(id)==F){
+  if (is.null(id)==FALSE) {
+    if(is.na(id)==FALSE){
       id_new<-df[,id]
     }
     if(is.na(id)){id_new<-c(1:nrow(df))}
   }
   
-  if (is.null(weight)==F) {
-    if(is.na(weight)==F){
+  if (is.null(weight)==FALSE) {
+    if(is.na(weight)==FALSE){
       weight_new<-df[,weight]
       df[,weight]<-NULL
     }
     if(is.na(weight)){weight_new<-rep(1,nrow(df))}
   }
   
-  if (is.null(strata)==F) {
-    if(is.na(strata)==F){
+  if (is.null(strata)==FALSE) {
+    if(is.na(strata)==FALSE){
       strata_new<-df[,strata]
       df[,strata]<-NULL
     }
@@ -954,12 +954,12 @@ final_data2<-function(data, name_dfs, name_benchmarks, summetric=NULL, colors=NU
   ### get a summetric ###
   #######################
 
-  if (is.null(summetric) == F) label_summet<-
+  if (is.null(summetric) == FALSE) label_summet<-
       calculate_summetric(data=data, summetric = summetric,
                           name_dfs = name_dfs, name_benchmarks = name_benchmarks,
                           funct = funct,ndigits=ndigits)
 
-  if (is.null(summetric) == T) label_summet=NULL
+  if (is.null(summetric) == TRUE) label_summet=NULL
 
 
   #####################
@@ -999,8 +999,8 @@ final_data2<-function(data, name_dfs, name_benchmarks, summetric=NULL, colors=NU
 
     label<- paste(name_dfs[i], " vs. ", name_benchmarks[i])
 
-    if (is.null(def_leglabels)==F) def_leglabels<-c(def_leglabels,label)
-    if (is.null(def_leglabels)==T) def_leglabels<-label
+    if (is.null(def_leglabels)==FALSE) def_leglabels<-c(def_leglabels,label)
+    if (is.null(def_leglabels)==TRUE) def_leglabels<-label
   }
 
   if (is.null(legendlabels) == FALSE) {
@@ -1092,15 +1092,15 @@ boot_svy_mean<-function(data,variables, nboots=2000,
                         post_targets=NULL){
   
   if(is.null(id)) data$id<-1:nrow(data)
-  if(is.null(id)==F) {if(is.na(id)) data$id<-1:nrow(data)}
-  if(is.null(id)==F) {if (is.na(id)==F) data$id<-data[,id]}
+  if(is.null(id)==FALSE) {if(is.na(id)) data$id<-1:nrow(data)}
+  if(is.null(id)==FALSE) {if (is.na(id)==FALSE) data$id<-data[,id]}
   
   if(is.null(weight)) data$weight<-1
-  if(is.null(weight)==F) {if(is.na(weight)) data$weight<-1}
-  if(is.null(weight)==F) {if (is.na(weight)==F) data$weight<-data[,weight]}
+  if(is.null(weight)==FALSE) {if(is.na(weight)) data$weight<-1}
+  if(is.null(weight)==FALSE) {if (is.na(weight)==FALSE) data$weight<-data[,weight]}
   
-  if(is.null(strata)==F) {if(is.na(strata)==F) strata<-data[,strata]}
-  #if(is.null(strata)==F) strata<-data[,strata]
+  if(is.null(strata)==FALSE) {if(is.na(strata)==FALSE) strata<-data[,strata]}
+  #if(is.null(strata)==FALSE) strata<-data[,strata]
   
   
   
@@ -1114,25 +1114,25 @@ boot_svy_mean<-function(data,variables, nboots=2000,
                                               replicates = nboots)}
   
   
-  if(is.null(adjustment_vars)==F & is.null(raking_targets)==F & adjustment_weighting=="raking"){
+  if(is.null(adjustment_vars)==FALSE & is.null(raking_targets)==FALSE & adjustment_weighting=="raking"){
     
     adjustment_vars<-purrr::map(paste0("~",adjustment_vars),stats::as.formula)
     #return(raking_targets)
     data_design <- survey::rake(design = data_design, 
                               population.margins = raking_targets, 
                               sample.margins = adjustment_vars, 
-                              control = list(maxit =1000, epsilon = 5, verbose=F))
+                              control = list(maxit =1000, epsilon = 5, verbose=FALSE))
     
     
     }
   
-  if(is.null(adjustment_vars)==F & is.null(post_targets)==F & adjustment_weighting=="post_strat"){
+  if(is.null(adjustment_vars)==FALSE & is.null(post_targets)==FALSE & adjustment_weighting=="post_strat"){
     
 
     data_design <- survey::postStratify(design= data_design, 
                                                strata=stats::reformulate(adjustment_vars), 
                                                population=post_targets,
-                                               partial = F)
+                                               partial = FALSE)
     
     
     }
@@ -1143,20 +1143,20 @@ boot_svy_mean<-function(data,variables, nboots=2000,
   
   final_boot_svy_mean<-function(variable,design,func){
     if(func!="ad_median") results<-survey::svymean(x = stats::reformulate(variable), 
-                                                  design = design ,na.rm=T,return.replicates=T)
+                                                  design = design ,na.rm=TRUE,return.replicates=TRUE)
     if(func=="ad_median") results<-survey::svyquantile(x = stats::reformulate(variable), 
                                                   quantile=c(0.5),
-                                                  design = design ,na.rm=T,return.replicates=T, 
-                                                  interval.type="quantile", ci=F)
+                                                  design = design ,na.rm=TRUE,return.replicates=TRUE, 
+                                                  interval.type="quantile", ci=FALSE)
       
     return(results)
   }
   
   if(is.null(adjustment_vars))out<-lapply(X=variables,FUN=final_boot_svy_mean,design=data_design, func=func)
-  if(is.null(adjustment_vars)==F & is.null(raking_targets)==F & adjustment_weighting=="raking"){
+  if(is.null(adjustment_vars)==FALSE & is.null(raking_targets)==FALSE & adjustment_weighting=="raking"){
     out<-lapply(X=variables,FUN=final_boot_svy_mean,design=data_design, func=func) 
   }
-  if(is.null(adjustment_vars)==F & is.null(post_targets)==F & adjustment_weighting=="post_strat"){
+  if(is.null(adjustment_vars)==FALSE & is.null(post_targets)==FALSE & adjustment_weighting=="post_strat"){
     out<-lapply(X=variables,FUN=final_boot_svy_mean,design=data_design, func=func) 
   }
   
@@ -1170,15 +1170,15 @@ mean_bench_func<-function(data,variables,
                           id=NULL, weight=NULL, strata=NULL,func=func, nboots){
   
   if(is.null(id)) data$id<-c(1:nrow(data))
-  if(is.null(id)==F) {if(is.na(id)) data$id<-1:nrow(data)}
-  if(is.null(id)==F) {if (is.na(id)==F) data$id<-data[,id]}
+  if(is.null(id)==FALSE) {if(is.na(id)) data$id<-1:nrow(data)}
+  if(is.null(id)==FALSE) {if (is.na(id)==FALSE) data$id<-data[,id]}
   
   if(is.null(weight)) data$weight<-1
-  if(is.null(weight)==F) {if(is.na(weight)) data$weight<-1}
-  if(is.null(weight)==F) {if (is.na(weight)==F) data$weight<-data[,weight]}
+  if(is.null(weight)==FALSE) {if(is.na(weight)) data$weight<-1}
+  if(is.null(weight)==FALSE) {if (is.na(weight)==FALSE) data$weight<-data[,weight]}
   
-  if(is.null(strata)==F) {if(is.na(strata)==F) strata<-data[,strata]}
-  #if(is.null(strata)==F) strata<-data[,strata]
+  if(is.null(strata)==FALSE) {if(is.na(strata)==FALSE) strata<-data[,strata]}
+  #if(is.null(strata)==FALSE) strata<-data[,strata]
   
   
     data_design <- survey::svydesign(data = data, ids = ~ id,weights = ~weight, strata=strata)
@@ -1186,10 +1186,10 @@ mean_bench_func<-function(data,variables,
     
   final_boot_svy_mean<-function(variable,design,func){
     if(func!="ad_median") results<-survey::svymean(x = stats::reformulate(variable), 
-                                                   design = design ,na.rm=T,return.replicates=T)
+                                                   design = design ,na.rm=TRUE,return.replicates=TRUE)
     if(func=="ad_median") results<-survey::svyquantile(x = stats::reformulate(variable), 
                                                    quantile=c(0.5),
-                                                   design = design ,na.rm=T,return.replicates=T, ci=F)
+                                                   design = design ,na.rm=TRUE,return.replicates=TRUE, ci=FALSE)
     return(results)
   }
   
@@ -1334,18 +1334,18 @@ measure_function<-function(svyboot_object,mean_bench_object,func="abs_rel_mean",
 unfactor<-function(df, func, weight, strata, id){
   
   
-  if(is.null(id)==F) if(is.na(id)==F){
+  if(is.null(id)==FALSE) if(is.na(id)==FALSE){
     id_var<-df[,id]
     df2<-as.data.frame(df[,-which(colnames(df) %in% c(id))])
   } 
   
-  if(is.null(weight)==F) if(is.na(weight)==F){
+  if(is.null(weight)==FALSE) if(is.na(weight)==FALSE){
     weight_var<-df[,weight]
     df2<-as.data.frame(df[,-which(colnames(df) %in% c(weight))]) 
   } 
   
   
-  if(is.null(strata)==F) if(is.na(strata)==F){ 
+  if(is.null(strata)==FALSE) if(is.na(strata)==FALSE){ 
     strata_var<-df[,strata]
     df2<-as.data.frame(df[,-which(colnames(df) %in% c(strata))])
   }
@@ -1366,16 +1366,16 @@ unfactor<-function(df, func, weight, strata, id){
     }
   }
   
-  if(is.null(id)==F) if(is.na(id)==F){
+  if(is.null(id)==FALSE) if(is.na(id)==FALSE){
     df[,id]<-id_var
   } 
   
-  if(is.null(weight)==F) if(is.na(weight)==F){
+  if(is.null(weight)==FALSE) if(is.na(weight)==FALSE){
     df[,weight]<-weight_var
   } 
   
   
-  if(is.null(strata)==F) if(is.na(strata)==F){ 
+  if(is.null(strata)==FALSE) if(is.na(strata)==FALSE){ 
     df[,strata]<-strata_var
   }
   

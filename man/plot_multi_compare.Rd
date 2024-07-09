@@ -10,23 +10,23 @@ plot_multi_compare(
   plot_title = NULL,
   p_value = 0.05,
   breaks = NULL,
-  plot_data = F,
+  plot_data = FALSE,
   colors = NULL,
   variant = "one",
   p_adjust = NULL,
-  note = F,
+  note = FALSE,
   grid = "white",
-  diff_perc = T,
+  diff_perc = TRUE,
   diff_perc_size = 4.5,
   ncol_facet = 3,
   perc_diff_transparance = 0,
   diff_perc_position = "top_right",
-  gradient = F,
+  gradient = FALSE,
   sum_weights_indep = NULL,
   sum_weights_dep = NULL,
   label_x = NULL,
   label_y = NULL,
-  missings_x = T
+  missings_x = TRUE
 )
 }
 \arguments{
@@ -117,7 +117,7 @@ the multivariate differences. If multiple objects are used, they will be
 displayed separately with ggplot's facet_wrap function. On the y-axis, the
 independent variables are displayed, while on the x-axis the independent
 variables are displayed. Depending on the variant, the displayed tile colors
-must be interpreted differently. For more information on interpretation look
+must be interpreted differently. FALSEor more information on interpretation look
 at \code{variant}.
 }
 \description{

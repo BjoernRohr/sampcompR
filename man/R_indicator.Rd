@@ -11,7 +11,7 @@ R_indicator(
   id = NULL,
   weight = NULL,
   strata = NULL,
-  get_r2 = F
+  get_r2 = FALSE
 )
 }
 \arguments{

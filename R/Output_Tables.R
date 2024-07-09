@@ -61,17 +61,17 @@
 #'
 #'
 uni_compare_table<-function(uni_compare_object, 
-                             conf_adjustment=F,
+                             conf_adjustment=FALSE,
                             df_names=NULL,
                             varlabels=NULL,
-                            ci_line=T,
+                            ci_line=TRUE,
                             ndigits=3){
   
   i<-unique(uni_compare_object$data$sample)
   
   if(is.null(varlabels)) {
     if(is.null(uni_compare_object$varlabels)) varlabels<-uni_compare_object$variables
-    if(is.null(uni_compare_object$varlabels)==F) varlabels<-uni_compare_object$varlabels}
+    if(is.null(uni_compare_object$varlabels)==FALSE) varlabels<-uni_compare_object$varlabels}
   
   if(is.null(df_names)) {df_names<-uni_compare_object$name_dfs}
   
@@ -86,12 +86,12 @@ uni_compare_table<-function(uni_compare_object,
   for (j in 2:length(i)){
     levels<-uni_compare_object$variables
     if(isTRUE(ci_line)) {
-      base<-merge(base,table_list[[j]], by=c("Variables","name"), all=T)
+      base<-merge(base,table_list[[j]], by=c("Variables","name"), all=TRUE)
       colnames(base)<- c("Variables","name",df_names[1:j])
       
       }
     if(isFALSE(ci_line)){   
-      base<-merge(base,table_list[[j]], by=c("Variables"), all=T) 
+      base<-merge(base,table_list[[j]], by=c("Variables"), all=TRUE) 
       colnames(base)<- c("Variables",df_names[1:j])}
     
   } 
@@ -122,7 +122,7 @@ uni_compare_table<-function(uni_compare_object,
   
  
   ### add summetric ###
-  if(is.null(uni_compare_object$summet)==F){
+  if(is.null(uni_compare_object$summet)==FALSE){
     if(uni_compare_object$summet=="rmse1"| uni_compare_object$summet=="rmse2"){
       base<-base::rbind(base,c("RMSE",format(round(unique(uni_compare_object$data$rmse), digits=ndigits), nsmall=ndigits)))
     }
@@ -192,7 +192,7 @@ uni_compare_table<-function(uni_compare_object,
   
 }
 
-subfunc_uni_compare_table<-function(uni_compare_object, conf_adjustment=F,names=NULL,i=1, ci_line=T,ndigits=3){
+subfunc_uni_compare_table<-function(uni_compare_object, conf_adjustment=FALSE,names=NULL,i=1, ci_line=TRUE,ndigits=3){
   
   
   if(isFALSE(conf_adjustment)) uni_compare_object <- uni_compare_object$data |> 
@@ -249,7 +249,7 @@ subfunc_uni_compare_table<-function(uni_compare_object, conf_adjustment=F,names=
 }
 
 
-uni_compare_table2<-function(uni_compare_object, conf_adjustment=F,names=NULL){
+uni_compare_table2<-function(uni_compare_object, conf_adjustment=FALSE,names=NULL){
   
   
   or_data<-uni_compare_object$data[,c("varnames","sample","t_vec","ci_lower","ci_upper","n_df","n_bench")]
@@ -291,7 +291,7 @@ uni_compare_table2<-function(uni_compare_object, conf_adjustment=F,names=NULL){
     
     if(i>=2){
       
-      data<-merge(data,data_new,by.x=c("varnames",paste("measure",1,sep="")),by.y=c("varnames",paste("measure",i,sep="")), all=T)
+      data<-merge(data,data_new,by.x=c("varnames",paste("measure",1,sep="")),by.y=c("varnames",paste("measure",i,sep="")), all=TRUE)
       data<-data[rowSums(is.na(data)) != (ncol(data)-1), ]
       
     }
@@ -313,14 +313,14 @@ uni_compare_table2<-function(uni_compare_object, conf_adjustment=F,names=NULL){
     
     data <- data[reorder_indices, ]}
   
-  data<-data[is.na(data$measure1)==F,]
+  data<-data[is.na(data$measure1)==FALSE,]
   data$varnames[seq(2, nrow(data), 2)]<-""
   data$measure1<-NULL
   colnames(data)<-c("variables", unique(uni_compare_object$data$name_dfs))
   data<-as.matrix(data)
   
   ### add summetric ###
-  if(is.null(uni_compare_object$summet)==F){
+  if(is.null(uni_compare_object$summet)==FALSE){
     if(uni_compare_object$summet=="rmse"| uni_compare_object$summet=="rmse2"){
       data<-rbind(data,c("RMSE",round(unique(uni_compare_object$data$rmse), digits=3)))
     }
@@ -370,8 +370,8 @@ uni_compare_table2<-function(uni_compare_object, conf_adjustment=F,names=NULL){
   data<-rbind(data,c("N",n))
   rownames(data)<-NULL
   
-  if(is.null(names)==F) colnames(data)<-c("variables",names)
-  if(is.null(names)==T) colnames(data)[1]<-c("variables")
+  if(is.null(names)==FALSE) colnames(data)<-c("variables",names)
+  if(is.null(names)==TRUE) colnames(data)[1]<-c("variables")
   
   return(data)
 }
@@ -448,16 +448,16 @@ biv_compare_table<-function(biv_compare_object, type="diff", comparison_number=1
       p_values<-biv_compare_object[[(comparison_number+1)]]$p_matrix_bench
     }
     
-    r_data[is.na(p_values)==F]<-format(round(r_data[is.na(p_values)==F],digits = ndigits),nsmall=ndigits)
+    r_data[is.na(p_values)==FALSE]<-format(round(r_data[is.na(p_values)==FALSE],digits = ndigits),nsmall=ndigits)
     r_data[is.na(p_values)]<-""
-    r_data[p_values<0.001 & is.na(r_data)==F & is.na(p_values)==F]<-
-      paste0(r_data[p_values<0.001 & is.na(r_data)==F & is.na(p_values)==F],"***")
-    r_data[p_values<0.01 & p_values>=0.001 & is.na(r_data)==F & is.na(p_values)==F]<-
-      paste0(r_data[p_values<0.01 & p_values>=0.001  & is.na(r_data)==F & is.na(p_values)==F],"** ")
-    r_data[p_values<0.05 & p_values>=0.01 & is.na(r_data)==F & is.na(p_values)==F]<-
-      paste0(r_data[p_values<0.05 & p_values>=0.01  & is.na(r_data)==F & is.na(p_values)==F],"*  ")
-    r_data[p_values>=0.05 & is.na(r_data)==F & is.na(p_values)==F]<-
-      paste0(r_data[p_values>=0.05 & is.na(r_data)==F & is.na(p_values)==F],"   ")
+    r_data[p_values<0.001 & is.na(r_data)==FALSE & is.na(p_values)==FALSE]<-
+      paste0(r_data[p_values<0.001 & is.na(r_data)==FALSE & is.na(p_values)==FALSE],"***")
+    r_data[p_values<0.01 & p_values>=0.001 & is.na(r_data)==FALSE & is.na(p_values)==FALSE]<-
+      paste0(r_data[p_values<0.01 & p_values>=0.001  & is.na(r_data)==FALSE & is.na(p_values)==FALSE],"** ")
+    r_data[p_values<0.05 & p_values>=0.01 & is.na(r_data)==FALSE & is.na(p_values)==FALSE]<-
+      paste0(r_data[p_values<0.05 & p_values>=0.01  & is.na(r_data)==FALSE & is.na(p_values)==FALSE],"*  ")
+    r_data[p_values>=0.05 & is.na(r_data)==FALSE & is.na(p_values)==FALSE]<-
+      paste0(r_data[p_values>=0.05 & is.na(r_data)==FALSE & is.na(p_values)==FALSE],"   ")
     
     return(r_data)
   }
@@ -539,15 +539,15 @@ biv_compare_table<-function(biv_compare_object, type="diff", comparison_number=1
 #   
 #   
 #   
-#   cor_matrix_df[[6]][cor_matrix_df[[3]]>0.05 & is.na(cor_matrix_df[[3]])==F]<-paste("'",cor_matrix_df[[1]][cor_matrix_df[[3]]>0.05 & is.na(cor_matrix_df[[3]])==F], "   ", sep = "")
-#   cor_matrix_df[[6]][cor_matrix_df[[3]]<0.05 & cor_matrix_df[[3]]>=0.01 & is.na(cor_matrix_df[[3]])==F]<-paste("'",cor_matrix_df[[1]][cor_matrix_df[[3]]<0.05 & cor_matrix_df[[3]]>=0.01 & is.na(cor_matrix_df[[3]])==F], "*  ", sep = "")
-#   cor_matrix_df[[6]][cor_matrix_df[[3]]<0.01 & cor_matrix_df[[3]]>=0.001 & is.na(cor_matrix_df[[3]])==F]<-paste("'",cor_matrix_df[[1]][cor_matrix_df[[3]]<0.01 & cor_matrix_df[[3]]>=0.001 & is.na(cor_matrix_df[[3]])==F], "** ", sep = "")
-#   cor_matrix_df[[6]][cor_matrix_df[[3]]<0.001 & is.na(cor_matrix_df[[3]])==F]<-paste("'",cor_matrix_df[[1]][cor_matrix_df[[3]]<0.001 & is.na(cor_matrix_df[[3]])==F], "***", sep = "")
+#   cor_matrix_df[[6]][cor_matrix_df[[3]]>0.05 & is.na(cor_matrix_df[[3]])==FALSE]<-paste("'",cor_matrix_df[[1]][cor_matrix_df[[3]]>0.05 & is.na(cor_matrix_df[[3]])==FALSE], "   ", sep = "")
+#   cor_matrix_df[[6]][cor_matrix_df[[3]]<0.05 & cor_matrix_df[[3]]>=0.01 & is.na(cor_matrix_df[[3]])==FALSE]<-paste("'",cor_matrix_df[[1]][cor_matrix_df[[3]]<0.05 & cor_matrix_df[[3]]>=0.01 & is.na(cor_matrix_df[[3]])==FALSE], "*  ", sep = "")
+#   cor_matrix_df[[6]][cor_matrix_df[[3]]<0.01 & cor_matrix_df[[3]]>=0.001 & is.na(cor_matrix_df[[3]])==FALSE]<-paste("'",cor_matrix_df[[1]][cor_matrix_df[[3]]<0.01 & cor_matrix_df[[3]]>=0.001 & is.na(cor_matrix_df[[3]])==FALSE], "** ", sep = "")
+#   cor_matrix_df[[6]][cor_matrix_df[[3]]<0.001 & is.na(cor_matrix_df[[3]])==FALSE]<-paste("'",cor_matrix_df[[1]][cor_matrix_df[[3]]<0.001 & is.na(cor_matrix_df[[3]])==FALSE], "***", sep = "")
 #   
-#   cor_matrix_df[[7]][cor_matrix_df[[5]]>0.05 & is.na(cor_matrix_df[[5]])==F]<-paste("'",round((bench$r[cor_matrix_df[[5]]>0.05 & is.na(cor_matrix_df[[5]])==F] - cor_matrix_df[[1]][cor_matrix_df[[5]]>0.05 & is.na(cor_matrix_df[[5]])==F]), 3) , "   ", sep = "")
-#   cor_matrix_df[[7]][cor_matrix_df[[5]]<0.05 & cor_matrix_df[[5]]>=0.01 & is.na(cor_matrix_df[[5]])==F]<-paste("'",round((bench$r[cor_matrix_df[[5]]<0.05 & cor_matrix_df[[5]]>=0.01 & is.na(cor_matrix_df[[5]])==F]- cor_matrix_df[[1]][cor_matrix_df[[5]]<0.05 & cor_matrix_df[[5]]>=0.01 & is.na(cor_matrix_df[[5]])==F]),3), "*  ", sep = "")
-#   cor_matrix_df[[7]][cor_matrix_df[[5]]<0.01 & cor_matrix_df[[5]]>=0.001 & is.na(cor_matrix_df[[5]])==F]<-paste("'",round((bench$r[cor_matrix_df[[5]]<0.01 & cor_matrix_df[[5]]>=0.001 & is.na(cor_matrix_df[[5]])==F] - cor_matrix_df[[1]][cor_matrix_df[[5]]<0.01 & cor_matrix_df[[5]]>=0.001 & is.na(cor_matrix_df[[5]])==F] ), 3), "** ", sep = "")
-#   cor_matrix_df[[7]][cor_matrix_df[[5]]<0.001 & is.na(cor_matrix_df[[5]])==F]<-paste("'",round((bench$r[cor_matrix_df[[5]]<0.001 & is.na(cor_matrix_df[[5]])==F] - cor_matrix_df[[1]][cor_matrix_df[[5]]<0.001 & is.na(cor_matrix_df[[5]])==F] ) ,3), "***", sep = "")
+#   cor_matrix_df[[7]][cor_matrix_df[[5]]>0.05 & is.na(cor_matrix_df[[5]])==FALSE]<-paste("'",round((bench$r[cor_matrix_df[[5]]>0.05 & is.na(cor_matrix_df[[5]])==FALSE] - cor_matrix_df[[1]][cor_matrix_df[[5]]>0.05 & is.na(cor_matrix_df[[5]])==FALSE]), 3) , "   ", sep = "")
+#   cor_matrix_df[[7]][cor_matrix_df[[5]]<0.05 & cor_matrix_df[[5]]>=0.01 & is.na(cor_matrix_df[[5]])==FALSE]<-paste("'",round((bench$r[cor_matrix_df[[5]]<0.05 & cor_matrix_df[[5]]>=0.01 & is.na(cor_matrix_df[[5]])==FALSE]- cor_matrix_df[[1]][cor_matrix_df[[5]]<0.05 & cor_matrix_df[[5]]>=0.01 & is.na(cor_matrix_df[[5]])==FALSE]),3), "*  ", sep = "")
+#   cor_matrix_df[[7]][cor_matrix_df[[5]]<0.01 & cor_matrix_df[[5]]>=0.001 & is.na(cor_matrix_df[[5]])==FALSE]<-paste("'",round((bench$r[cor_matrix_df[[5]]<0.01 & cor_matrix_df[[5]]>=0.001 & is.na(cor_matrix_df[[5]])==FALSE] - cor_matrix_df[[1]][cor_matrix_df[[5]]<0.01 & cor_matrix_df[[5]]>=0.001 & is.na(cor_matrix_df[[5]])==FALSE] ), 3), "** ", sep = "")
+#   cor_matrix_df[[7]][cor_matrix_df[[5]]<0.001 & is.na(cor_matrix_df[[5]])==FALSE]<-paste("'",round((bench$r[cor_matrix_df[[5]]<0.001 & is.na(cor_matrix_df[[5]])==FALSE] - cor_matrix_df[[1]][cor_matrix_df[[5]]<0.001 & is.na(cor_matrix_df[[5]])==FALSE] ) ,3), "***", sep = "")
 #   
 #   
 #   
@@ -561,12 +561,12 @@ biv_compare_table<-function(biv_compare_object, type="diff", comparison_number=1
 #   
 #   shortlist<-list(cor_matrix_df[[6]],cor_matrix_df[[7]])
 #   
-#   #if (is.null(varlabels)==F) colnames(shortlist[[1]])<-varlabels
-#   if (is.null(varlabels)==F) rownames(shortlist[[1]])<-varlabels
-#   #if (is.null(varlabels)==F) colnames(shortlist[[2]])<-varlabels
-#   if (is.null(varlabels)==F) rownames(shortlist[[2]])<-varlabels
+#   #if (is.null(varlabels)==FALSE) colnames(shortlist[[1]])<-varlabels
+#   if (is.null(varlabels)==FALSE) rownames(shortlist[[1]])<-varlabels
+#   #if (is.null(varlabels)==FALSE) colnames(shortlist[[2]])<-varlabels
+#   if (is.null(varlabels)==FALSE) rownames(shortlist[[2]])<-varlabels
 #   
-#   if (is.null(all)==F) return(cor_matrix_df)
+#   if (is.null(all)==FALSE) return(cor_matrix_df)
 #   return(shortlist)
 # }
 
@@ -697,8 +697,8 @@ multi_compare_table<-function(multi_compare_objects,type="diff",names=NULL,ndigi
     return(final_matrix)
   }
   
-  if(is.null(names)) table_list<-mapply(get_stars, lapply(multi_compare_objects,get, envir = envir), type=type, SIMPLIFY = F)
-  if(is.null(names)==F) table_list<-mapply(get_stars, lapply(multi_compare_objects,get, envir = envir), names, type=type ,SIMPLIFY = F)
+  if(is.null(names)) table_list<-mapply(get_stars, lapply(multi_compare_objects,get, envir = envir), type=type, SIMPLIFY = FALSE)
+  if(is.null(names)==FALSE) table_list<-mapply(get_stars, lapply(multi_compare_objects,get, envir = envir), names, type=type ,SIMPLIFY = FALSE)
 
   as.matrix(dplyr::bind_rows(table_list),nrow = nrow(get(multi_compare_objects[1])$independent)*length(multi_compare_objects),envir = envir)
   
@@ -719,16 +719,16 @@ descript_table_sub<-function(df, variables, varlabels=NULL, weight=NULL,strata=N
     
     if (value=="mean"){
       output<-sapply(variables,
-                     function(variable,design){survey::svymean(stats::reformulate(variable),design,na.rm=T)}, 
-                     design, simplify = T)
+                     function(variable,design){survey::svymean(stats::reformulate(variable),design,na.rm=TRUE)}, 
+                     design, simplify = TRUE)
       
       output<-matrix(round(output,digits=digits),ncol=1)
     }
     
     if (value=="percent"){
       output<-sapply(variables,
-                     function(variable,design){survey::svymean(stats::reformulate(variable),design,na.rm=T)}, 
-                     design, simplify = T)
+                     function(variable,design){survey::svymean(stats::reformulate(variable),design,na.rm=TRUE)}, 
+                     design, simplify = TRUE)
       
       output<-paste(round((output*100), digits = digits),"%", sep="")
       
@@ -737,8 +737,8 @@ descript_table_sub<-function(df, variables, varlabels=NULL, weight=NULL,strata=N
     
     if (value=="total"){
       output<-sapply(variables,
-                     function(variable,design){survey::svytotal(stats::reformulate(variable),design,na.rm=T)}, 
-                     design, simplify = T)
+                     function(variable,design){survey::svytotal(stats::reformulate(variable),design,na.rm=TRUE)}, 
+                     design, simplify = TRUE)
       
       output<-matrix(round(output,digits = digits),ncol=1)
       
@@ -746,12 +746,12 @@ descript_table_sub<-function(df, variables, varlabels=NULL, weight=NULL,strata=N
     
     if (value=="total_percent"){
       output1<-sapply(variables,
-                     function(variable,design){survey::svytotal(stats::reformulate(variable),design,na.rm=T)}, 
-                     design, simplify = T)
+                     function(variable,design){survey::svytotal(stats::reformulate(variable),design,na.rm=TRUE)}, 
+                     design, simplify = TRUE)
       
       output2<-sapply(variables,
-                     function(variable,design){survey::svymean(stats::reformulate(variable),design,na.rm=T)}, 
-                     design, simplify = T)
+                     function(variable,design){survey::svymean(stats::reformulate(variable),design,na.rm=TRUE)}, 
+                     design, simplify = TRUE)
       
       output <- paste(round(output1,digits = digits)," (",round((output2*100),digits = digits),"%)",sep="" )
       output<-matrix(output,ncol=1)
@@ -806,15 +806,15 @@ descriptive_table<-function(dfs,variables,varlabels=NULL, weight=NULL,
     if(is.null(strata)) stratas<-NULL
     if(is.null(id)) ids<-c(1:nrow(get(dfs[i])))
     
-    if(is.null(weight)==F) {
-      if(is.na(weight[i])==F) weights<-get(dfs[i])[,weight[i]]/(sum(get(dfs[i])[,weight[i]])/nrow(get(dfs[i])))
-      if(is.na(weight[i])==T) weights<-rep(1,nrow(get(dfs[i])))}
-    if(is.null(strata)==F) {
-      if(is.na(strata[i])==F) stratas<-get(dfs[i])[,strata[i]]
-      if(is.na(strata[i])==T) stratas<-NULL}
-    if(is.null(id)==F) {
-      if(is.na(id[i])==F) ids<-get(dfs[i])[,id[i]]
-      if(is.na(id[i])==T) ids<-c(1:nrow(get(dfs[i])))}
+    if(is.null(weight)==FALSE) {
+      if(is.na(weight[i])==FALSE) weights<-get(dfs[i])[,weight[i]]/(sum(get(dfs[i])[,weight[i]])/nrow(get(dfs[i])))
+      if(is.na(weight[i])==TRUE) weights<-rep(1,nrow(get(dfs[i])))}
+    if(is.null(strata)==FALSE) {
+      if(is.na(strata[i])==FALSE) stratas<-get(dfs[i])[,strata[i]]
+      if(is.na(strata[i])==TRUE) stratas<-NULL}
+    if(is.null(id)==FALSE) {
+      if(is.na(id[i])==FALSE) ids<-get(dfs[i])[,id[i]]
+      if(is.na(id[i])==TRUE) ids<-c(1:nrow(get(dfs[i])))}
     
     #dataframe1$df_weights/(sum(dataframe1$df_weights)/nrow(dataframe1))
     weights<-weights/(sum(weights)/nrow(get(dfs[i])))

@@ -4,7 +4,7 @@
 \alias{multi_compare_merge}
 \title{Combine multi_compare_objects}
 \usage{
-multi_compare_merge(multi_reg_object1, multi_reg_object2, p_adjust = F)
+multi_compare_merge(multi_reg_object1, multi_reg_object2, p_adjust = FALSE)
 }
 \arguments{
 \item{multi_reg_object1, multi_reg_object2}{Multireg objects that should be combined.}

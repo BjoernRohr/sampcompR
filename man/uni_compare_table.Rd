@@ -6,10 +6,10 @@
 \usage{
 uni_compare_table(
   uni_compare_object,
-  conf_adjustment = F,
+  conf_adjustment = FALSE,
   df_names = NULL,
   varlabels = NULL,
-  ci_line = T,
+  ci_line = TRUE,
   ndigits = 3
 )
 }

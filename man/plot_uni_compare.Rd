@@ -17,7 +17,7 @@ plot_uni_compare(
   label_y = NULL,
   summet_size = NULL,
   plot_title = NULL,
-  conf_adjustment = F,
+  conf_adjustment = FALSE,
   varlabels = NULL,
   ndigits = 3
 )

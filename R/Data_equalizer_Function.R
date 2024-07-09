@@ -45,20 +45,20 @@
 #' @export
 #'
 
-dataequalizer <- function(target_df, source_df, variables=NULL, silence=F) {
+dataequalizer <- function(target_df, source_df, variables=NULL, silence=FALSE) {
 
   if (is.null(variables)) {
-    inside<- colnames(source_df)[colnames(source_df) %in% colnames(target_df),drop=F]
+    inside<- colnames(source_df)[colnames(source_df) %in% colnames(target_df),drop=FALSE]
   }
 
-  if (is.null(variables)==F) {
-    inside<- colnames(source_df)[colnames(source_df) %in% colnames(target_df),drop=F]
+  if (is.null(variables)==FALSE) {
+    inside<- colnames(source_df)[colnames(source_df) %in% colnames(target_df),drop=FALSE]
     inside<- inside[inside %in% variables]
 
   }
 
 
-  missing<- colnames(source_df)[!(colnames(source_df) %in% inside),drop=F]
+  missing<- colnames(source_df)[!(colnames(source_df) %in% inside),drop=FALSE]
   #inside <- labelchecker(target_df, source_df, variables = variables)
 
   ### Put Missing variables in string together for a warning message ###
@@ -72,7 +72,7 @@ dataequalizer <- function(target_df, source_df, variables=NULL, silence=F) {
 
 
   if (length(missingvar)>0)
-    if (is.null(variables)==T)
+    if (is.null(variables)==TRUE)
       if (isFALSE(silence)) {
         warning(paste(
           "target_df has less collumns than source_df",
@@ -81,15 +81,15 @@ dataequalizer <- function(target_df, source_df, variables=NULL, silence=F) {
       }
 
   if (length(missingvar)>0)
-    if(is.null(variables)==F)
+    if(is.null(variables)==FALSE)
       if (isFALSE(silence)) {
         warning(paste(
           "Only chosen variables included in both datasets are used",
           "\n   Missing variables are:", missingvar))
       }
 
-  help<- source_df[,colnames(source_df) %in% inside,drop=F]
-  if(is.null(variables)==F) help<-help[,variables[variables %in% colnames(help)],drop=F]
+  help<- source_df[,colnames(source_df) %in% inside,drop=FALSE]
+  if(is.null(variables)==FALSE) help<-help[,variables[variables %in% colnames(help)],drop=FALSE]
 
 
   return(help)
