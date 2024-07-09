@@ -44,53 +44,54 @@ biv_compare(
 )
 }
 \arguments{
-\item{dfs}{A character vector containing the names of data frames to compare against the
-benchmarks.}
+\item{dfs}{A character vector containing the names of data frames to compare
+against the \code{benchmarks}.}
 
 \item{benchmarks}{A character vector containing the names of benchmarks to
-compare the data frames against, or the names of a list. If it is a list, it
+compare the \code{dfs} against, or the names of a list. If it is a list, it
 has to be of the form, as the output of \link[Hmisc]{rcorr}, with a
 Pearson's r matrix in the first position, a n-matrix (matrix of n for every
 correlation) in the second position and a p-matrix in the third position.
 The vector must either be the same length as \code{dfs}, or length 1. If it
 has length one every survey will be compared against the same benchmark.}
 
-\item{variables}{A character vector containing the names of the variables for
-the comparison. If NULL, all variables named similarly in both the \code{dfs}
-and the benchmarks will be compared.Variables missing in one of the data
-frames or the benchmarks will be neglected for this comparison.}
+\item{variables}{A character vector that containes the names of the variables for
+the comparison. If it is \code{NULL}, all variables that are named similarly
+in both the \code{dfs} and the benchmarks will be compared. Variables missing
+in one of the \code{dfs} or the \code{benchmarks} will be neglected for this
+comparison.}
 
 \item{corrtype}{A character string, indicating the type of the bivariate correlation.
 It can either be "r" for Pearson's r or "rho" for Spearman's "rho". At the moment,
 rho is only applicable to unweighted data.}
 
-\item{data}{If TRUE, a biv_compare object is returned, containing the results
+\item{data}{If \code{TRUE}, a biv_compare object is returned, containing the results
 of the comparison.}
 
-\item{strata, strata_bench}{A character vector determining strata variables
-that is used to weight the \code{dfs} or \code{benchmarks} with the help of
+\item{strata, strata_bench}{A character vector that determines strata variables
+that are used to weigh the \code{dfs} or \code{benchmarks} with the help of
 the \code{survey} package. It has to be part of the respective data frame.
 If fewer characters strings are provided, than in \code{dfs}, the first input
-is used to weight every df or benchmark, where no input is provided.}
+is used to weigh every df or benchmark, where no input is provided.}
 
-\item{id_bench, id}{A character vector determining id variables used to weight
+\item{id_bench, id}{A character vector determining id variables used to weigh
 the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package. They have
 to be part of the respective data frame. If less characters strings are provided,
-than in \code{dfs}, the first input is used to weight every df or benchmark, where no input
-is provided.}
+than in \code{dfs}, the first input is used to weigh every \code{df} or
+\code{benchmark}, where no input is provided.}
 
-\item{weight_bench, weight}{A character vector determining variables to weight
+\item{weight_bench, weight}{A character vector that determines variables to weigh
 the \code{dfs} of \code{benchmarks}. They have to be part of the respective
 data frame. If fewer characters strings are provided, than in \code{dfs},
-the first input is used to weight every df or benchmark, where no input is
+the first input is used to weigh every df or benchmark, where no input is
 provided. If a weight variable is provided also an id variable is needed.
 For weighting, the \code{survey} package is used.}
 
 \item{p_value}{A number between zero and one to determine the maximum significance niveau.}
 
-\item{p_adjust}{Can be either TRUE or a character string indicating an
-adjustment method.If p_adjust=T the p_values will be adjusted with the
-Bonferroni adjustment method, by default,to account for the problem of
+\item{p_adjust}{Can be either \code{TRUE} or a character string indicating an
+adjustment method. If \code{p_adjust = TRUE} the p_values will be adjusted with the
+Bonferroni adjustment method, by default, to account for the problem of
 multiple comparisons. All adjustment methods available in
 \code{\link{p.adjust}} can be used here, with the same character strings.}
 
@@ -100,9 +101,9 @@ the new names of variables that is used in the plot.}
 \item{plot_title}{A character string containing the title of the plot.}
 
 \item{plots_label}{A character string or vector of character strings
-containing the new names of the data frames that is used in the plot.}
+containing the new names of the data frames that are used in the plot.}
 
-\item{diff_perc}{If true a percental difference between surveys and benchmarks is
+\item{diff_perc}{If \code{TRUE} a percental difference between surveys and benchmarks is
 displayed in the plot.}
 
 \item{diff_perc_size}{A number to determine the size of the displayed percental
@@ -111,7 +112,7 @@ difference between surveys in the plot.}
 \item{perc_diff_transparance}{A number to determine the transparency of the displayed
 percental difference between surveys in the plot.}
 
-\item{note}{If note = True, a note will be displayed to describe the plot.}
+\item{note}{If \code{note = TRUE}, a note will be displayed to describe the plot.}
 
 \item{order}{A character vector to determine in which order the variables should be
 displayed in the plot.}
@@ -125,64 +126,67 @@ displayed in the plot.}
 \item{grid}{A color string, that determines the color of the lines between
 the tiles of the heatmap.}
 
-\item{gradient}{If gradient = TRUE, colors in the heatmap will be more or less
-transparent, depending on the difference in Pearson's r of the data frames of comparison.}
+\item{gradient}{If \code{gradient = TRUE}, colors in the heatmap will be more
+or less transparent, depending on the difference in Pearson's r of the data
+frames of comparison.}
 
 \item{sum_weights}{A vector containing information for every variable to
 weigh them in the displayed percental-difference calculation. It can be used
 if some variables are over- or underrepresented in the analysis.}
 
-\item{missings_x}{If TRUE, missing pairs in the plot will be marked with an X.}
+\item{missings_x}{If \code{TRUE}, missing pairs in the plot will be marked with an X.}
 
-\item{remove_nas}{A character string, that indicates how missing should be
-removed, can either be "all", two remove all cases that contain NA in any
-of the variables, or "pairwise", to remove NAs separately for every variable
-pair when calculating Pearson's r}
+\item{remove_nas}{A character string, that indicates how missing values should be
+removed, can either be \code{"all"}, to remove all cases that contain NA in any
+of the variables, or \code{"pairwise"}, to remove NAs separately for every variable
+pair when calculating Pearson's r.}
 
-\item{ncol_facet}{Number of columns used in faced_wrap() for the plots.}
+\item{ncol_facet}{The number of columns used in faced_wrap() for the plots.}
 
 \item{nboots}{A numeric value indicating the number of bootstrap replications.
-If nboots = 0 no bootstrapping will be performed. Else nboots must be >2.
-Note, that bootstrapping can be very computational heavy and can therefore
-take a while.}
+If \code{nboots = 0} no bootstrapping will be performed. Else \code{nboots}
+must be >2. Note, that bootstrapping can be very computationally heavy and can
+therefore take a while.}
 
-\item{parallel}{Can be either FALSE, or a number of cores that should be used
-in the function. If FALSE, only one core will be used otherwise the given
-number of cores.}
+\item{parallel}{Can be either \code{FALSE} or a number of cores that should
+be used in the function. If it is \code{FALSE}, only one core will be used and
+otherwise the given number of cores will be used.}
 
 \item{adjustment_weighting}{A character vector indicating if adjustment
-weighting should be used. it can either be "raking" or "post_start".}
+weighting should be used. It can either be \code{"raking"} or \code{"post_start"}.}
 
 \item{adjustment_vars}{Variables used to adjust the survey when using raking
-or post stratification.}
+or post-stratification.}
 
-\item{raking_targets}{A List of raking targets that can be given to the rake
-function of \code{\link[survey]{rake}}, to rake the dfs}
+\item{raking_targets}{A list of raking targets that can be given to the rake
+function of \code{\link[survey]{rake}}, to rake the \code{dfs}.}
 
-\item{post_targets}{A List of post_stratification targets that can be given to the rake
-function of \code{\link[survey]{postStratify}}, to post_stratificatify the dfs}
+\item{post_targets}{A list of post_stratification targets that can be given to
+the \code{\link[survey]{postStratify}} function, to post-stratify the \code{dfs}.}
 }
 \value{
-A object generated with the help of \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}}, used to visualize
-the differences between the data frames and benchmarks. If data = T instead of the plot
-a list will be returned containing information of the analyses. This biv_compare object
-can be used in plot_biv_compare to build a plot later on.
+A object generated with the help of \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} visualizes
+the differences between the data frames and benchmarks. If \code{data = TRUE}
+instead of the plot a list will be returned containing information of the
+analyses. This \code{biv_compare} object can be used in
+\code{plot_biv_compare} to build a plot, or in \code{biv_compare_table},
+to get a table.
 }
 \description{
 Compare multiple data frames on a bivariate level and plot them together.
 }
 \details{
 The plot shows a heatmap of a correlation matrix, where the colors are determined by
-the similarity of the Pearson's r value in both sets of respondents. Leaving
+the similarity of the Pearson's r values in both sets of respondents. Leaving
 default breaks and colors,
 \itemize{
 \item \code{Same} (green) indicates, that the Pearson's r correlation is not significant > 0 in
-the related data frame or benchmark or the Pearson's r correlations are not significant
+the related data frame or benchmark or the Pearson's r correlations are not significantly
 different, between data frame and benchmark.
 \item \code{Small Diff} (yellow) indicates that the Pearson's r
 correlation is significant > 0 in the related data frame or benchmark and the Pearson's r
-correlations are significant different, between data frame and benchmark.
-\item \code{Large Diff} (red) indicates, that the same coditions of yellow are fulfilled, and
+correlations are significantly different, between data frame and benchmark.
+\item \code{Large Diff} (red) indicates, that the same conditions of yellow are fulfilled, and
 the correlations are either in opposite directions,or one is double the size of the other.
 }
 }

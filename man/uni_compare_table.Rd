@@ -22,12 +22,12 @@ confidence intervals should be returned.}
 
 \item{df_names}{A character vector to relabel the data frames of comparison.}
 
-\item{varlabels}{A character vector to relabel the Variables in the table.}
+\item{varlabels}{A character vector to relabel the variables in the table.}
 
-\item{ci_line}{If TRUE, confidence intervals will be displayed in a separate
-line, otherwise, they are shown in the same line instead.}
+\item{ci_line}{If \code{TRUE}, confidence intervals will be displayed in a
+separate line, otherwise, they are shown in the same line instead.}
 
-\item{ndigits}{The number of digits for rounding in table.}
+\item{ndigits}{The number of digits to round the numbers in table.}
 }
 \value{
 A table containing information on the univariate comparison based on
@@ -35,7 +35,7 @@ the \code{\link[sampcompR]{uni_compare}} function.
 }
 \description{
 Returns a table based on the information of an \code{uni_compare_object}
-which can be outputted as html or LaTex Table, for example with the help of
+which can be outputted as HTML or LaTex Table, for example with the help of
 the \link[stargazer]{stargazer} function.
 }
 \examples{

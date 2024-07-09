@@ -14,7 +14,7 @@
 #' Create an Output-Table of a uni_compare_object
 #'
 #' Returns a table based on the information of an \code{uni_compare_object} 
-#' which can be outputted as html or LaTex Table, for example with the help of 
+#' which can be outputted as HTML or LaTex Table, for example with the help of 
 #' the \link[stargazer]{stargazer} function.
 #'
 #' @param uni_compare_object A object returned by 
@@ -22,10 +22,10 @@
 #' @param conf_adjustment A logical parameter determining if adjusted 
 #' confidence intervals should be returned.
 #' @param df_names A character vector to relabel the data frames of comparison.
-#' @param ndigits The number of digits for rounding in table.
-#' @param varlabels A character vector to relabel the Variables in the table.
-#' @param ci_line If TRUE, confidence intervals will be displayed in a separate 
-#' line, otherwise, they are shown in the same line instead.
+#' @param ndigits The number of digits to round the numbers in table.
+#' @param varlabels A character vector to relabel the variables in the table.
+#' @param ci_line If \code{TRUE}, confidence intervals will be displayed in a 
+#' separate line, otherwise, they are shown in the same line instead.
 #'
 #' @return A table containing information on the univariate comparison based on 
 #' the \code{\link[sampcompR]{uni_compare}} function.

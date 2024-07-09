@@ -76,7 +76,7 @@ relative difference in mean of the variables in \code{dfs} and benchmarks with t
 et al. (2019). Only applicable for metric variables.
 \item \code{"rel_prop"}, \code{"abs_rel_prop"} A function to calculate the (absolute)
 relative difference in proportions of the variables in \code{dfs} and benchmarks with
-the same name. it is calculated similar to the relative difference in mean
+the same name. It is calculated similar to the relative difference in mean
 (see Felderer et al., 2019), however the default label for the plot is different.
 Only applicable for dummy variables.
 }}
@@ -90,13 +90,13 @@ legend.}
 
 \item{legendtitle}{A character string containing the title of the legend.}
 
-\item{colors}{A vector of colors that is used in the plot for the
+\item{colors}{A vector of colors, that is used in the plot for the
 different comparisons.}
 
-\item{shapes}{A vector of shapes applicable in \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} that is used in the plot for
-the different comparisons.}
+\item{shapes}{A vector of shapes applicable in \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}}, that is
+used in the plot for the different comparisons.}
 
-\item{summetric}{If ,\code{"avg1"}, \code{"mse1"}, \code{"rmse1"}, or \code{"R"}
+\item{summetric}{If \code{"avg1"}, \code{"mse1"}, \code{"rmse1"}, or \code{"R"}
 the respective measure is calculated for the biases of each survey. The values
 \code{"mse1"} and \code{"rmse1"} lead to similar results as in \code{"mse2"} and \code{"rmse2"},
 with slightly different visualization in the plot. If \code{summetric = NULL}, no summetric
@@ -112,12 +112,12 @@ the x-axis and y-axis.}
 variables, also used in plot.}
 
 \item{name_dfs, name_benchmarks}{A character string or vector of character strings containing the
-new names of the \code{dfs} and \code{benchmarks}, also used in plot.}
+new names of the \code{dfs} and \code{benchmarks}, that is also used in plot.}
 
 \item{summet_size}{A number to determine the size of the displayed \code{summetric} in the plot.}
 
-\item{silence}{If \code{silence = F} a warning will be displayed, if variables are excluded from either
-data frame or benchmark, for not existing in both.}
+\item{silence}{If \code{silence = F} a warning will be displayed, if variables a
+re excluded from either the data frame or benchmark, for not existing in both.}
 
 \item{conf_level}{A numeric value between zero and one to determine the confidence level of the confidence
 interval.}
@@ -127,31 +127,35 @@ adjusted with a Bonferroni adjustment, to account for the problem of multiple co
 
 \item{weight, weight_bench}{A character vector determining variables to weight the \code{dfs} or
 \code{benchmarks}. They have to be part of the respective data frame. If only one character is provided,
-the same variable is used to weight every df or benchmark. If a weight variable is provided also an \code{id}
-variable is needed.For weighting, the \code{survey} package is used.}
+the same variable is used to weigh every \code{df} or \code{benchmark}. If a
+weight variable is provided also an \code{id} variable is needed.For
+weighting, the \code{survey} package is used.}
 
-\item{id, id_bench}{A character vector determining id variables used to weight the \code{dfs} or
-\code{benchmarks} with the help of the \code{survey} package. They have to be part of the respective
-data frame. If only one character is provided, the same variable is used to weight every df or benchmark.}
+\item{id, id_bench}{A character vector determining \code{id} variables used
+to weigh the \code{dfs} or \code{benchmarks} with the help of the
+\code{survey} package. They have to be part of the respective data frame. If
+only one character is provided, the same variable is used to weigh every
+\code{df} or \code{benchmark}.}
 
-\item{strata, strata_bench}{A character vector determining strata variables used to weight
-the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package. They have
-to be part of the respective data frame. If only one character is provided, the same variable
-is used to weight every df or benchmark.}
+\item{strata, strata_bench}{A character vector determining strata variables
+used to weigh the \code{dfs} or \code{benchmarks} with the help of the
+\code{survey} package. They have to be part of the respective data frame.
+If only one character is provided, the same variable is used to weight every
+\code{df} or \code{benchmark}.}
 
 \item{adjustment_weighting}{A character vector indicating if adjustment
-weighting should be used. it can either be \code{"raking"} or \code{"post_start"}.}
+weighting should be used. It can either be \code{"raking"} or \code{"post_start"}.}
 
 \item{adjustment_vars}{Variables used to adjust the survey when using raking
 or post stratification.}
 
-\item{raking_targets}{A List of raking targets that can be given to the rake
+\item{raking_targets}{A list of raking targets that can be given to the rake
 function of \code{\link[survey]{rake}}, to rake the \code{dfs}.}
 
-\item{post_targets}{A List of post_stratification targets that can be given to the rake
-function of \code{\link[survey]{postStratify}}, to post_stratify the \code{dfs}.}
+\item{post_targets}{A list of post-stratification targets that can be given to the
+\code{\link[survey]{postStratify}} function, to post-stratify the \code{dfs}.}
 
-\item{ndigits}{The number of digits for rounding in plot.}
+\item{ndigits}{The number of digits to round the numbers in the plot.}
 }
 \value{
 A plot based on \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} (or data frame if data==TRUE)

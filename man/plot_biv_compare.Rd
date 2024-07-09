@@ -19,7 +19,6 @@ plot_biv_compare(
   gradient = F,
   sum_weights = NULL,
   missings_x = T,
-  legend_show_x = F,
   order = NULL,
   breaks = NULL,
   colors = NULL,
@@ -32,23 +31,23 @@ plot_biv_compare(
 \item{plot_title}{A character string containing the title of the plot.}
 
 \item{plots_label}{A character string or vector of character strings
-containing the new labels of the data frames that is used in the plot.}
+containing the new labels of the data frames that are used in the plot.}
 
 \item{p_value}{A number between 0 and one to determine the maximum
 significance niveau.}
 
 \item{varlabels}{A character string or vector of character strings containing
-the new labels of variables that is used in the plot.}
+the new labels of variables that are used in the plot.}
 
 \item{mar}{A vector that determines the margins of the plot.}
 
-\item{note}{If note = TRUE, a note will be displayed to describe the plot.}
+\item{note}{If \code{note = TRUE}, a note will be displayed to describe the plot.}
 
 \item{grid}{A character string, that determines the color of the lines
 between the tiles of the heatmap.}
 
-\item{diff_perc}{If TRUE a percental measure of difference between dfs and benchmarks is
-displayed in the plot.}
+\item{diff_perc}{If \code{TRUE} a percental measure of difference between
+\code{dfs} and benchmarks is displayed in the plot.}
 
 \item{diff_perc_size}{A number to determine the size of the displayed percental
 difference between surveys in the plot.}
@@ -60,14 +59,11 @@ displayed percental-difference between surveys in the plot.}
 less transparent, depending on the difference in Pearson's r of the data
 frames of comparison.}
 
-\item{sum_weights}{A vector containing information for every variable to weight them in
+\item{sum_weights}{A vector containing information for every variable to weigh them in
 the displayed percental difference calculation. It can be used if some variables are
 over- or underrepresented in the analysis.}
 
 \item{missings_x}{If TRUE, missing pairs in the plot will be marked with an X.}
-
-\item{legend_show_x}{If true the X will be shown in the legend. At the moment, das
-does not yet work correctly.}
 
 \item{order}{A character vector to determine in which order the variables should be
 displayed in the plot.}

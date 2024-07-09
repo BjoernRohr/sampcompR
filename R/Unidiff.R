@@ -57,7 +57,7 @@
 #'
 #' * \code{"rel_prop"}, \code{"abs_rel_prop"} A function to calculate the (absolute) 
 #' relative difference in proportions of the variables in \code{dfs} and benchmarks with 
-#' the same name. it is calculated similar to the relative difference in mean 
+#' the same name. It is calculated similar to the relative difference in mean 
 #' (see Felderer et al., 2019), however the default label for the plot is different. 
 #' Only applicable for dummy variables.
 #'
@@ -69,11 +69,11 @@
 #' @param legendlabels A character string or vector of strings containing a label for the
 #' legend.
 #' @param legendtitle A character string containing the title of the legend.
-#' @param colors A vector of colors that is used in the plot for the
+#' @param colors A vector of colors, that is used in the plot for the
 #' different comparisons.
-#' @param shapes A vector of shapes applicable in [ggplot2::ggplot2()] that is used in the plot for
-#' the different comparisons.
-#' @param summetric If ,\code{"avg1"}, \code{"mse1"}, \code{"rmse1"}, or \code{"R"} 
+#' @param shapes A vector of shapes applicable in [ggplot2::ggplot2()], that is 
+#' used in the plot for the different comparisons.
+#' @param summetric If \code{"avg1"}, \code{"mse1"}, \code{"rmse1"}, or \code{"R"} 
 #' the respective measure is calculated for the biases of each survey. The values 
 #' \code{"mse1"} and \code{"rmse1"} lead to similar results as in \code{"mse2"} and \code{"rmse2"}, 
 #' with slightly different visualization in the plot. If \code{summetric = NULL}, no summetric 
@@ -85,37 +85,41 @@
 #' @param varlabels A character string or vector of character strings containing the new names of
 #' variables, also used in plot.
 #' @param name_dfs,name_benchmarks A character string or vector of character strings containing the
-#' new names of the \code{dfs} and \code{benchmarks}, also used in plot.
+#' new names of the \code{dfs} and \code{benchmarks}, that is also used in plot.
 #' @param summet_size A number to determine the size of the displayed \code{summetric} in the plot.
-#' @param silence If \code{silence = F} a warning will be displayed, if variables are excluded from either
-#' data frame or benchmark, for not existing in both.
+#' @param silence If \code{silence = F} a warning will be displayed, if variables a
+#' re excluded from either the data frame or benchmark, for not existing in both.
 #' @param conf_level A numeric value between zero and one to determine the confidence level of the confidence
 #' interval.
 #' @param conf_adjustment If \code{conf_adjustment = T} the confidence level of the confidence interval will be
 #' adjusted with a Bonferroni adjustment, to account for the problem of multiple comparisons.
 #' @param weight,weight_bench A character vector determining variables to weight the \code{dfs} or
 #' \code{benchmarks}. They have to be part of the respective data frame. If only one character is provided,
-#' the same variable is used to weight every df or benchmark. If a weight variable is provided also an \code{id}
-#' variable is needed.For weighting, the \code{survey} package is used.
-#' @param id,id_bench A character vector determining id variables used to weight the \code{dfs} or
-#' \code{benchmarks} with the help of the \code{survey} package. They have to be part of the respective
-#' data frame. If only one character is provided, the same variable is used to weight every df or benchmark.
-#' @param strata,strata_bench A character vector determining strata variables used to weight
-#' the \code{dfs} or \code{benchmarks} with the help of the \code{survey} package. They have
-#' to be part of the respective data frame. If only one character is provided, the same variable
-#' is used to weight every df or benchmark.
+#' the same variable is used to weigh every \code{df} or \code{benchmark}. If a 
+#' weight variable is provided also an \code{id} variable is needed.For 
+#' weighting, the \code{survey} package is used.
+#' @param id,id_bench A character vector determining \code{id} variables used 
+#' to weigh the \code{dfs} or \code{benchmarks} with the help of the 
+#' \code{survey} package. They have to be part of the respective data frame. If 
+#' only one character is provided, the same variable is used to weigh every 
+#' \code{df} or \code{benchmark}.
+#' @param strata,strata_bench A character vector determining strata variables 
+#' used to weigh the \code{dfs} or \code{benchmarks} with the help of the 
+#' \code{survey} package. They have to be part of the respective data frame. 
+#' If only one character is provided, the same variable is used to weight every 
+#' \code{df} or \code{benchmark}.
 # #' @param R_variables A character vector with the names of variables that should be used in the model 
 # #' to calculate the R indicator
 #' @param type Define the type of comparison. Can either be \code{"comparison"} or \code{"nonresponse"}.
-#' @param ndigits The number of digits for rounding in plot.
+#' @param ndigits The number of digits to round the numbers in the plot.
 #' @param adjustment_vars Variables used to adjust the survey when using raking 
 #' or post stratification.
-#' @param raking_targets A List of raking targets that can be given to the rake 
+#' @param raking_targets A list of raking targets that can be given to the rake 
 #' function of \code{\link[survey]{rake}}, to rake the \code{dfs}.
-#' @param post_targets A List of post_stratification targets that can be given to the rake 
-#' function of \code{\link[survey]{postStratify}}, to post_stratify the \code{dfs}.
+#' @param post_targets A list of post-stratification targets that can be given to the 
+#' \code{\link[survey]{postStratify}} function, to post-stratify the \code{dfs}.
 #' @param adjustment_weighting A character vector indicating if adjustment 
-#' weighting should be used. it can either be \code{"raking"} or \code{"post_start"}.
+#' weighting should be used. It can either be \code{"raking"} or \code{"post_start"}.
 #' 
 #' @return A plot based on [ggplot2::ggplot2()] (or data frame if data==TRUE)
 #' which shows the difference between two or more data frames on predetermined variables,
