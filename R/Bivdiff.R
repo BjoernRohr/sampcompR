@@ -689,7 +689,7 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = TRU
                                adjustment_vars=adjustment_vars[[i]],
                                raking_targets=raking_targets[[i]],
                                post_targets=post_targets[[i]])
-    print(paste("survey",i,"of",length(dfs),"is compared"))
+    message(paste("survey",i,"of",length(dfs),"is compared"))
     
     #return(help[[i]])###
     help[[i]][[1]]$samp<-i
