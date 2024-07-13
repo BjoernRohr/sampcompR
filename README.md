@@ -4,7 +4,7 @@ This is only a beta version of sampcompR. It is still in development and
 may contain bugs. If you use the package and a bug crosses your way,
 feel free to contact the Author (<bjoern.rohr@gesis.org>).
 
-# sampcompR
+# sampcompR <a href="https://bjoernrohr.github.io/sampcompR/"><img src="man/figures/logo.png" align="right" height="120" alt="sampcompR website" /></a>
 
 <!-- badges: start -->
 
@@ -182,8 +182,8 @@ biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
 #> Das folgende Objekt ist maskiert 'package:magrittr':
 #> 
 #>     set_names
-#> [1] "survey 1 of 2 is compared"
-#> [1] "survey 2 of 2 is compared"
+#> survey 1 of 2 is compared
+#> survey 2 of 2 is compared
 
 sampcompR::plot_biv_compare(biv_data)
 ```
