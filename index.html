@@ -13,6 +13,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Comparing and Visualizing Differences Between Surveys">
 <meta name="description" content="Easily analyze and visualize differences between samples (e.g., benchmark comparisons, nonresponse comparisons in surveys) on three levels. The comparisons can be univariate, bivariate or multivariate. On univariate level the variables of interest of a survey and a comparison survey (i.e. benchmark) are compared, by calculating one of several difference measures (e.g., relative difference in mean), and an average difference between the surveys. On bivariate level a function can calculate significant differences in correlations for the surveys. And on multivariate levels a function can calculate significant differences in model coefficients between the surveys of comparison. All of those differences can be easily plotted and outputted as a table. For more detailed information on the methods and example use see Rohr, B., Silber, H., &amp; Felderer, B. (2024). „Comparing the Accuracy of Univariate, Bivariate, and Multivariate Estimates across Probability and Non-Probability Surveys with Population Benchmarks“ &lt;doi:10.31235/osf.io/n6ehf&gt; .">
 <meta property="og:description" content="Easily analyze and visualize differences between samples (e.g., benchmark comparisons, nonresponse comparisons in surveys) on three levels. The comparisons can be univariate, bivariate or multivariate. On univariate level the variables of interest of a survey and a comparison survey (i.e. benchmark) are compared, by calculating one of several difference measures (e.g., relative difference in mean), and an average difference between the surveys. On bivariate level a function can calculate significant differences in correlations for the surveys. And on multivariate levels a function can calculate significant differences in model coefficients between the surveys of comparison. All of those differences can be easily plotted and outputted as a table. For more detailed information on the methods and example use see Rohr, B., Silber, H., &amp; Felderer, B. (2024). „Comparing the Accuracy of Univariate, Bivariate, and Multivariate Estimates across Probability and Non-Probability Surveys with Population Benchmarks“ &lt;doi:10.31235/osf.io/n6ehf&gt; .">
+<meta property="og:image" content="https://bjoernrohr.github.io/sampcompR/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -46,12 +47,15 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="disclaimer">Disclaimer:<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
-</h1></div>
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="disclaimer">Disclaimer:<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
+</h1>
+</div>
 <p>This is only a beta version of sampcompR. It is still in development and may contain bugs. If you use the package and a bug crosses your way, feel free to contact the Author (<a href="mailto:bjoern.rohr@gesis.org" class="email">bjoern.rohr@gesis.org</a>).</p>
 </div>
 <div class="section level1">
-<h1 id="sampcompr">sampcompR<a class="anchor" aria-label="anchor" href="#sampcompr"></a>
+<h1 id="sampcompr-">sampcompR 
+<a class="anchor" aria-label="anchor" href="#sampcompr-"></a>
 </h1>
 <!-- badges: start -->
 
@@ -232,8 +236,8 @@
 <span><span class="co">#&gt; Das folgende Objekt ist maskiert 'package:magrittr':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     set_names</span></span>
-<span><span class="co">#&gt; [1] "survey 1 of 2 is compared"</span></span>
-<span><span class="co">#&gt; [1] "survey 2 of 2 is compared"</span></span>
+<span><span class="co">#&gt; survey 1 of 2 is compared</span></span>
+<span><span class="co">#&gt; survey 2 of 2 is compared</span></span>
 <span></span>
 <span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/plot_biv_compare.html">plot_biv_compare</a></span><span class="op">(</span><span class="va">biv_data</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-bivariate_comparison-1.png" width="100%"></p>
