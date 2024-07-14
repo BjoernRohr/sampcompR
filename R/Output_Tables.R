@@ -838,6 +838,384 @@ descriptive_table<-function(dfs,variables,varlabels=NULL, weight=NULL,
 }
 
 
+###################################
+### Bias per Variable bivariate ###
+###################################
+
+#' Returns a table based on the information of a \code{biv_compare_object} that 
+#' indicates the proportion of biased variables. It can be outputted as html or 
+#' LaTex Table, for example with the help of the \link[stargazer]{stargazer} 
+#' function.
+#' 
+#' @param biv_compare_object A object returned by the 
+#' \code{\link[sampcompR]{biv_compare}} function.
+#' @param ndigits Number of digits shown in the table.
+#' @param varlabels A character vector containing labels for the variables.
+#' @param label_df A character vector containing labels for the data frames.
+#'
+#' @return A matrix, that indicates the proportion of bias for every individual
+#' variable. This is given seperately for every comparison, as well as averaged
+#' over comparisons. 
+#' 
+#' @examples
+#' 
+#' require(wooldridge)
+#' card<-wooldridge::card
+#' 
+#' south <- card[card$south==1,]
+#' north <- card[card$south==0,]
+#' black <- card[card$black==1,]
+#' white <- card[card$black==0,]
+#' 
+#' ## use the function to plot the data 
+#' bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
+#'                                    benchmarks = c("south","black"),
+#'                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
+#'                                    data=TRUE)
+#' 
+#' table<-sampcompR::biv_per_variable(bivar_data)
+#' noquote(table)
+#' 
+#' @export
+
+biv_per_variable<-function(biv_compare_object, ndigits = 1,varlabels=NULL,label_df=NULL){
+  
+  main_object<-biv_compare_object$comparison_dataframe |> 
+    dplyr::filter(is.na(biv_compare_object$comparison_dataframe$value)==F) |> 
+    dplyr::mutate(different=dplyr::case_when(value=="Same"~0,
+                               value!="Same"~1))
+  
+  
+  if(is.null(biv_compare_object$varlabels)){
+    variables<-biv_compare_object$variables}
+  
+  if(is.null(biv_compare_object$varlabels)==F){
+    variables<-biv_compare_object$varlabels}
+  
+  
+  bias_per_variable_sub<-function(main_object,variable,sample=NULL){
+    
+    if(is.null(sample)){
+      different<-main_object$different[main_object$x==variable| 
+                                         main_object$y==variable]}
+    
+    if(is.null(sample)==F){
+      different<-main_object$different[(main_object$x==variable|
+                                          main_object$y==variable) &
+                                         main_object$samp==sample]
+    }
+    
+    mean(different,na.rm = T)
+  }
+  
+  # if(by_sample==F){
+    # bias<-purrr::map_dbl(variables,~bias_per_variable_sub(main_object,.))
+    # browser()
+    # bias<-bias*100
+    # bias<-format(round(x=bias,digits=1),nsmall=1)
+    # bias<-paste0(bias,"%") |>
+    #   matrix(ncol=1)
+    # return(cbind(variables,bias))
+  # }
+
+  
+  
+    samples<-unique(main_object$samp)
+    bias<-list()
+    for (i in 1:length(samples)){
+      bias[[i]]<-purrr::map_dbl(variables,~bias_per_variable_sub(main_object,.,
+                                                          sample = samples[i]))}
+    bias<-purrr::map(bias,function(bias,variables)
+      {names(bias)<-variables
+      bias},
+    variables=variables)
+    bias<-matrix(unlist(bias),ncol=length(bias))
+    bias<-cbind(bias,purrr::map_dbl(variables,
+                             ~bias_per_variable_sub(main_object,.)))
+    #bias<-cbind(bias,map_dbl(1:length(variables),~mean(bias[.x,],na.rm=T)))
+    bias<-format(round(x=bias*100,digits = ndigits),nsmall = ndigits)
+    bias[bias!=" NaN"]<-paste0(bias[bias!=" NaN"],"%")
+    bias[bias==" NaN"]<-""
+    
+    if(is.null(varlabels)==FALSE){
+      l_varlabels<-ifelse(length(variables)<=length(varlabels),length(variables),length(varlabels))
+      variables<-as.character(variables)
+      variables[1:l_varlabels]<-varlabels[1:l_varlabels]
+    }
+      
+    bias<-cbind(as.character(variables),bias)
+    if(is.null(biv_compare_object$plots_label)==FALSE) {
+      if(is.null(label_df)==FALSE){
+        plots_label<- biv_compare_object$plots_label
+        l_label_df<-ifelse(length(plots_label)<=length(label_df),length(plots_label),length(label_df))
+        biv_compare_object$plots_label[1:l_label_df]<-label_df[1:l_label_df]
+      }
+      colnames(bias)<-c("Variables",unique(biv_compare_object$plots_label),"Average Bias")}
+    
+    if(is.null(biv_compare_object$plots_label)){
+      if(is.null(label_df)==FALSE){
+        dfs<-biv_compare_object$dfs
+        l_label_df<-ifelse(length(dfs)<=length(label_df),length(dfs),length(label_df))
+        biv_compare_object$dfs[1:l_label_df]<-label_df[1:l_label_df]
+      }
+      colnames(bias)<-c("Variables",unique(biv_compare_object$dfs),"Average Bias")}
+    return(bias) 
+  
+}
 
 
 
+
+
+
+
+######################################
+### Bias per Variable multivariate ###
+######################################
+
+#' Returns a table based on the information of a \code{multi_compare_object} that 
+#' indicates the proportion of biased variables. It can be outputted as html or 
+#' LaTex Table, for example with the help of the \link[stargazer]{stargazer} 
+#' function.
+#' 
+#' @param multi_compare_objects A object returned by the 
+#' \code{\link[sampcompR]{biv_compare}} function.
+#' @param ndigits Number of digits shown in the table.
+#' @param lables_coefs A character vector containing labels for the 
+#' coefficients.
+#' @param lables_models A character vector containing labels for the 
+#' models.
+#' @param label_df A character vector containing labels for the data frames.
+#' @param type The \code{type} of table, can either be \code{"coefs"}, 
+#' \code{"models"}, or \code{"complete"}. When coefs is chosen, the average bias 
+#' of the coefficients is outputted, when models is chosen, the average bias 
+#' for the models is outputted, and when complete is chosen, both is outputted.
+#'
+#' @return A matrix, that indicates the proportion of bias for every individual
+#' coefficient or model for multivariate comparisons. This is given separately 
+#' for every comparison, as well as averaged over comparisons. 
+#' 
+#' @examples
+#' 
+#' require(wooldridge)
+#' card<-wooldridge::card
+#' 
+#' south <- card[card$south==1,]
+#' north <- card[card$south==0,]
+#' black <- card[card$black==1,]
+#' white <- card[card$black==0,]
+#' 
+#' ## use the function to plot the data
+#' multi_data1 <- sampcompR::multi_compare(df = north, 
+#'                                         bench = south,
+#'                                         independent = c("age","fatheduc","motheduc","IQ"),
+#'                                         dependent = c("educ","wage"),
+#'                                         family = "ols") 
+#'
+#' multi_data2 <- sampcompR::multi_compare(df = black, 
+#'                                         bench = white,
+#'                                         independent = c("age","fatheduc","motheduc","IQ"),
+#'                                         dependent = c("educ","wage"),
+#'                                         family = "ols") 
+#' 
+#' table<-sampcompR::multi_per_variable(multi_compare_objects = c("multi_data1","multi_data2"))
+#' noquote(table)
+#' 
+#' @export
+
+multi_per_variable<-function(multi_compare_objects,
+                             type = "coefs",
+                             label_df = NULL,
+                             lables_coefs = NULL,
+                             lables_models = NULL,
+                             ndigits=1){
+  
+multi_per_variable_single<-function(multi_compare_objects,
+                             type = "coefs",
+                             label_df = NULL,
+                             lables_coefs = NULL,
+                             lables_models = NULL,
+                             ndigits=1){
+  ### Function tocalculate differences matrices 
+  multi_same_func<-function(multi_compare_object,p_adjust=T){
+    
+    multi_compare_object<-get(multi_compare_object)
+    
+    p_adjust=TRUE
+    if (p_adjust==TRUE){
+      sample_diff<-multi_compare_object$P_coefs_difference
+      p_df<-multi_compare_object$P_coefs1
+      p_benchmark<-multi_compare_object$P_coefs2
+    }
+    
+    if (p_adjust==FALSE){
+      sample_diff<-multi_compare_object$p_diff_adjusted
+      p_df<-multi_compare_object$P_coefs1
+      p_benchmark<-multi_compare_object$P_coefs2
+    }
+    
+    b_df<-multi_compare_object$coefs_data1
+    b_benchmark<-multi_compare_object$coefs_data2
+    
+    independent<-multi_compare_object$independent
+    dependent<-multi_compare_object$dependent
+    breaks<-c("Same", "Small Diff","Large Diff")
+    p_value<-0.05
+    
+    comp_matrix<-sample_diff
+    colnames(comp_matrix)<-dependent
+    comp_matrix[sample_diff > p_value & !is.na(sample_diff)] <- 0
+    comp_matrix[sample_diff < p_value & (p_df > p_value & p_benchmark > p_value) & !is.na(sample_diff)] <- 0
+    comp_matrix[sample_diff < p_value & (p_df < p_value | p_benchmark < p_value) & !is.na(sample_diff)] <- 1
+    comp_matrix[sample_diff < p_value & (p_df < p_value | p_benchmark < p_value) &
+                  (abs(b_df) > 2*abs(b_benchmark) |  2*abs(b_df) < abs(b_benchmark)) &
+                  ((b_df < 0 & b_benchmark < 0) | (b_df > 0 & b_benchmark > 0)) & !is.na(sample_diff)] <- 1
+    comp_matrix[sample_diff < p_value & (p_df < p_value | p_benchmark < p_value) &
+                  ((b_df < 0 & b_benchmark > 0) | (b_df > 0 & b_benchmark < 0)) & !is.na(sample_diff)] <- 1
+    
+    comp_matrix
+  }
+  
+  ### runction tocalculate differences matrices
+  bias_table <- purrr::map(multi_compare_objects,~multi_same_func(multi_compare_object=.x,
+                                                      p_adjust=p_adjust))
+  ### get row and collumn label lists
+  rows<-purrr::map(bias_table,~rownames(.x))
+  cols<-purrr::map(bias_table,~colnames(.x))
+  
+  
+  #turn all matrices in dataframes, add a sample indicator and combine them
+  bias_table2<-purrr::map(bias_table,~reshape2::melt(.x))
+  bias_table2<-purrr::map(1:length(bias_table2),~dplyr::mutate(bias_table2[[.x]],samp=.x))
+  bias_df <- do.call("rbind", bias_table2)
+  
+  if(type=="df") return(bias_df)
+  
+  ## bias per variable function ##
+  bias_per_var_table_multi<-function(bias_list,rows=NULL,cols=NULL,type="coefs",ndigits=1){
+    
+    if(type=="coefs"){
+      out<-purrr::map_dbl(rows,~mean(bias_list[.x,],na.rm=T))*100
+      out<-format(round(out,ndigits),nsmall=ndigits)
+      out<-paste0(out,"%")
+      names(out)<-rows
+      
+    }
+    
+    if(type=="models"){
+      out<-purrr::map_dbl(cols,~mean(bias_list[,.x],na.rm=T))*100
+      out<-format(round(out,ndigits),nsmall=ndigits)
+      out<-paste0(out,"%")
+      names(out)<-cols
+    }
+    return(out)
+  }
+  ### get bias per variable for models and coefs
+  if(type=="coefs") by_samp_list<-purrr::map2(bias_table,rows,~bias_per_var_table_multi(.x,rows=.y,type="coefs", ndigits=ndigits))
+  if(type=="models") by_samp_list<-purrr::map2(bias_table,cols,~bias_per_var_table_multi(.x, cols=.y, type="models", ndigits=ndigits))
+  
+  
+  ### calculate average bias for coefs and models
+  avg_bias_func<-function(bias_df,variable,type="coefs",ndigits=1){
+    if(type=="coefs") out<-mean(bias_df[bias_df$Var1 %in% variable,]$value,na.rm=T)*100
+    if(type=="models")out<-mean(bias_df[bias_df$Var2 %in% variable,]$value,na.rm=T)*100
+    
+    out<-format(round(out,ndigits),nsmall=ndigits)
+    out<-paste0(out,"%")
+    out
+  }
+  
+  # get all rows and collumns
+  rows_unique<-unique(unlist(rows))
+  cols_unique<-unique(unlist(cols))
+  
+  # use the average_bias function
+  if(type=="coefs") {
+    avg_bias<-purrr::map_chr(rows_unique,~avg_bias_func(bias_df,.x,ndigits=ndigits))
+    names(avg_bias)<-rows_unique
+  }
+  if(type=="models") {
+    avg_bias<-purrr::map_chr(cols_unique,~avg_bias_func(bias_df,.x,type="models",
+                                                 ndigits=ndigits))
+    names(avg_bias)<-cols_unique
+  }
+  if(type=="complete"){}
+  
+  
+  # put the average bias in the previous list
+  by_samp_list[[length(by_samp_list)+1]]<-avg_bias
+  
+  # turn it into a matrix
+  by_samp_list<-by_samp_list %>% 
+    purrr::transpose() 
+  
+  by_samp_list<-do.call("rbind", by_samp_list)
+  
+  by_samp_list[by_samp_list %in% "NULL"]<-""
+  out<-as.matrix(by_samp_list,ncol=(length(multi_compare_objects)+1))
+  
+  ### Label the matrix 
+  if(type=="coefs"){
+    if(is.null(lables_coefs)==TRUE) rownames(out)<-rows_unique
+    if(is.null(lables_coefs)==FALSE){
+      l_coefs<-ifelse(length(rows_unique)<=length(lables_coefs),length(rows_unique),length(lables_coefs))
+      coefs<-as.character(rows_unique)
+      coefs[1:l_coefs]<-lables_coefs[1:l_coefs]
+      rownames(out)<-coefs}}
+  
+  if(type=="models"){
+    if(is.null(lables_models)==TRUE) rownames(out)<-cols_unique
+    if(is.null(lables_models)==FALSE){
+      l_models<-ifelse(length(cols_unique)<=length(lables_models),length(cols_unique),length(lables_models))
+      models<-as.character(cols_unique)
+      models[1:l_models]<-lables_models[1:l_models]
+      rownames(out)<-models}}
+    
+  if(is.null(label_df)==TRUE) colnames(out)<-c(multi_compare_objects,"Average Bias")
+  if(is.null(label_df)==FALSE){
+    l_df<-ifelse(length(multi_compare_objects)<=length(label_df),length(multi_compare_objects),length(label_df))
+    lab_df<-as.character(multi_compare_objects)
+    lab_df[1:l_df]<-label_df[1:l_df]
+    
+    colnames(out)<-c(lab_df,"Average Bias")}
+  
+  out
+}
+
+multi_df<-multi_per_variable_single(multi_compare_objects = 
+                                      multi_compare_objects,
+                                    type = "df",
+                                    label_df = label_df,
+                                    lables_coefs = lables_coefs,
+                                    ndigits = ndigits)
+
+multi_coefs<-multi_per_variable_single(multi_compare_objects = 
+                                         multi_compare_objects,
+                          type = "coefs",
+                          label_df = label_df,
+                          lables_coefs = lables_coefs,
+                          ndigits = ndigits)
+
+multi_models<-multi_per_variable_single(multi_compare_objects = 
+                                          multi_compare_objects,
+                                       type = "models",
+                                       lables_models = lables_models,
+                                       ndigits = ndigits)
+
+if(type== "coefs") out<-multi_coefs
+if(type== "models") out<-multi_models
+if(type== "df") out<- multi_df
+
+if(type=="complete"){
+  
+  by_coefficients<-matrix(c(rep("",ncol(multi_coefs))),ncol=ncol(multi_coefs))
+  rownames(by_coefficients)<-"By Coefficients"
+  by_models<-matrix(c(rep("",ncol(multi_models))),ncol=ncol(multi_models))
+  rownames(by_models)<-"By Models"
+  
+  out<-rbind(by_coefficients,multi_coefs,by_models,multi_models)
+  
+}
+
+out
+}
