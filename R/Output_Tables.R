@@ -979,7 +979,7 @@ biv_per_variable<-function(biv_compare_object, ndigits = 1,varlabels=NULL,label_
 #' function.
 #' 
 #' @param multi_compare_objects A object returned by the 
-#' \code{\link[sampcompR]{multi_compare_object}} function. Object can either be 
+#' \code{\link[sampcompR]{multi_compare}} function. Object can either be 
 #' inserted as single object or as a character string containing the names of
 #' multiple objects.
 #' @param ndigits Number of digits that is shown in the table.

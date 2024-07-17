@@ -18,7 +18,7 @@ multi_per_variable(
 }
 \arguments{
 \item{multi_compare_objects}{A object returned by the
-\code{\link[sampcompR]{multi_compare_object}} function. Object can either be
+\code{\link[sampcompR]{multi_compare}} function. Object can either be
 inserted as single object or as a character string containing the names of
 multiple objects.}
 
