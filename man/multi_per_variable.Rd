@@ -3,7 +3,7 @@
 \name{multi_per_variable}
 \alias{multi_per_variable}
 \title{Returns a table based on the information of a \code{multi_compare_object} that
-indicates the proportion of biased variables. It can be outputted as html or
+indicates the proportion of biased variables. It can be outputted as HTML or
 LaTex Table, for example with the help of the \link[stargazer]{stargazer}
 function.}
 \usage{
@@ -18,12 +18,14 @@ multi_per_variable(
 }
 \arguments{
 \item{multi_compare_objects}{A object returned by the
-\code{\link[sampcompR]{biv_compare}} function.}
+\code{\link[sampcompR]{multi_compare_object}} function. Object can either be
+inserted as single object or as a character string containing the names of
+multiple objects.}
 
 \item{type}{The \code{type} of table, can either be \code{"coefs"},
 \code{"models"}, or \code{"complete"}. When coefs is chosen, the average bias
 of the coefficients is outputted, when models is chosen, the average bias
-for the models is outputted, and when complete is chosen, both is outputted.}
+for the models is outputted, and when complete is chosen, both are outputted.}
 
 \item{label_df}{A character vector containing labels for the data frames.}
 
@@ -33,7 +35,7 @@ coefficients.}
 \item{lables_models}{A character vector containing labels for the
 models.}
 
-\item{ndigits}{Number of digits shown in the table.}
+\item{ndigits}{Number of digits that is shown in the table.}
 }
 \value{
 A matrix, that indicates the proportion of bias for every individual
@@ -42,7 +44,7 @@ for every comparison, as well as averaged over comparisons.
 }
 \description{
 Returns a table based on the information of a \code{multi_compare_object} that
-indicates the proportion of biased variables. It can be outputted as html or
+indicates the proportion of biased variables. It can be outputted as HTML or
 LaTex Table, for example with the help of the \link[stargazer]{stargazer}
 function.
 }

@@ -387,7 +387,7 @@ uni_compare_table2<-function(uni_compare_object, conf_adjustment=FALSE,names=NUL
 ### Bivariate output table ###
 
 #' Returns a table based on the information of a \code{biv_compare_object} which 
-#' can be outputted as html or LaTex Table, for example with the help of the 
+#' can be outputted as HTML or LaTex Table, for example with the help of the 
 #' \link[stargazer]{stargazer} function.
 #' 
 #' @param biv_compare_object A object returned by the 
@@ -843,18 +843,18 @@ descriptive_table<-function(dfs,variables,varlabels=NULL, weight=NULL,
 ###################################
 
 #' Returns a table based on the information of a \code{biv_compare_object} that 
-#' indicates the proportion of biased variables. It can be outputted as html or 
+#' indicates the proportion of biased variables. It can be outputted as HTML or 
 #' LaTex Table, for example with the help of the \link[stargazer]{stargazer} 
 #' function.
 #' 
 #' @param biv_compare_object A object returned by the 
 #' \code{\link[sampcompR]{biv_compare}} function.
-#' @param ndigits Number of digits shown in the table.
+#' @param ndigits Number of digits that is shown in the table.
 #' @param varlabels A character vector containing labels for the variables.
 #' @param label_df A character vector containing labels for the data frames.
 #'
 #' @return A matrix, that indicates the proportion of bias for every individual
-#' variable. This is given seperately for every comparison, as well as averaged
+#' variable. This is given separately for every comparison, as well as averaged
 #' over comparisons. 
 #' 
 #' @examples
@@ -974,13 +974,15 @@ biv_per_variable<-function(biv_compare_object, ndigits = 1,varlabels=NULL,label_
 ######################################
 
 #' Returns a table based on the information of a \code{multi_compare_object} that 
-#' indicates the proportion of biased variables. It can be outputted as html or 
+#' indicates the proportion of biased variables. It can be outputted as HTML or 
 #' LaTex Table, for example with the help of the \link[stargazer]{stargazer} 
 #' function.
 #' 
 #' @param multi_compare_objects A object returned by the 
-#' \code{\link[sampcompR]{biv_compare}} function.
-#' @param ndigits Number of digits shown in the table.
+#' \code{\link[sampcompR]{multi_compare_object}} function. Object can either be 
+#' inserted as single object or as a character string containing the names of
+#' multiple objects.
+#' @param ndigits Number of digits that is shown in the table.
 #' @param lables_coefs A character vector containing labels for the 
 #' coefficients.
 #' @param lables_models A character vector containing labels for the 
@@ -989,7 +991,7 @@ biv_per_variable<-function(biv_compare_object, ndigits = 1,varlabels=NULL,label_
 #' @param type The \code{type} of table, can either be \code{"coefs"}, 
 #' \code{"models"}, or \code{"complete"}. When coefs is chosen, the average bias 
 #' of the coefficients is outputted, when models is chosen, the average bias 
-#' for the models is outputted, and when complete is chosen, both is outputted.
+#' for the models is outputted, and when complete is chosen, both are outputted.
 #'
 #' @return A matrix, that indicates the proportion of bias for every individual
 #' coefficient or model for multivariate comparisons. This is given separately 
@@ -1039,16 +1041,18 @@ multi_per_variable_single<-function(multi_compare_objects,
   ### Function tocalculate differences matrices 
   multi_same_func<-function(multi_compare_object,p_adjust=T){
     
+    
     multi_compare_object<-get(multi_compare_object)
     
-    p_adjust=TRUE
-    if (p_adjust==TRUE){
+    p_adjust=multi_compare_object$p_adjust
+    
+    if (p_adjust==FALSE){
       sample_diff<-multi_compare_object$P_coefs_difference
       p_df<-multi_compare_object$P_coefs1
       p_benchmark<-multi_compare_object$P_coefs2
     }
     
-    if (p_adjust==FALSE){
+    if (p_adjust==TRUE|is.character(p_adjust)){
       sample_diff<-multi_compare_object$p_diff_adjusted
       p_df<-multi_compare_object$P_coefs1
       p_benchmark<-multi_compare_object$P_coefs2
@@ -1077,8 +1081,18 @@ multi_per_variable_single<-function(multi_compare_objects,
   }
   
   ### runction tocalculate differences matrices
+  if(inherits(multi_compare_objects,"character")){
   bias_table <- purrr::map(multi_compare_objects,~multi_same_func(multi_compare_object=.x,
-                                                      p_adjust=p_adjust))
+                                                      p_adjust=p_adjust))}
+  
+  if(inherits(multi_compare_objects,"list")){
+    multi_compare_object<-deparse(substitute(multi_compare_objects))
+    
+    bias_table <- purrr::map(multi_compare_object,~multi_same_func(multi_compare_object=.x,
+                                                                    p_adjust=p_adjust))
+    }
+  
+  
   ### get row and collumn label lists
   rows<-purrr::map(bias_table,~rownames(.x))
   cols<-purrr::map(bias_table,~colnames(.x))
@@ -1152,7 +1166,10 @@ multi_per_variable_single<-function(multi_compare_objects,
   by_samp_list<-do.call("rbind", by_samp_list)
   
   by_samp_list[by_samp_list %in% "NULL"]<-""
-  out<-as.matrix(by_samp_list,ncol=(length(multi_compare_objects)+1))
+  
+  if(inherits(multi_compare_objects,"character")) out<-as.matrix(by_samp_list,ncol=(length(multi_compare_objects)+1))
+  if(inherits(multi_compare_objects,"list")) out<-as.matrix(by_samp_list,ncol=(1+1))
+  
   
   ### Label the matrix 
   if(type=="coefs"){
@@ -1170,14 +1187,25 @@ multi_per_variable_single<-function(multi_compare_objects,
       models<-as.character(cols_unique)
       models[1:l_models]<-lables_models[1:l_models]
       rownames(out)<-models}}
-    
+  
+  if(inherits(multi_compare_objects,"character")){
   if(is.null(label_df)==TRUE) colnames(out)<-c(multi_compare_objects,"Average Bias")
   if(is.null(label_df)==FALSE){
     l_df<-ifelse(length(multi_compare_objects)<=length(label_df),length(multi_compare_objects),length(label_df))
     lab_df<-as.character(multi_compare_objects)
     lab_df[1:l_df]<-label_df[1:l_df]
     
-    colnames(out)<-c(lab_df,"Average Bias")}
+    colnames(out)<-c(lab_df,"Average Bias")}}
+  
+  if(inherits(multi_compare_objects,"list")){
+    
+    if(is.null(label_df)==TRUE) colnames(out)<-c(multi_compare_object,"Average Bias")
+    if(is.null(label_df)==FALSE){
+      l_df<-ifelse(length(multi_compare_object)<=length(label_df),length(multi_compare_object),length(label_df))
+      lab_df<-as.character(multi_compare_object)
+      lab_df[1:l_df]<-label_df[1:l_df]
+      
+      colnames(out)<-c(lab_df,"Average Bias")}}
   
   out
 }

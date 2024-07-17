@@ -3,7 +3,7 @@
 \name{biv_compare_table}
 \alias{biv_compare_table}
 \title{Returns a table based on the information of a \code{biv_compare_object} which
-can be outputted as html or LaTex Table, for example with the help of the
+can be outputted as HTML or LaTex Table, for example with the help of the
 \link[stargazer]{stargazer} function.}
 \usage{
 biv_compare_table(
@@ -39,7 +39,7 @@ A correlation matrix, or difference matrix based on information of a \code{biv_c
 }
 \description{
 Returns a table based on the information of a \code{biv_compare_object} which
-can be outputted as html or LaTex Table, for example with the help of the
+can be outputted as HTML or LaTex Table, for example with the help of the
 \link[stargazer]{stargazer} function.
 }
 \examples{

@@ -3,7 +3,7 @@
 \name{biv_per_variable}
 \alias{biv_per_variable}
 \title{Returns a table based on the information of a \code{biv_compare_object} that
-indicates the proportion of biased variables. It can be outputted as html or
+indicates the proportion of biased variables. It can be outputted as HTML or
 LaTex Table, for example with the help of the \link[stargazer]{stargazer}
 function.}
 \usage{
@@ -18,7 +18,7 @@ biv_per_variable(
 \item{biv_compare_object}{A object returned by the
 \code{\link[sampcompR]{biv_compare}} function.}
 
-\item{ndigits}{Number of digits shown in the table.}
+\item{ndigits}{Number of digits that is shown in the table.}
 
 \item{varlabels}{A character vector containing labels for the variables.}
 
@@ -26,12 +26,12 @@ biv_per_variable(
 }
 \value{
 A matrix, that indicates the proportion of bias for every individual
-variable. This is given seperately for every comparison, as well as averaged
+variable. This is given separately for every comparison, as well as averaged
 over comparisons.
 }
 \description{
 Returns a table based on the information of a \code{biv_compare_object} that
-indicates the proportion of biased variables. It can be outputted as html or
+indicates the proportion of biased variables. It can be outputted as HTML or
 LaTex Table, for example with the help of the \link[stargazer]{stargazer}
 function.
 }
