@@ -1,6 +1,6 @@
 Package: sampcompR
 Title: Comparing and Visualizing Differences Between Surveys
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: 
     c(person("Bjoern", "Rohr",  email= "bjoern.rohr@gesis.org", role = c("aut", "cre","cph")),
     person("Barbara", "Felderer", email= "barbara.felderer@gesis.org", role = c("aut")))
@@ -36,6 +36,7 @@ Suggests:
     wooldridge,
     jtools,
     utils,
-    parallel
+    parallel,
+    stargazer
 Config/testthat/edition: 3
 URL: https://bjoernrohr.github.io/sampcompR/
