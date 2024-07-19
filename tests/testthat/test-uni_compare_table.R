@@ -17,7 +17,7 @@ test_that("univariate comparison table: north/south weigthed, black/white not, r
 
 
 
-if(Sys.info()[1]!="Darwin"){
+if(Sys.info()[1]!="Darwin"| is.na(Sys.getenv("GITHUB_ACTIONS",unset = NA))){
 test_that("univariate comparison table: north/south weigthed, black/white not, d_mean", {
   
   
@@ -36,24 +36,24 @@ test_that("univariate comparison table: north/south weigthed, black/white not, d
   )
 })}
 
-# if(Sys.info()[1]=="Darwin"){
-#   test_that("univariate comparison table: north/south weigthed, black/white not, d_mean", {
-#     
-#     
-#     ### Test final results against the test_table
-#     expect_equal(uni_compare_table(local_test_data_uni2()),
-#                  matrix(c(
-#                    "age", "0.156", "-0.342",
-#                    "", "(-0.021, 0.333)", "(-0.577, -0.106)",
-#                    "educ", "1.099", "-1.704",
-#                    "", "( 0.949, 1.248)", "(-1.908, -1.500)",
-#                    "RMSE", "0.785", "1.229",
-#                    "RANK", "1", "2",
-#                    "N", "1795", "703"
-#                  ), nrow = 7, ncol = 3, byrow = TRUE, dimnames = list(NULL, c("Variables", "north", "black")))
-#                  
-#     )
-#   })}
+if(Sys.info()[1]=="Darwin" & !is.na(Sys.getenv("GITHUB_ACTIONS",unset = NA))){
+  test_that("univariate comparison table: north/south weigthed, black/white not, d_mean", {
+
+
+    ### Test final results against the test_table
+    expect_equal(uni_compare_table(local_test_data_uni2()),
+                 matrix(c(
+                   "age", "0.156", "-0.342",
+                   "", "(-0.021, 0.333)", "(-0.577, -0.106)",
+                   "educ", "1.099", "-1.704",
+                   "", "( 0.949, 1.248)", "(-1.908, -1.500)",
+                   "RMSE", "0.785", "1.229",
+                   "RANK", "1", "2",
+                   "N", "1795", "703"
+                 ), nrow = 7, ncol = 3, byrow = TRUE, dimnames = list(NULL, c("Variables", "north", "black")))
+
+    )
+  })}
 
 
 
