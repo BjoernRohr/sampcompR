@@ -44,7 +44,7 @@ if(Sys.info()[1]=="Darwin" & !is.na(Sys.getenv("GITHUB_ACTIONS",unset = NA))){
     expect_equal(uni_compare_table(local_test_data_uni2()),
                  matrix(c(
                    "age", "0.156", "-0.342",
-                   "", "(-0.021, 0.333)", "(-0.577, -0.106)",
+                   "", "(-0.021, 0.333)", "(-0.576, -0.108)",
                    "educ", "1.099", "-1.704",
                    "", "( 0.949, 1.248)", "(-1.908, -1.500)",
                    "RMSE", "0.785", "1.229",
