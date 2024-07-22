@@ -2,7 +2,11 @@
 
 * Initial CRAN submission.
 
-## Changes in version 0.2.1 (2024-08-14)
+## Changes in version 0.2.2 (2024-22-07)
+
+* Small Fix for test on CRAN for MacOS
+
+## Changes in version 0.2.1 (2024-14-07)
 
 * We added biv_per_variable() a function to calculate the average bias per variable for the bivariate comparison,
   and an average bias per variable across comparisons.
