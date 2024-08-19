@@ -1,6 +1,9 @@
 # sampcompR (development version)
 
 * Initial CRAN submission.
+## Changes in version 0.2.2 (2024-19-08)
+
+* Additional small Fix for a test
 
 ## Changes in version 0.2.2 (2024-22-07)
 
