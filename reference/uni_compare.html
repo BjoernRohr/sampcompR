@@ -15,7 +15,7 @@ values."><meta property="og:image" content="https://bjoernrohr.github.io/sampcom
 
     <a class="navbar-brand me-2" href="../index.html">sampcompR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,6 +54,7 @@ values.</p>
 <span>  <span class="va">benchmarks</span>,</span>
 <span>  variables <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nboots <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  boot_all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  funct <span class="op">=</span> <span class="st">"rel_mean"</span>,</span>
 <span>  data <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"comparison"</span>,</span>
@@ -72,6 +73,7 @@ values.</p>
 <span>  silence <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  conf_adjustment <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  percentile_ci <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  strata <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -82,7 +84,8 @@ values.</p>
 <span>  adjustment_vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  raking_targets <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  post_targets <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ndigits <span class="op">=</span> <span class="fl">3</span></span>
+<span>  ndigits <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -114,6 +117,11 @@ If &gt;2 bootstrapping is used to calculate standard errors with <code>nboots</c
 is calculated analytically. We do not recommend using <code>nboots</code> =0 because this method is not
 yet suitable for every <code>funct</code> used and every method. Depending on the size of the data and the
 number of bootstraps, <code>uni_compare</code> can take a while.</p></dd>
+
+
+<dt id="arg-boot-all">boot_all<a class="anchor" aria-label="anchor" href="#arg-boot-all"></a></dt>
+<dd><p>If TURE, both, dfs and benchmarks will be bootstrapped. Otherwise
+the benchmark estimate is assumed to be constant.</p></dd>
 
 
 <dt id="arg-funct">funct<a class="anchor" aria-label="anchor" href="#arg-funct"></a></dt>
@@ -211,6 +219,11 @@ interval.</p></dd>
 adjusted with a Bonferroni adjustment, to account for the problem of multiple comparisons.</p></dd>
 
 
+<dt id="arg-percentile-ci">percentile_ci<a class="anchor" aria-label="anchor" href="#arg-percentile-ci"></a></dt>
+<dd><p>If TURE, cofidence intervals will be calculated using the percentile method.
+If False, they will be calculated using the normal method.</p></dd>
+
+
 <dt id="arg-weight-weight-bench">weight, weight_bench<a class="anchor" aria-label="anchor" href="#arg-weight-weight-bench"></a></dt>
 <dd><p>A character vector determining variables to weight the <code>dfs</code> or
 <code>benchmarks</code>. They have to be part of the respective data frame. If only one character is provided,
@@ -258,6 +271,12 @@ function of <code><a href="https://rdrr.io/pkg/survey/man/rake.html" class="exte
 <dt id="arg-ndigits">ndigits<a class="anchor" aria-label="anchor" href="#arg-ndigits"></a></dt>
 <dd><p>The number of digits to round the numbers in the plot.</p></dd>
 
+
+<dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
+<dd><p>Can be either <code>FALSE</code> or a number of cores that should
+be used in the function. If it is <code>FALSE</code>, only one core will be used and
+otherwise the given number of cores will be used.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -295,7 +314,7 @@ Statistics, 35(1), 93–115. https://doi.org/10.2478/jos-2019-0005</p>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(dfs[i]):</span> object 'north' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="va">univar_comp</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'univar_comp' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'univar_comp' not found</span>
 <span class="r-in"><span> </span></span>
 </code></pre></div>
     </div>
@@ -308,7 +327,7 @@ Statistics, 35(1), 93–115. https://doi.org/10.2478/jos-2019-0005</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

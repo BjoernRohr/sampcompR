@@ -9,7 +9,7 @@ differing methods. All glm Models can be compared."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">sampcompR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,10 +66,12 @@ differing methods. All <code><a href="https://rdrr.io/r/stats/glm.html" class="e
 <span>  names_df_benchmark <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  silence_summary <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  nboots <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  boot_all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  adjustment_vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  raking_targets <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  post_targets <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  post_targets <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  percentile_ci <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -196,6 +198,11 @@ be &gt;2. Note, that bootstrapping can be very computationaly heavy and can
 therefore take a while.</p></dd>
 
 
+<dt id="arg-boot-all">boot_all<a class="anchor" aria-label="anchor" href="#arg-boot-all"></a></dt>
+<dd><p>If TURE, both, dfs and benchmarks will be bootstrapped. Otherwise
+the benchmark estimate is assumed to be constant.</p></dd>
+
+
 <dt id="arg-parallel">parallel<a class="anchor" aria-label="anchor" href="#arg-parallel"></a></dt>
 <dd><p>If <code>TRUE</code>, all detected cores will be used in bootstrapping.</p></dd>
 
@@ -213,6 +220,11 @@ function of <code><a href="https://rdrr.io/pkg/survey/man/rake.html" class="exte
 <dt id="arg-post-targets">post_targets<a class="anchor" aria-label="anchor" href="#arg-post-targets"></a></dt>
 <dd><p>A List of post_stratification targets that can be given to the rake
 function of <code><a href="https://rdrr.io/pkg/survey/man/postStratify.html" class="external-link">postStratify</a></code>, to post_stratificatify the <code>df</code>.</p></dd>
+
+
+<dt id="arg-percentile-ci">percentile_ci<a class="anchor" aria-label="anchor" href="#arg-percentile-ci"></a></dt>
+<dd><p>If TURE, cofidence intervals will be calculated using the percentile method.
+If False, they will be calculated using the normal method.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -304,7 +316,7 @@ reprint the summary or to visualize the results.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>
