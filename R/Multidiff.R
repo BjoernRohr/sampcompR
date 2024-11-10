@@ -28,7 +28,6 @@ reduce_df_glm <- function (df,dependent=NULL,independent=NULL,formula_list=NULL,
 
   
   
-  
   dependent<-dependent[dependent %in% colnames(df)]
 
   variables<-c(dependent,independent)
@@ -134,14 +133,15 @@ weighted_design_glm <-function(data_list,dependent, weight_var,
                               id, strata=NULL, nest=FALSE, type="ineract", 
                               adjustment_vars=NULL, raking_targets=NULL,
                               post_targets=NULL,
-                              adj_weight_design=NULL,nboots=0){
+                              adj_weight_design=NULL,nboots=0, 
+                              boot_all=FALSE){
   design_list<-list()
   for (i in 1:length (dependent)){
     if(type=="interact"){
       
       if(is.null(adj_weight_design)==FALSE){
         
-        raked_weight<-stats::weights(adj_weight_design[[i]])
+      raked_weight<-stats::weights(adj_weight_design[[i]])
       weight<-data_list[[i]][,weight_var]
       weight[1:length(raked_weight)]<-raked_weight
       data_list[[i]][,weight_var]<-weight
@@ -406,7 +406,8 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
                          family = stats::gaussian(link = "identity"), 
                          parallel=FALSE, out_models=FALSE,
                          adjustment_vars=NULL,raking_targets=NULL,
-                         post_targets=NULL){
+                         post_targets=NULL,boot_all=FALSE,
+                         percentile_ci=TRUE){
 
   output_list<-list()
   if(out_models==TRUE) output_list[[1]]<-glm_list
@@ -541,62 +542,6 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
     
   }
   
-  # ld<-length(dependent)
-  # li<-length(independent)
-  # 
-  # pmatrix1<-matrix(ncol=ld, nrow=li)
-  # pmatrix2<-matrix(ncol=ld, nrow=li)
-  # pmatrix_diff<-matrix(ncol=ld, nrow=li)
-  # 
-  # 
-  # bmatrix1<-matrix(ncol=ld, nrow=li)
-  # bmatrix2<-matrix(ncol=ld, nrow=li)
-  # bmatrix_diff<-matrix(ncol=ld, nrow=li)
-  # 
-  # bmatrix1_star<-matrix(ncol=ld, nrow=li)
-  # bmatrix2_star<-matrix(ncol=ld, nrow=li)
-  # bmatrix_diff_star<-matrix(ncol=ld, nrow=li)
-  # 
-  # se_matrix1<-matrix(ncol=ld, nrow=li)
-  # se_matrix2<-matrix(ncol=ld, nrow=li)
-  # se_matrix<-matrix(ncol=ld, nrow=li)
-  # 
-  # t_p2<-matrix(ncol=ld, nrow=li)
-  # freedom2<-matrix(ncol=ld, nrow=li)
-  # 
-  # if(out_models==TRUE) output_list[[1]]<-glm_list
-  # #if(out_models==FALSE) output_list[[1]]<-NULL
-  # #output_list[[2]]<-glm_list2
-  # 
-  # 
-  # for (i in 1:ld){
-  #   for(j in 1:li){
-  # 
-  #     bmatrix1[j,i]<-glm_list[[1]][[i]]$coefficients[j+2]
-  #     bmatrix2[j,i]<-glm_list[[1]][[i]]$coefficients[j+li+2]+bmatrix1[j,i]
-  #     bmatrix_diff[j,i]<-bmatrix2[j,i]-bmatrix1[j,i]
-  # 
-  # 
-  #     if (robust_se == FALSE | is.null(weight_var)==FALSE){
-  #       pmatrix_diff[j,i]<-summary(glm_list[[1]][[i]])$coefficients[,4][j+li+2]
-  #       pmatrix1[j,i]<-summary(glm_list[[2]][[i]])$coefficients[,4][j+1]
-  #       pmatrix2[j,i]<-summary(glm_list[[3]][[i]])$coefficients[,4][j+1]
-  #       se_matrix1[j,i]<- summary(glm_list[[2]][[i]])$coefficients[,2][j+1]
-  #       se_matrix2[j,i]<- summary(glm_list[[3]][[i]])$coefficients[,2][j+1]
-  #       se_matrix[j,i]<- summary(glm_list[[1]][[i]])$coefficients[,2][j+li+2]
-  #     }
-  # 
-  #     if (robust_se==TRUE & is.null(weight_var)){
-  #       pmatrix_diff[j,i]<-lmtest::coeftest(glm_list[[1]][[i]], vcov = sandwich::vcovHC(glm_list[[1]][[i]], type="HC1"))[,4][j+li+2]
-  #       pmatrix1[j,i]<-lmtest::coeftest(glm_list[[2]][[i]], vcov = sandwich::vcovHC(glm_list[[2]][[i]], type="HC1"))[,4][j+1]
-  #       pmatrix2[j,i]<-lmtest::coeftest(glm_list[[3]][[i]], vcov = sandwich::vcovHC(glm_list[[3]][[i]], type="HC1"))[,4][j+1]
-  #       se_matrix1[j,i]<- lmtest::coeftest(glm_list[[2]][[i]], vcov = sandwich::vcovHC(glm_list[[2]][[i]], type="HC1"))[,2][j+1]
-  #       se_matrix2[j,i]<- lmtest::coeftest(glm_list[[3]][[i]], vcov = sandwich::vcovHC(glm_list[[3]][[i]], type="HC1"))[,2][j+1]
-  #       se_matrix[j,i]<- lmtest::coeftest(glm_list[[1]][[i]], vcov = sandwich::vcovHC(glm_list[[1]][[i]], type="HC1"))[,2][j+li+2]
-  #     }
-  # 
-  #   }}
-
   ### if nboots >0 use bootsrap to get the p_values for df and interaction
   
   if (nboots!=0 & nboots <=1) {
@@ -612,7 +557,10 @@ final_glm_list<-function(glm_list, dependent=NULL,independent=NULL,formula_list=
                           family = family, nboots = nboots, parallel = parallel, 
                           adjustment_vars = adjustment_vars, raking_targets = raking_targets,
                           post_targets=post_targets,
-                          ref=bmatrix2)
+                          ref=bmatrix2,boot_all=boot_all,
+                          coef1=bmatrix1,
+                          coef1_bench=bmatrix2,
+                          percentile_ci=percentile_ci)
     
     pmatrix1<-p_se_list[[1]]
     pmatrix_diff<-p_se_list[[2]]
@@ -816,7 +764,8 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
                             strata_bench=NULL, nest_bench=FALSE, robust_se=FALSE, p_adjust=NULL, 
                             names_df_benchmark=NULL, family=stats::gaussian(link = "identity"), silence_summary=FALSE, 
                             nboots=0, parallel=FALSE, adjustment_vars=NULL,
-                            raking_targets=NULL, post_targets=NULL){
+                            raking_targets=NULL, post_targets=NULL,boot_all=FALSE,
+                            percentile_ci=TRUE){
 
   ### 1 reduce both data frames ###
   ### 1 reduce both data frames ###
@@ -942,12 +891,7 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
                                             adj_weight_design = design_list[[2]])
   }
 
-  # if (is.null(weight)==FALSE | is.null(weight_bench)==FALSE) {
-  #   design_list2<-list()
-  #   design_list2[[1]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="interact")
-  #   design_list2[[2]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="df1")
-  #   design_list2[[3]] <- weighted_design_glm(df_comb2,dependent,weight_var="df_weights", id="id_df", strata=NULL, nest=FALSE, type="bench")
-  # } else {design_list2 = list(NULL,NULL,NULL)}
+
   
 
   ### 2 get a list with glm results for both data frames ###
@@ -985,7 +929,8 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
                          family=family,nboots=nboots, 
                          parallel = parallel, out_models=out_models,
                          adjustment_vars=adjustment_vars, raking_targets=raking_targets,
-                         post_targets=post_targets)
+                         post_targets=post_targets,boot_all=boot_all,
+                         percentile_ci=percentile_ci)
   
 
   
@@ -1178,7 +1123,10 @@ summary_glm_compare<-function (glm_comp_object, print_p=FALSE, print_se=FALSE){
 #' function of \code{\link[survey]{postStratify}}, to post_stratificatify the \code{df}.
 #' @param formula_list A list of formulas to use in the regression models. If 
 #' given, \code{dependent} and \code{independent} parameters will be ignored.
-#'
+#' @param boot_all If TURE, both, dfs and benchmarks will be bootstrapped. Otherwise 
+#' the benchmark estimate is assumed to be constant.
+#' @param percentile_ci If TURE, cofidence intervals will be calculated using the percentile method.
+#' If False, they will be calculated using the normal method.
 #' 
 #'
 #' @return A table is printed showing the difference between the set of respondents
@@ -1239,8 +1187,8 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
                           out_df=FALSE, out_models=FALSE, print_p=FALSE, print_se=FALSE, weight=NULL, id=NULL,
                           strata=NULL, nest=FALSE, weight_bench=NULL, id_bench=NULL,strata_bench=NULL,
                           nest_bench=FALSE, robust_se=FALSE, p_adjust=NULL, names_df_benchmark=NULL, 
-                          silence_summary=FALSE, nboots=0, parallel = FALSE, adjustment_vars=NULL,
-                          raking_targets=NULL, post_targets=NULL){
+                          silence_summary=FALSE, nboots=0, boot_all=FALSE, parallel = FALSE, adjustment_vars=NULL,
+                          raking_targets=NULL, post_targets=NULL,percentile_ci=TRUE){
 
 
   if (is.null(names_df_benchmark)) names_df_benchmark<-c (deparse(substitute(df)), deparse(substitute(benchmark)))
@@ -1262,7 +1210,8 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
                               silence_summary=silence_summary, nboots = nboots, 
                               parallel = parallel,adjustment_vars=adjustment_vars,
                               raking_targets=raking_targets, post_targets = post_targets,
-                              family=family)}
+                              family=family, boot_all=boot_all,
+                              percentile_ci=percentile_ci)}
 
   if(inherits(family,"character")){
     if(family=="ols"){
@@ -1277,7 +1226,8 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
                                 silence_summary=silence_summary, nboots = nboots, 
                                 parallel = parallel,adjustment_vars=adjustment_vars,
                                 raking_targets=raking_targets, post_targets = post_targets,
-                                family=stats::gaussian(link = "identity"))}}
+                                family=stats::gaussian(link = "identity"),boot_all=boot_all,
+                                percentile_ci=percentile_ci)}}
 
   if(inherits(family,"character")){
     if(family=="logit"){
@@ -1292,7 +1242,8 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
                                 silence_summary=silence_summary, nboots = nboots, 
                                 parallel = parallel,adjustment_vars=adjustment_vars,
                                 raking_targets=raking_targets, post_targets = post_targets,
-                                family = stats::binomial(link = "logit"))}}
+                                family = stats::binomial(link = "logit"),boot_all=boot_all,
+                                percentile_ci=percentile_ci)}}
   
   output
 }
@@ -2718,12 +2669,13 @@ multi_boot_sub<-function(df,nboots=2000,benchmark,dependent,independent,
                          family=stats::gaussian(link = "identity"), 
                          adjustment_vars=NULL,
                          raking_targets=NULL,
-                         post_targets=NULL){
+                         post_targets=NULL,
+                         boot_all=FALSE){
   
   ### Prepare datasets
   if(is.null(formula_list)){
-  if (is.null(weight_df)) df<-reduce_df_glm(df, dependent, independent, rm_na = rm_na, adjustment_vars=adjustment_vars)
-  if (is.null(weight_df)==FALSE) df<-reduce_df_glm(df, dependent, independent,  weight_var = weight_df, id = ids, rm_na = rm_na,adjustment_vars=adjustment_vars)}
+    if (is.null(weight_df)) df<-reduce_df_glm(df, dependent, independent, rm_na = rm_na, adjustment_vars=adjustment_vars)
+    if (is.null(weight_df)==FALSE) df<-reduce_df_glm(df, dependent, independent,  weight_var = weight_df, id = ids, rm_na = rm_na,adjustment_vars=adjustment_vars)}
   
   if(is.null(formula_list)==FALSE){
     var_list<-purrr::map(formula_list,all.vars)
@@ -2741,7 +2693,7 @@ multi_boot_sub<-function(df,nboots=2000,benchmark,dependent,independent,
     independent<-purrr::map(var_list,~dep_indep(.,"independent"))
     
     if (is.null(weight_df)) df<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(df, .x,.y, rm_na = rm_na, adjustment_vars = adjustment_vars)[[1]])
-    if (is.null(weight_df)==FALSE) df<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(df, .x,.y,  weight_var = weight, id = id, strata=strata, rm_na = rm_na, adjustment_vars = adjustment_vars)[[1]])
+    if (is.null(weight_df)==FALSE) df<-purrr::map2(.x=dependent,.y=independent,~reduce_df_glm(df, .x,.y,  weight_var = weight_df, id = ids, strata=stratas, rm_na = rm_na, adjustment_vars = adjustment_vars)[[1]])
     
   }
   
@@ -2981,7 +2933,10 @@ multi_boot<-function(df,benchmark,dependent,independent,formula_list=NULL,
                      parallel=FALSE, ref=NULL,
                      adjustment_vars=NULL,
                      raking_targets=NULL, 
-                     post_targets=NULL){
+                     post_targets=NULL,boot_all=boot_all,
+                     coef1=NULL,
+                     coef1_bench=NULL,
+                     percentile_ci=TRUE){
   
   if (parallel==TRUE) para<-"snow"
   if (parallel==FALSE) para<-"no"
@@ -3005,27 +2960,71 @@ multi_boot<-function(df,benchmark,dependent,independent,formula_list=NULL,
                              post_targets=post_targets,
                              nboots=nboots)
   
+  if(isTRUE(boot_all)){
+    boot_out_bench<- multi_boot_sub(df=benchmark,benchmark = df,dependent=dependent,
+                              independent = independent, formula_list=formula_list,ids = id_bench, 
+                              stratas=strata_bench, weight_df = weight_bench, id_bench= id,
+                              weight_bench=weight,strata_bench = strata,
+                              rm_na = "pairwise",family=family,
+                              adjustment_vars=NULL,
+                              raking_targets=NULL,
+                              post_targets=NULL,
+                              nboots=nboots)
+    
+  }
   
   p_se_list<-list()
   if(is.null(formula_list)){
     
   p_se_list[[1]]<-boot_pvalues_multi_main(boot_out,dependent = dependent, 
                                           independent = independent,
-                                          type="df_p")
+                                          type="df_p",
+                                          coef1=coef1,
+                                          coef1_bench=coef1_bench,
+                                          percentile_ci=percentile_ci)
 
-  p_se_list[[2]]<-boot_pvalues_multi_main(boot_out,dependent = dependent, 
+  if(isFALSE(boot_all)){p_se_list[[2]]<-boot_pvalues_multi_main(boot_out,dependent = dependent, 
                                           independent = independent,
                                           type="interaction_p",
-                                          ref=ref)
+                                          ref=ref,
+                                          boot_all = boot_all,
+                                          coef1=coef1,
+                                          coef1_bench=coef1_bench,
+                                          percentile_ci=percentile_ci)}
+  
+  if(isTRUE(boot_all)){p_se_list[[2]]<-boot_pvalues_multi_main(boot_out,dependent = dependent, 
+                                                                independent = independent,
+                                                                type="interaction_p",
+                                                                ref=boot_out_bench,
+                                                               boot_all = boot_all,
+                                                               coef1=coef1,
+                                                               coef1_bench=coef1_bench,
+                                                               percentile_ci=percentile_ci)}
   
   p_se_list[[3]]<-boot_pvalues_multi_main(boot_out,dependent = dependent, 
                                           independent = independent,
-                                          type="df_se")
+                                          type="df_se",
+                                          coef1=coef1,
+                                          coef1_bench=coef1_bench,
+                                          percentile_ci=percentile_ci)
 
-  p_se_list[[4]]<-boot_pvalues_multi_main(boot_out,dependent = dependent, 
-                                          independent = independent,
-                                          type="interaction_se",
-                                          ref=ref)
+  if(isFALSE(boot_all)) {p_se_list[[4]]<-boot_pvalues_multi_main(boot_out,dependent = dependent, 
+                                                              independent = independent,
+                                                              type="interaction_se",
+                                                              ref=ref,
+                                                              boot_all = boot_all,
+                                                              coef1=coef1,
+                                                              coef1_bench=coef1_bench,
+                                                              percentile_ci=percentile_ci)}
+  
+  if(isTRUE(boot_all)) {p_se_list[[4]]<-boot_pvalues_multi_main(boot_out,dependent = dependent, 
+                                                              independent = independent,
+                                                              type="interaction_se",
+                                                              ref=boot_out_bench,
+                                                              boot_all = boot_all,
+                                                              coef1=coef1,
+                                                              coef1_bench=coef1_bench,
+                                                              percentile_ci=percentile_ci)}
   }
   
 
@@ -3038,23 +3037,51 @@ multi_boot<-function(df,benchmark,dependent,independent,formula_list=NULL,
                                                                                independent = independent[[.x]],
                                                                                type="df_p",max_indep=max_indep))
     
-    p_se_list[[2]]<-purrr::map(.x=1:length(dependent),~boot_pvalues_multi_main(data.frame(boot_out[,.x]),dependent = dependent[[.x]], 
-                                            independent = independent[[.x]],
-                                            type="interaction_p",
-                                            ref=data.frame(ref[,.x]),
-                                            max_indep=max_indep))
+    if(isFALSE(boot_all)) {p_se_list[[2]]<-purrr::map(.x=1:length(dependent),~boot_pvalues_multi_main(data.frame(boot_out[,.x]),dependent = dependent[[.x]], 
+                                                                                                      independent = independent[[.x]],
+                                                                                                      type="interaction_p",
+                                                                                                      ref=data.frame(ref[,.x]),
+                                                                                                      max_indep=max_indep,
+                                                                                                      boot_all = boot_all,
+                                                                                                      coef1=coef1,
+                                                                                                      coef1_bench=coef1_bench,
+                                                                                                      percentile_ci=percentile_ci))}
+    
+    if(isTRUE(boot_all)) {p_se_list[[2]]<-purrr::map(.x=1:length(dependent),~boot_pvalues_multi_main(data.frame(boot_out[,.x]),dependent = dependent[[.x]], 
+                                                                                                      independent = independent[[.x]],
+                                                                                                      type="interaction_p",
+                                                                                                      ref=data.frame(boot_out_bench[,.x]),
+                                                                                                      max_indep=max_indep,
+                                                                                                     boot_all = boot_all,
+                                                                                                     coef1=coef1,
+                                                                                                     coef1_bench=coef1_bench,
+                                                                                                     percentile_ci=percentile_ci))}
     
     p_se_list[[3]]<-purrr::map(.x=1:length(dependent),~boot_pvalues_multi_main(data.frame(boot_out[,.x]),dependent = dependent[[.x]], 
                                             independent = independent[[.x]],
                                             type="df_se",max_indep=max_indep))
     
-    p_se_list[[4]]<-purrr::map(.x=1:length(dependent),~boot_pvalues_multi_main(data.frame(boot_out[,.x]),dependent = dependent[[.x]], 
-                                            independent = independent[[.x]],
-                                            type="interaction_se",
-                                            ref=data.frame(ref[,.x]),
-                                            max_indep=max_indep))
+    if(isFALSE(boot_all)) {p_se_list[[4]]<-purrr::map(.x=1:length(dependent),~boot_pvalues_multi_main(data.frame(boot_out[,.x]),dependent = dependent[[.x]], 
+                                                                                                      independent = independent[[.x]],
+                                                                                                      type="interaction_se",
+                                                                                                      ref=data.frame(ref[,.x]),
+                                                                                                      max_indep=max_indep,
+                                                                                                      boot_all = boot_all,
+                                                                                                      coef1=coef1,
+                                                                                                      coef1_bench=coef1_bench,
+                                                                                                      percentile_ci=percentile_ci))}
     
+    if(isTRUE(boot_all)) {p_se_list[[4]]<-purrr::map(.x=1:length(dependent),~boot_pvalues_multi_main(data.frame(boot_out[,.x]),dependent = dependent[[.x]], 
+                                                                                                      independent = independent[[.x]],
+                                                                                                      type="interaction_se",
+                                                                                                      ref=data.frame(boot_out_bench[,.x]),
+                                                                                                      max_indep=max_indep,
+                                                                                                     boot_all = boot_all,
+                                                                                                     coef1=coef1,
+                                                                                                     coef1_bench=coef1_bench,
+                                                                                                     percentile_ci=percentile_ci))}
     
+
     
     renamer<-function(col,dep,indep,uni_indep) {
       colnames(col)<-dep
@@ -3100,42 +3127,71 @@ multi_boot<-function(df,benchmark,dependent,independent,formula_list=NULL,
 }
 
 boot_pvalues_multi_main<-function(boot_object,dependent, independent, type="df_p", 
-                                  ref=NULL,max_indep=NULL){
+                                  ref=NULL,max_indep=NULL,boot_all=FALSE,
+                                  coef1=NULL,
+                                  coef1_bench=NULL,
+                                  percentile_ci=TRUE){
   
   sub_boot_pvalues_multi_row<-function(boot_object,start,ncoef,col,
                                        ref=NULL,type="p",warning=FALSE,
                                        dependent=NULL,independent=NULL,
-                                       max_indep=NULL){
+                                       max_indep=NULL,boot_all=FALSE,
+                                       coef1=NULL,
+                                       coef1_bench=NULL,
+                                       percentile_ci=TRUE){
     
     coefs<-seq(start,nrow(boot_object),ncoef)
     vec<-c(unlist(boot_object[coefs,col]))
     
-    if(is.null(ref)==FALSE)ref_coef<-ref[ncoef,col]
-    if(is.null(ref))ref_coef<-0
     
     
-    if(type=="p" & warning==TRUE) out<-boot_pvalues3_multi(vec,reference=ref_coef,
+    if(is.null(ref)==FALSE){ 
+      if(isFALSE(boot_all)) ref_coef<-ref[ncoef,col]
+      if(isTRUE(boot_all)) ref_coef<-c(unlist(ref[coefs,col]))}
+    if(is.null(ref)) ref_coef<-0
+    coef1<-coef1[ncoef,col]
+    coef1_bench<-coef1_bench[ncoef,col]
+    
+   
+    if(type=="p" & warning==TRUE) out<-boot_pvalues3_multi(vec,ref=ref_coef,
                                                         col_numb = col,
                                                         row_numb = ncoef,
                                                         row = independent,
                                                         col = dependent,
-                                                        max_indep=max_indep)
+                                                        max_indep=max_indep,
+                                                        coef1=coef1,
+                                                        coef1_bench=coef1_bench,
+                                                        percentile_ci=percentile_ci)
     
-    if(type=="p" & warning==FALSE) out<-boot_pvalues3_multi(vec,reference=ref_coef)
+    
+    if(type=="p" & warning==FALSE) out<-boot_pvalues3_multi(vec,ref=ref_coef,
+                                                            coef1=coef1,
+                                                            coef1_bench=coef1_bench,
+                                                            percentile_ci=percentile_ci)
+
+    
+    
     if(type=="se") out<-subfunc_multi_se(vec,ref=ref_coef)
     out
   }
   
   sub_boot_pvalues_multi_col<-function(boot_object,ncoef,col,ref=NULL,type="p",
                                        warning=FALSE,dependent=NULL,independent=NULL,
-                                       max_indep=NULL){
+                                       max_indep=NULL,boot_all=FALSE,
+                                       coef1=NULL,
+                                       coef1_bench=NULL,
+                                       percentile_ci=TRUE){
     
     purrr::map_dbl(.x=c(1:ncoef),~sub_boot_pvalues_multi_row(boot_object,.x,ncoef,col=col,ref=ref,
                                                       type=type,
                                                       warning=warning,
                                                       dependent=dependent,
                                                       independent=independent,
-                                                      max_indep=max_indep))
+                                                      max_indep=max_indep,
+                                                      boot_all=boot_all,
+                                                      coef1=coef1,
+                                                      coef1_bench=coef1_bench,
+                                                      percentile_ci=percentile_ci))
   }
     
   l_dep<-length(dependent)
@@ -3146,20 +3202,36 @@ boot_pvalues_multi_main<-function(boot_object,dependent, independent, type="df_p
                                                        warning = TRUE,
                                                        dependent=dependent,
                                                        independent=independent,
-                                                       max_indep=max_indep))
+                                                       max_indep=max_indep,
+                                                       boot_all=boot_all,
+                                                       coef1=coef1,
+                                                       coef1_bench=coef1_bench,
+                                                       percentile_ci=percentile_ci))
   }
   
   if(type=="interaction_p"){
-    out<-purrr::map(.x=c(1:l_dep),~sub_boot_pvalues_multi_col(boot_object,l_indep,.x,ref=ref))
+    out<-purrr::map(.x=c(1:l_dep),~sub_boot_pvalues_multi_col(boot_object,l_indep,.x,ref=ref,
+                                                              boot_all=boot_all,
+                                                              coef1=coef1,
+                                                              coef1_bench=coef1_bench,
+                                                              percentile_ci=percentile_ci))
   
     }
   
   if(type=="df_se"){
-    out<-purrr::map(.x=c(1:l_dep),~sub_boot_pvalues_multi_col(boot_object,l_indep,.x,type="se"))
+    out<-purrr::map(.x=c(1:l_dep),~sub_boot_pvalues_multi_col(boot_object,l_indep,.x,type="se",
+                                                              boot_all=boot_all,
+                                                              coef1=coef1,
+                                                              coef1_bench=coef1_bench,
+                                                              percentile_ci=percentile_ci))
   }
   
   if(type=="interaction_se"){
-    out<-purrr::map(.x=c(1:l_dep),~sub_boot_pvalues_multi_col(boot_object,l_indep,.x,ref=ref,type="se"))
+    out<-purrr::map(.x=c(1:l_dep),~sub_boot_pvalues_multi_col(boot_object,l_indep,.x,ref=ref,type="se",
+                                                              boot_all=boot_all,
+                                                              coef1=coef1,
+                                                              coef1_bench=coef1_bench,
+                                                              percentile_ci=percentile_ci))
   }
   
   matrix(unlist(out),ncol=l_dep)
@@ -3171,7 +3243,10 @@ boot_pvalues_multi_main<-function(boot_object,dependent, independent, type="df_p
 boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
                               row=NULL,col=NULL,
                               col_numb=NULL,row_numb=NULL,
-                              bench=FALSE,max_indep=NULL){
+                              bench=FALSE,max_indep=NULL,
+                              coef1=NULL,
+                              coef1_bench=NULL,
+                              percentile_ci=TRUE){
   
   #boot_object[boot_object %in% "NaN"]<-NA
   #if(!is.null(r)) r[r%in%"NaN"]<-NA
@@ -3190,17 +3265,31 @@ boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
   
   #if(bench==TRUE & sum(is.na(boot_object))==length(boot_object)) return("NaN")
   if(sum(is.na(boot_object))==length(boot_object)) return(NA)
-  if(!is.null(ref)) if(is.na(ref)) return(NA)
+  if(is.null(ref)==FALSE) {if(length(ref)==1){if(is.na(ref)) return(NA)}}
+  if(is.null(ref)==FALSE) {if(length(ref)==1){if(all(is.na(ref))) return(NA)}}
   
+
   
   ### get p_values up to 0.00001
   while(in_interval){
     alpha <- alpha + 0.001
-    if(is.null(ref)) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
+    if(is.null(ref)& percentile_ci==FALSE) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
+    if(is.null(ref)==TRUE & percentile_ci==FALSE){
+      SE=stats::sd(boot_object,na.rm=T)
+      if(alpha=="1") return(1)
+      cis<-c(coef1 + stats::qnorm(1-alpha/2) * SE,
+             coef1 - stats::qnorm(1-alpha/2) * SE)}
     
     if(is.null(ref)==FALSE){
+      if(percentile_ci==TRUE){
       diff<- boot_object - ref
-      cis<-c(stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(diff, probs=(alpha/2),na.rm=TRUE))
+      cis<-c(stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(diff, probs=(alpha/2),na.rm=TRUE))}
+      
+    if(percentile_ci==FALSE){
+      SE=stats::sd(boot_object-ref,na.rm=T)
+      if(alpha=="1") return(1)
+      cis<-c(coef1-coef1_bench + stats::qnorm(1-alpha/2) * SE,
+             coef1-coef1_bench - stats::qnorm(1-alpha/2) * SE)}
       # lower_ci<- ((ref) - (mean(boot_object,na.rm=TRUE)) - (ref))- (stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object)))))
       # upper_ci<- ((ref) - (mean(boot_object,na.rm=TRUE)) - (ref))+ (stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object)))))
       # cis<-c(lower_ci,upper_ci)
@@ -3214,10 +3303,23 @@ boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
   
   while(in_interval){
     alpha <- alpha + 0.00001
-    if(is.null(ref)==TRUE) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
+    if(is.null(ref)==TRUE & percentile_ci==TRUE) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
+    if(is.null(ref)==TRUE & percentile_ci==FALSE){
+      SE=stats::sd(boot_object,na.rm=T)
+      if(alpha=="1") return(1)
+      cis<-c(coef1 + stats::qnorm(1-alpha/2) * SE,
+             coef1 - stats::qnorm(1-alpha/2) * SE)}
+    
     if(is.null(ref)==FALSE){
+      if(percentile_ci==TRUE){
       diff<- boot_object - ref
-      cis<-c(stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(diff, probs=(alpha/2),na.rm=TRUE))
+      cis<-c(stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(diff, probs=(alpha/2),na.rm=TRUE))}
+      
+      if(percentile_ci==FALSE){
+        SE=stats::sd(boot_object-ref,na.rm=T)
+        if(alpha=="1") return(1)
+        cis<-c(coef1-coef1_bench + stats::qnorm(1-alpha/2) * SE,
+               coef1-coef1_bench - stats::qnorm(1-alpha/2) * SE)}
       #lower_ci<- (ref) - (mean(boot_object) - (ref))- (stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object)))))
       #upper_ci<- (ref) - (mean(boot_object) - (ref))+ (stats::qnorm(1-alpha/2) * (suppressWarnings(sqrt(var(boot_object)))))
       #cis<-c(lower_ci,upper_ci)

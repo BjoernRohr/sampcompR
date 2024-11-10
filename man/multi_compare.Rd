@@ -30,10 +30,12 @@ multi_compare(
   names_df_benchmark = NULL,
   silence_summary = FALSE,
   nboots = 0,
+  boot_all = FALSE,
   parallel = FALSE,
   adjustment_vars = NULL,
   raking_targets = NULL,
-  post_targets = NULL
+  post_targets = NULL,
+  percentile_ci = TRUE
 )
 }
 \arguments{
@@ -116,6 +118,9 @@ If nboots = 0 no bootstrapping will be performed. Else \code{nboots} must
 be >2. Note, that bootstrapping can be very computationaly heavy and can
 therefore take a while.}
 
+\item{boot_all}{If TURE, both, dfs and benchmarks will be bootstrapped. Otherwise
+the benchmark estimate is assumed to be constant.}
+
 \item{parallel}{If \code{TRUE}, all detected cores will be used in bootstrapping.}
 
 \item{adjustment_vars}{Variables used to adjust the survey when using raking
@@ -126,6 +131,9 @@ function of \code{\link[survey]{rake}}, to rake the \code{df}.}
 
 \item{post_targets}{A List of post_stratification targets that can be given to the rake
 function of \code{\link[survey]{postStratify}}, to post_stratificatify the \code{df}.}
+
+\item{percentile_ci}{If TURE, cofidence intervals will be calculated using the percentile method.
+If False, they will be calculated using the normal method.}
 }
 \value{
 A table is printed showing the difference between the set of respondents

@@ -36,11 +36,13 @@ biv_compare(
   remove_nas = "pairwise",
   ncol_facet = 3,
   nboots = 0,
+  boot_all = FALSE,
   parallel = FALSE,
   adjustment_weighting = "raking",
   adjustment_vars = NULL,
   raking_targets = NULL,
-  post_targets = NULL
+  post_targets = NULL,
+  percentile_ci = TRUE
 )
 }
 \arguments{
@@ -148,6 +150,9 @@ If \code{nboots = 0} no bootstrapping will be performed. Else \code{nboots}
 must be >2. Note, that bootstrapping can be very computationally heavy and can
 therefore take a while.}
 
+\item{boot_all}{If TURE, both, dfs and benchmarks will be bootstrapped. Otherwise
+the benchmark estimate is assumed to be constant.}
+
 \item{parallel}{Can be either \code{FALSE} or a number of cores that should
 be used in the function. If it is \code{FALSE}, only one core will be used and
 otherwise the given number of cores will be used.}
@@ -163,6 +168,9 @@ function of \code{\link[survey]{rake}}, to rake the \code{dfs}.}
 
 \item{post_targets}{A list of post_stratification targets that can be given to
 the \code{\link[survey]{postStratify}} function, to post-stratify the \code{dfs}.}
+
+\item{percentile_ci}{If TURE, cofidence intervals will be calculated using the percentile method.
+If False, they will be calculated using the normal method.}
 }
 \value{
 A object generated with the help of \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} visualizes

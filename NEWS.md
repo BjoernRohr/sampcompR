@@ -1,7 +1,11 @@
 # sampcompR (development version)
 
-* Initial CRAN submission.
-## Changes in version 0.2.2 (2024-19-08)
+## Changes in version 0.2.4 (2024-19-08)
+
+* Added parameters that allow to bootstrap both benchmark and survey
+* Added parameter to allow to choose between percentile or normal bootstrap confidence intervals and p-values based on those intervals.
+
+## Changes in version 0.2.3 (2024-19-08)
 
 * Additional small Fix for a test
 

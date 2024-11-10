@@ -120,6 +120,14 @@
 #' \code{\link[survey]{postStratify}} function, to post-stratify the \code{dfs}.
 #' @param adjustment_weighting A character vector indicating if adjustment 
 #' weighting should be used. It can either be \code{"raking"} or \code{"post_start"}.
+#' @param boot_all If TURE, both, dfs and benchmarks will be bootstrapped. Otherwise 
+#' the benchmark estimate is assumed to be constant.
+#' @param percentile_ci If TURE, cofidence intervals will be calculated using the percentile method.
+#' If False, they will be calculated using the normal method.
+#' @param parallel Can be either \code{FALSE} or a number of cores that should 
+#' be used in the function. If it is \code{FALSE}, only one core will be used and 
+#' otherwise the given number of cores will be used.
+#' 
 #' 
 #' @return A plot based on [ggplot2::ggplot2()] (or data frame if data==TRUE)
 #' which shows the difference between two or more data frames on predetermined variables,
@@ -157,14 +165,14 @@
 #'  
 
 ### The diff_plotter_function
-uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = "rel_mean",
+uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, boot_all=FALSE,funct = "rel_mean",
                         data = TRUE, type="comparison",legendlabels = NULL, legendtitle = NULL, colors = NULL, shapes = NULL,
                         summetric = "rmse2", label_x = NULL, label_y = NULL, plot_title = NULL, varlabels = NULL,
                         name_dfs=NULL, name_benchmarks=NULL,
-                        summet_size=4, silence=TRUE, conf_level=0.95, conf_adjustment=NULL,
+                        summet_size=4, silence=TRUE, conf_level=0.95, conf_adjustment=NULL,percentile_ci =TRUE,
                         weight =NULL, id=NULL, strata=NULL, weight_bench=NULL,id_bench=NULL, strata_bench=NULL,
                         adjustment_weighting="raking", adjustment_vars=NULL,
-                        raking_targets=NULL,post_targets=NULL,ndigits=3) {
+                        raking_targets=NULL,post_targets=NULL,ndigits=3,parallel=FALSE) {
 
   ##################################
   ### Errors if inputs are wrong ###
@@ -433,49 +441,76 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, funct = 
   #########################
   ### Calculate Results ###
   #########################
+  if(parallel!=FALSE){future::plan(future::multisession,workers=parallel)}
+  
+  results<-furrr::future_map_dfr(.x=c(1:length(dfs)),
+                    ~subfunc_diffplotter(x = df_list[[.x]], y = bench_list[[.x]],
+                                        samp = .x, nboots = nboots, func = funct[1],
+                                        variables = variables,
+                                        func_name = func_name, alpha=alpha,
+                                        conf_adjustment=conf_adjustment,
+                                        ids=id[.x], weights = weight[.x], strata = strata[.x],
+                                        ids_bench = id_bench[.x], weights_bench = weight_bench[.x],
+                                        strata_bench = strata_bench[.x],
+                                        adjustment_weighting=adjustment_weighting,
+                                        adjustment_vars=adjustment_vars[[.x]],
+                                        raking_targets=raking_targets[[.x]],
+                                        post_targets=post_targets[[.x]],
+                                        boot_all=boot_all,
+                                        percentile_ci =percentile_ci,
+                                        parallel=parallel, max_samp=length(dfs)),
+                    .options = furrr::furrr_options(seed = NULL))
 
+  # for (i in 1:length(dfs)){
+  #   if (ncol(df_list[[i]])>0) {
+  #   if (i==1) {
+      # results<-subfunc_diffplotter(x = df_list[[i]], y = bench_list[[i]],
+      #                              samp = i, nboots = nboots, func = funct[1],
+      #                              variables = variables,
+      #                              func_name = func_name, alpha=alpha,
+      #                              conf_adjustment=conf_adjustment,
+      #                              ids=id[i], weights = weight[i], strata = strata[i],
+      #                              ids_bench = id_bench[i], weights_bench = weight_bench[i],
+      #                              strata_bench = strata_bench[i],
+      #                              adjustment_weighting=adjustment_weighting,
+      #                              adjustment_vars=adjustment_vars[[i]],
+      #                              raking_targets=raking_targets[[i]],
+      #                              post_targets=post_targets[[i]],
+      #                              boot_all=boot_all,
+      #                              percentile_ci =percentile_ci,
+      #                              parallel=parallel)
+  #     
+  #     message(paste("survey",i,"of",length(dfs),"is compared"))
+  #   
+  #   #return(result)
+  #   } 
+  # 
+  #     
+  #   if (i!=1){
+  #     
+  #     results<- rbind(results,subfunc_diffplotter(x = df_list[[i]], y = bench_list[[i]],
+  #                                                 samp = i, nboots = nboots, func = funct[1],
+  #                                                 variables = variables,
+  #                                                 func_name = func_name, alpha=alpha, 
+  #                                                 conf_adjustment=conf_adjustment,
+  #                                                 ids=id[i], weights = weight[i],strata = strata[i],
+  #                                                 ids_bench = id_bench[i], weights_bench = weight_bench[i],
+  #                                                 strata_bench = strata_bench[i],
+  #                                                 adjustment_weighting=adjustment_weighting,
+  #                                                 adjustment_vars=adjustment_vars[[i]],
+  #                                                 raking_targets=raking_targets[[i]],
+  #                                                 post_targets=post_targets[[i]],
+  #                                                 boot_all=boot_all,percentile_ci =percentile_ci,
+  #                                                 parallel=parallel))
+  #   
+  #     message(paste("survey",i,"of",length(dfs),"is compared"))
+  #   }}
+  # 
+  #   if (ncol(df_list[[i]])==0) stop(paste(name_dfs[i],"does not share a common variable with the benchmark or the variables parameter"),
+  #                                      sep =" ")
+  # }
 
-  for (i in 1:length(dfs)){
-    if (ncol(df_list[[i]])>0) {
-    if (i==1) {
-    results<-subfunc_diffplotter(x = df_list[[i]], y = bench_list[[i]],
-                                  samp = i, nboots = nboots, func = funct[1], 
-                                  variables = variables,
-                                  func_name = func_name, alpha=alpha, 
-                                  conf_adjustment=conf_adjustment,
-                                  ids=id[i], weights = weight[i], strata = strata[i],
-                                  ids_bench = id_bench[i], weights_bench = weight_bench[i],
-                                  strata_bench = strata_bench[i], 
-                                  adjustment_weighting=adjustment_weighting, 
-                                  adjustment_vars=adjustment_vars[[i]],
-                                  raking_targets=raking_targets[[i]],
-                                  post_targets=post_targets[[i]])
-    
-    #return(result)
-    } 
-
-      
-    if (i!=1){
-      
-    results<- rbind(results,subfunc_diffplotter(x = df_list[[i]], y = bench_list[[i]],
-                                                samp = i, nboots = nboots, func = funct[1],
-                                                variables = variables,
-                                                func_name = func_name, alpha=alpha, 
-                                                conf_adjustment=conf_adjustment,
-                                                ids=id[i], weights = weight[i],strata = strata[i],
-                                                ids_bench = id_bench[i], weights_bench = weight_bench[i],
-                                                strata_bench = strata_bench[i],
-                                                adjustment_weighting=adjustment_weighting,
-                                                adjustment_vars=adjustment_vars[[i]],
-                                                raking_targets=raking_targets[[i]],
-                                                post_targets=post_targets[[i]]))
-    
-    }}
-
-    if (ncol(df_list[[i]])==0) stop(paste(name_dfs[i],"does not share a common variable with the benchmark or the variables parameter"),
-                                       sep =" ")
-  }
-
+  
   ############################
   ### Add df_names to Data ###
   ############################
@@ -607,7 +642,8 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
                                 ids_bench = ids_bench,weights_bench = weights_bench,
                                 strata_bench = strata_bench, adjustment_weighting="raking", 
                                 adjustment_vars=NULL,raking_targets=NULL,
-                                post_targets=NULL) {
+                                post_targets=NULL,boot_all=FALSE,percentile_ci =TRUE,
+                                parallel=FALSE,max_samp) {
   
   #if (length(y)<=4) return(y)
   ### Check if x and y are factors and edit them to make them fit for further analyses
@@ -637,21 +673,28 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
                           adjustment_weighting=adjustment_weighting,
                           adjustment_vars = adjustment_vars,
                           raking_targets = raking_targets,
-                          post_targets=post_targets)
+                          post_targets=post_targets,parallel=parallel)
 
 
   #boot <- boot(data = as.data.frame(x), y = as.data.frame(y), statistic = get(func[1]), R = nboots, ncpus = parallel::detectCores(), parallel = "multicore")
   
+  if(boot_all==FALSE){
   means_bench<-mean_bench_func(data = y,variables = variables,
                                id = ids_bench,weight = weights_bench,
-                               strata = strata_bench,func=func,nboots=nboots)
+                               strata = strata_bench,func=func,nboots=nboots)}
   
+  if(boot_all==TRUE){
+    
+    means_bench<-boot_svy_mean(data = y,variables = variables,nboots = nboots,
+                            id=ids_bench, weight = weights_bench, 
+                            strata = strata_bench,func=func,parallel=parallel)
+    }
   ### Transform data to a data frame ###
 
 
 
   alpha_adjusted<-alpha/length(x)
-
+  
   if(nboots==0){
     svy_boot2<-svy_boot[[length(svy_boot)]]
     means_bench2<-means_bench[[length(means_bench)]]
@@ -683,21 +726,21 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   svy_boot<-svy_boot[1:(length(svy_boot)-1)]
   means_bench<-means_bench[1:(length(means_bench)-1)]
   
+  
   t_vec<-measure_function(svy_boot,means_bench,func = func,out = "diff",alpha=alpha)
   
   
 
   if(nboots>0){
 
-    
-  
-  se_vect<-measure_function(svy_boot,means_bench,func = func,out = "SE",alpha=alpha)
-  lower_ci<-measure_function(svy_boot,means_bench,func = func,out = "lower_ci",alpha=alpha)
-  upper_ci<-measure_function(svy_boot,means_bench,func = func,out = "upper_ci",alpha=alpha)
-  lower_ci_adjusted<-measure_function(svy_boot,means_bench,func = func,out = "lower_ci",alpha=alpha_adjusted)
-  upper_ci_adjusted<-measure_function(svy_boot,means_bench,func = func,out = "upper_ci",alpha=alpha_adjusted)  
+  se_vect<-measure_function(svy_boot,means_bench,func = func,out = "SE",alpha=alpha, boot_all = boot_all,percentile_ci = percentile_ci)
+  lower_ci<-measure_function(svy_boot,means_bench,func = func,out = "lower_ci",alpha=alpha, boot_all = boot_all, percentile_ci =percentile_ci)
+  upper_ci<-measure_function(svy_boot,means_bench,func = func,out = "upper_ci",alpha=alpha, boot_all = boot_all, percentile_ci =percentile_ci)
+  lower_ci_adjusted<-measure_function(svy_boot,means_bench,func = func,out = "lower_ci",alpha=alpha_adjusted, boot_all = boot_all, percentile_ci =percentile_ci)
+  upper_ci_adjusted<-measure_function(svy_boot,means_bench,func = func,out = "upper_ci",alpha=alpha_adjusted, boot_all = boot_all, percentile_ci =percentile_ci)  
   }
   
+
   
   ########################
   ### weitere schritte ###
@@ -740,6 +783,10 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   data$se_vec <- as.numeric(data$se_vec)
 
   data$sample <- samp
+  
+  message(paste("survey",samp,"of",max_samp,"is compared"))
+  
+  
   return(data)
 }
 
@@ -1089,7 +1136,7 @@ boot_svy_mean<-function(data,variables, nboots=2000,
                         id=NULL, weight=NULL, strata=NULL,func,
                         adjustment_weighting="raking", 
                         adjustment_vars=NULL,raking_targets=NULL,
-                        post_targets=NULL){
+                        post_targets=NULL,parallel=FALSE){
   
   if(is.null(id)) data$id<-1:nrow(data)
   if(is.null(id)==FALSE) {if(is.na(id)) data$id<-1:nrow(data)}
@@ -1152,13 +1199,22 @@ boot_svy_mean<-function(data,variables, nboots=2000,
     return(results)
   }
   
-  if(is.null(adjustment_vars))out<-lapply(X=variables,FUN=final_boot_svy_mean,design=data_design, func=func)
+  #if(parallel!=FALSE){future::plan(future::multisession,workers=parallel)}
+  
+  #if(is.null(adjustment_vars)) out<-lapply(X=variables,FUN=final_boot_svy_mean,design=data_design, func=func)
+  if(is.null(adjustment_vars)) out<-furrr::future_map(variables,~final_boot_svy_mean(.x,design = data_design,func=func))
+  
+  # if(is.null(adjustment_vars)==FALSE & is.null(raking_targets)==FALSE & adjustment_weighting=="raking"){
+  #   out<-lapply(X=variables,FUN=final_boot_svy_mean,design=data_design, func=func) 
+  # }
   if(is.null(adjustment_vars)==FALSE & is.null(raking_targets)==FALSE & adjustment_weighting=="raking"){
-    out<-lapply(X=variables,FUN=final_boot_svy_mean,design=data_design, func=func) 
-  }
+  out<-furrr::future_map(variables,~final_boot_svy_mean(.x,design = data_design,func=func))}
+  
+  # if(is.null(adjustment_vars)==FALSE & is.null(post_targets)==FALSE & adjustment_weighting=="post_strat"){
+  #   out<-lapply(X=variables,FUN=final_boot_svy_mean,design=data_design, func=func) 
+  # }
   if(is.null(adjustment_vars)==FALSE & is.null(post_targets)==FALSE & adjustment_weighting=="post_strat"){
-    out<-lapply(X=variables,FUN=final_boot_svy_mean,design=data_design, func=func) 
-  }
+    out<-furrr::future_map(variables,~final_boot_svy_mean(.x,design = data_design,func=func))}
   
   out[[length(out)+1]]<-data_design
   out
@@ -1203,25 +1259,49 @@ mean_bench_func<-function(data,variables,
 
 
 measure_function<-function(svyboot_object,mean_bench_object,func="abs_rel_mean",
-                           out="diff",alpha=0.05){
+                           out="diff",alpha=0.05, percentile_ci= TRUE,
+                           boot_all=FALSE){
   
   if(func == "abs_rel_mean" | func =="abs_rel_prop"){
     subfunc_abs_rel_mean<-function(svyboot_object_part,mean_bench_object_part,
                                    out="diff", alpha=0.05){
       
+      
       diff<-abs((svyboot_object_part[[1]][1]-mean_bench_object_part[[1]])/mean_bench_object_part[[1]])
       if (out=="diff") return(diff)
       
+      if(boot_all==FALSE & percentile_ci==FALSE){
       var_rel<-(1/mean_bench_object_part[[1]]^2)*stats::var(svyboot_object_part[[2]])
       SE<-sqrt(var_rel)
       upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
-      lower_ci<- diff - stats::qnorm(1-alpha/2) * SE
+      lower_ci<- diff - stats::qnorm(1-alpha/2) * SE}
       
+      if(boot_all==FALSE & percentile_ci==TRUE){
+          diff<- abs((svyboot_object_part[[2]] - mean_bench_object_part[[1]])/mean_bench_object_part[[1]])
+          upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
+          lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
+          SE<- stats::sd(diff)
+      }
       
+      if(boot_all==TRUE & percentile_ci==TRUE){
+        diff<- abs((svyboot_object_part[[2]] - mean_bench_object_part[[2]])/mean_bench_object_part[[2]])
+        upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
+        lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
+        SE<- stats::sd(diff)
+      }
+      
+      if(boot_all==TRUE & percentile_ci==FALSE){
+        diff2<- abs((svyboot_object_part[[2]] - mean_bench_object_part[[2]])/mean_bench_object_part[[2]])
+        SE<- stats::sd(diff2)
+        upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
+        lower_ci<- diff - stats::qnorm(1-alpha/2) * SE
+        
+      }
       
       if (out=="SE") return(SE)
       if (out=="lower_ci") return(lower_ci)
       if (out=="upper_ci") return(upper_ci)
+      
       
     }
     results<-mapply(subfunc_abs_rel_mean,svyboot_object,mean_bench_object,
@@ -1231,20 +1311,41 @@ measure_function<-function(svyboot_object,mean_bench_object,func="abs_rel_mean",
   if(func == "rel_mean" | func =="rel_prop"){
     subfunc_rel_mean<-function(svyboot_object_part,mean_bench_object_part,
                                out="diff", alpha=0.05){
-  
+      
       diff<-(svyboot_object_part[[1]][1]-mean_bench_object_part[[1]])/mean_bench_object_part[[1]]
       if (out=="diff") return(diff)
       
+      if(boot_all==FALSE & percentile_ci==FALSE){
       var_rel<-(1/mean_bench_object_part[[1]]^2)*stats::var(svyboot_object_part[[2]])
       SE<-sqrt(var_rel)
       upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
-      lower_ci<- diff - stats::qnorm(1-alpha/2) * SE
+      lower_ci<- diff - stats::qnorm(1-alpha/2) * SE}
       
-     
+      if(boot_all==FALSE & percentile_ci==TRUE){
+        diff<- (svyboot_object_part[[2]] - mean_bench_object_part[[1]])/mean_bench_object_part[[1]]
+        upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
+        lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
+        SE<- stats::sd(diff)
+      }
+      
+      if(boot_all==TRUE & percentile_ci==TRUE){
+        diff<- (svyboot_object_part[[2]] - mean_bench_object_part[[2]])/mean_bench_object_part[[2]]
+        upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
+        lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
+        SE<- stats::sd(diff)
+      }
+      
+      if(boot_all==TRUE & percentile_ci==FALSE){
+        diff2<- (svyboot_object_part[[2]] - mean_bench_object_part[[2]])/mean_bench_object_part[[2]]
+        SE<- stats::sd(diff2)
+        upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
+        lower_ci<- diff - stats::qnorm(1-alpha/2) * SE
+      }
       
       if (out=="SE") return(SE)
       if (out=="lower_ci") return(lower_ci)
       if (out=="upper_ci") return(upper_ci)
+      
       
     }
     results<-mapply(subfunc_rel_mean,svyboot_object,mean_bench_object,
@@ -1255,19 +1356,41 @@ measure_function<-function(svyboot_object,mean_bench_object,func="abs_rel_mean",
     subfunc_ad_mean<-function(svyboot_object_part,mean_bench_object_part,
                               out="diff", alpha=0.05){
       
+      
       diff<-abs(svyboot_object_part[[1]][1]-mean_bench_object_part[[1]])
       if (out=="diff") return(diff)
       
+      if(boot_all==FALSE & percentile_ci==FALSE){
       var<-stats::var(svyboot_object_part[[2]])
       SE<-sqrt(var)
       upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
-      lower_ci<- diff - stats::qnorm(1-alpha/2) * SE
+      lower_ci<- diff - stats::qnorm(1-alpha/2) * SE}
       
+      if(boot_all==FALSE & percentile_ci==TRUE){
+        diff<- abs(svyboot_object_part[[2]] - mean_bench_object_part[[1]])
+        upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
+        lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
+        SE<- stats::sd(diff)
+      }
       
+      if(boot_all==TRUE & percentile_ci==TRUE){
+        diff<- abs(svyboot_object_part[[2]] - mean_bench_object_part[[2]])
+        upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
+        lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
+        SE<- stats::sd(diff)
+      }
+      
+      if(boot_all==TRUE & percentile_ci==FALSE){
+        diff2<- abs(svyboot_object_part[[2]] - mean_bench_object_part[[2]])
+        SE<- stats::sd(diff2)
+        upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
+        lower_ci<- diff - stats::qnorm(1-alpha/2) * SE
+      }
       
       if (out=="SE") return(SE)
       if (out=="lower_ci") return(lower_ci)
       if (out=="upper_ci") return(upper_ci)
+      
     }
     results<-mapply(subfunc_ad_mean,svyboot_object,mean_bench_object,
                     MoreArgs=list(out=out, alpha=alpha))
@@ -1276,36 +1399,82 @@ measure_function<-function(svyboot_object,mean_bench_object,func="abs_rel_mean",
   if(func == "d_mean" | func =="d_prop"){
     subfunc_d_mean<-function(svyboot_object_part,mean_bench_object_part,
                              out="diff", alpha=0.05){
+      
+      
       diff<-svyboot_object_part[[1]][1]-mean_bench_object_part[[1]]
       if (out=="diff") return(diff)
       
+      if(boot_all==FALSE & percentile_ci==FALSE){
       var<-stats::var(svyboot_object_part[[2]])
       SE<-sqrt(var)
       upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
-      lower_ci<- diff - stats::qnorm(1-alpha/2) * SE
+      lower_ci<- diff - stats::qnorm(1-alpha/2) * SE}
       
+      if(boot_all==FALSE & percentile_ci==TRUE){
+        diff<- svyboot_object_part[[2]] - mean_bench_object_part[[1]]
+        upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
+        lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
+        SE<- stats::sd(diff)
+      }
       
+      if(boot_all==TRUE & percentile_ci==TRUE){
+        diff<- svyboot_object_part[[2]] - mean_bench_object_part[[2]]
+        upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
+        lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
+        SE<- stats::sd(diff)
+      }
+      
+      if(boot_all==TRUE & percentile_ci==FALSE){
+        diff2<- svyboot_object_part[[2]] - mean_bench_object_part[[2]]
+        SE<- stats::sd(diff2)
+        upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
+        lower_ci<- diff - stats::qnorm(1-alpha/2) * SE
+      }
       
       if (out=="SE") return(SE)
       if (out=="lower_ci") return(lower_ci)
       if (out=="upper_ci") return(upper_ci)
       
+      
     }
+    
     results<-mapply(subfunc_d_mean,svyboot_object,mean_bench_object,
                     MoreArgs=list(out=out, alpha=alpha))}
     
     if(func == "ad_median"){
       subfunc_ad_median<-function(svyboot_object_part,mean_bench_object_part,
                                out="diff", alpha=0.05){
+        
+        
         diff<-abs(svyboot_object_part[[1]][1]-mean_bench_object_part[[1]])
         if (out=="diff") return(diff)
         
+        if(boot_all==FALSE & percentile_ci==FALSE){
         var<-stats::var(svyboot_object_part[[2]])
         SE<-sqrt(var)
         upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
-        lower_ci<- diff - stats::qnorm(1-alpha/2) * SE
+        lower_ci<- diff - stats::qnorm(1-alpha/2) * SE}
         
+        if(boot_all==FALSE & percentile_ci==TRUE){
+          diff<- abs(svyboot_object_part[[2]] - mean_bench_object_part[[1]])
+          upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
+          lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
+          SE<- stats::sd(diff)
+        }
         
+        if(boot_all==TRUE & percentile_ci==TRUE){
+          diff<- abs(svyboot_object_part[[2]] - mean_bench_object_part[[2]])
+          upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
+          lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
+          SE<- stats::sd(diff)
+        }
+        
+        if(boot_all==TRUE & percentile_ci==FALSE){
+          diff2<- abs(svyboot_object_part[[2]] - mean_bench_object_part[[2]])
+          SE<- stats::sd(diff2)
+          upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
+          lower_ci<- diff - stats::qnorm(1-alpha/2) * SE
+        }
         
         if (out=="SE") return(SE)
         if (out=="lower_ci") return(lower_ci)

@@ -9,6 +9,7 @@ uni_compare(
   benchmarks,
   variables = NULL,
   nboots = 2000,
+  boot_all = FALSE,
   funct = "rel_mean",
   data = TRUE,
   type = "comparison",
@@ -27,6 +28,7 @@ uni_compare(
   silence = TRUE,
   conf_level = 0.95,
   conf_adjustment = NULL,
+  percentile_ci = TRUE,
   weight = NULL,
   id = NULL,
   strata = NULL,
@@ -37,7 +39,8 @@ uni_compare(
   adjustment_vars = NULL,
   raking_targets = NULL,
   post_targets = NULL,
-  ndigits = 3
+  ndigits = 3,
+  parallel = FALSE
 )
 }
 \arguments{
@@ -58,6 +61,9 @@ If >2 bootstrapping is used to calculate standard errors with \code{nboots} iter
 is calculated analytically. We do not recommend using \code{nboots} =0 because this method is not
 yet suitable for every \code{funct} used and every method. Depending on the size of the data and the
 number of bootstraps, \code{uni_compare} can take a while.}
+
+\item{boot_all}{If TURE, both, dfs and benchmarks will be bootstrapped. Otherwise
+the benchmark estimate is assumed to be constant.}
 
 \item{funct}{A character string, indicating the function to calculate the
 difference between the data frames.
@@ -125,6 +131,9 @@ interval.}
 \item{conf_adjustment}{If \code{conf_adjustment = TRUE} the confidence level of the confidence interval will be
 adjusted with a Bonferroni adjustment, to account for the problem of multiple comparisons.}
 
+\item{percentile_ci}{If TURE, cofidence intervals will be calculated using the percentile method.
+If False, they will be calculated using the normal method.}
+
 \item{weight, weight_bench}{A character vector determining variables to weight the \code{dfs} or
 \code{benchmarks}. They have to be part of the respective data frame. If only one character is provided,
 the same variable is used to weigh every \code{df} or \code{benchmark}. If a
@@ -156,6 +165,10 @@ function of \code{\link[survey]{rake}}, to rake the \code{dfs}.}
 \code{\link[survey]{postStratify}} function, to post-stratify the \code{dfs}.}
 
 \item{ndigits}{The number of digits to round the numbers in the plot.}
+
+\item{parallel}{Can be either \code{FALSE} or a number of cores that should
+be used in the function. If it is \code{FALSE}, only one core will be used and
+otherwise the given number of cores will be used.}
 }
 \value{
 A plot based on \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} (or data frame if data==TRUE)

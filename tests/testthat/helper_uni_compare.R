@@ -23,7 +23,8 @@ local_test_data_uni1 <- function(env = parent.frame(), summet="avg1",
                                    weight = c("weight",NA),
                                    id = c("id",NA),
                                    weight_bench = c("weight",NA),
-                                   id_bench = c("id",NA))
+                                   id_bench = c("id",NA),
+                                   percentile_ci = F)
   
   uni_data
 }
@@ -60,7 +61,8 @@ local_test_data_uni2 <- function(env = parent.frame()) {
                         weight = NULL,
                         id = NULL,
                         weight_bench = NULL,
-                        id_bench = NULL)
+                        id_bench = NULL,
+                        percentile_ci = F)
   
   uni_data
 }
