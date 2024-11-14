@@ -1,6 +1,11 @@
 # sampcompR (development version)
 
-## Changes in version 0.2.4 (2024-19-08)
+## Changes in version 0.2.5 (2024-14-11)
+
+* Added the possibility to input benchmarks as a named vector of means in univariate comparison
+* Fixed small errors in the uni_compare_table functions that occurred when only one benchmark and survey were compared.
+
+## Changes in version 0.2.4 (2024-10-11)
 
 * Added parameters that allow to bootstrap both benchmark and survey
 * Added parameter to allow to choose between percentile or normal bootstrap confidence intervals and p-values based on those intervals.

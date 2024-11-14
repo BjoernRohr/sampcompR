@@ -26,9 +26,10 @@
 #' @param dfs A character vector containing the names of data frames to compare against the benchmarks. 
 #' @param benchmarks A character vector containing the names of benchmarks to compare the data frames against.
 #' The vector must either be the same length as \code{dfs}, or length 1. If it has length 1 every
-#' df will be compared against the same benchmark. Benchmarks can either be the name of data frames or 
-#' the name of a list of tables. The tables in the list need to be named as the respective variables
-#' in the data frame of comparison.
+#' df will be compared against the same benchmark. Benchmarks can either be the name of data frames, 
+#' the name of a list of tables, or a named vector of means. The tables in the list need to be named as the respective variables
+#' in the data frame of comparison. When they are a named vector of means, the means need to be named as the respective variables
+#' in the dfs.
 #' @param variables A character vector containing the names of the variables for the comparison. If NULL,
 #' all variables named similarly in both the \code{dfs} and the benchmarks will be compared. Variables missing
 #' in one of the data frames or the benchmarks will be neglected for this comparison.
@@ -127,6 +128,8 @@
 #' @param parallel Can be either \code{FALSE} or a number of cores that should 
 #' be used in the function. If it is \code{FALSE}, only one core will be used and 
 #' otherwise the given number of cores will be used.
+#' @param n_bench A list of vectors containing the number of cases for every variable in the benchmark.
+#' This is only needed, if the benchmark is given as a vector. The list should be as long as the number of dataframes
 #' 
 #' 
 #' @return A plot based on [ggplot2::ggplot2()] (or data frame if data==TRUE)
@@ -165,7 +168,7 @@
 #'  
 
 ### The diff_plotter_function
-uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, boot_all=FALSE,funct = "rel_mean",
+uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000,n_bench=NULL, boot_all=FALSE,funct = "rel_mean",
                         data = TRUE, type="comparison",legendlabels = NULL, legendtitle = NULL, colors = NULL, shapes = NULL,
                         summetric = "rmse2", label_x = NULL, label_y = NULL, plot_title = NULL, varlabels = NULL,
                         name_dfs=NULL, name_benchmarks=NULL,
@@ -198,10 +201,12 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, boot_all
         if ((any(names(get(dfs[i])) %in% names(get(benchmarks[1])))==FALSE)) stop(dfs[i], " has no common variable with ",benchmarks[1],".")}
   }
 
+
   for (i in 1:length(benchmarks)){
 
     if (inherits(get(benchmarks[i]),"data.frame") == FALSE &
-        inherits(get(benchmarks[i]),"list")==FALSE) stop(paste(benchmarks[i], " must be a data frame or a list",
+        inherits(get(benchmarks[i]),"list")==FALSE &
+        is_named_vector(get(benchmarks[i]))==FALSE) stop(paste(benchmarks[i], " must be a data frame, a named numeric vector, or a list",
                                                         sep = "", collapse = NULL))
     if (inherits(get(benchmarks[i]),"list") & 
         is.null(weight_bench)==FALSE) stop(paste(benchmarks[i]), " if benchmark is a list of tables, weighting needs to be permored, when generating the list.")
@@ -365,12 +370,20 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, boot_all
     ### Equalize Data to Benchmark
 
   for (i in 1:length(dfs)){
-   df_list[[i]]<- dataequalizer(target_df= bench_list[[i]] ,source_df = df_list[[i]],
-                                variables = variables, silence = silence)
-
-
-   bench_list[[i]]<- dataequalizer(target_df = df_list[[i]], source_df = bench_list[[i]],
+    if(is_named_vector(bench_list[[i]])==F){
+      
+      df_list[[i]]<- dataequalizer(target_df= bench_list[[i]] ,source_df = df_list[[i]],
                                    variables = variables, silence = silence)
+      
+      bench_list[[i]]<- dataequalizer(target_df = df_list[[i]], source_df = bench_list[[i]],
+                                      variables = variables, silence = silence)}
+   if(is_named_vector(bench_list[[i]])){
+     
+     bench_list[[i]]<- bench_list[[i]][names(bench_list[[i]])%in%variables]
+     df_list[[i]]<-df_list[[i]][,names(bench_list[[i]])]
+     bench_list[[i]]<- bench_list[[i]][names(bench_list[[i]])%in% names(df_list[[i]])]
+     
+   }
    
    if(is.null(weight)==FALSE){
      if (is.na(weight[i])==FALSE) df_list[[i]][,weight[i]]<-get(dfs[i])[,weight[i]]
@@ -396,6 +409,7 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, boot_all
    
    
   }
+
 
   #####################################################
   ### Get  Functions for every variable in data frames ###
@@ -443,6 +457,8 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, boot_all
   #########################
   if(parallel!=FALSE){future::plan(future::multisession,workers=parallel)}
   
+  
+  
   results<-furrr::future_map_dfr(.x=c(1:length(dfs)),
                     ~subfunc_diffplotter(x = df_list[[.x]], y = bench_list[[.x]],
                                         samp = .x, nboots = nboots, func = funct[1],
@@ -458,9 +474,10 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000, boot_all
                                         post_targets=post_targets[[.x]],
                                         boot_all=boot_all,
                                         percentile_ci =percentile_ci,
-                                        parallel=parallel, max_samp=length(dfs)),
+                                        parallel=parallel, max_samp=length(dfs),
+                                        n_bench=n_bench[[.x]]),
                     .options = furrr::furrr_options(seed = NULL))
-
+#browser()
   # for (i in 1:length(dfs)){
   #   if (ncol(df_list[[i]])>0) {
   #   if (i==1) {
@@ -643,14 +660,16 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
                                 strata_bench = strata_bench, adjustment_weighting="raking", 
                                 adjustment_vars=NULL,raking_targets=NULL,
                                 post_targets=NULL,boot_all=FALSE,percentile_ci =TRUE,
-                                parallel=FALSE,max_samp) {
+                                parallel=FALSE,max_samp,n_bench=NULL) {
   
   #if (length(y)<=4) return(y)
   ### Check if x and y are factors and edit them to make them fit for further analyses
   x<-unfactor(x,func[1],weights,strata,ids)
-  y<-unfactor(y,func[1],weights_bench,strata_bench,ids_bench)
   
-
+  if(is_named_vector(y)==FALSE){
+  y<-unfactor(y,func[1],weights_bench,strata_bench,ids_bench)}
+  
+  
   ##########################################################
   ### loop to bootstrap for every Variable in data frame ###
   ##########################################################
@@ -679,12 +698,16 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   #boot <- boot(data = as.data.frame(x), y = as.data.frame(y), statistic = get(func[1]), R = nboots, ncpus = parallel::detectCores(), parallel = "multicore")
   
   if(boot_all==FALSE){
-  means_bench<-mean_bench_func(data = y,variables = variables,
-                               id = ids_bench,weight = weights_bench,
-                               strata = strata_bench,func=func,nboots=nboots)}
+    if(is_named_vector(y)==FALSE){
+      means_bench<-mean_bench_func(data = y,variables = variables,
+                                   id = ids_bench,weight = weights_bench,
+                                   strata = strata_bench,func=func,nboots=nboots)}
+    
+    if(is_named_vector(y)) {means_bench<-y}
+    }
   
   if(boot_all==TRUE){
-    
+    if(is_named_vector(y)){stop("boot_all can not be TRUE, as benchmark is a named vector")}
     means_bench<-boot_svy_mean(data = y,variables = variables,nboots = nboots,
                             id=ids_bench, weight = weights_bench, 
                             strata = strata_bench,func=func,parallel=parallel)
@@ -696,8 +719,10 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   alpha_adjusted<-alpha/length(x)
   
   if(nboots==0){
+    
     svy_boot2<-svy_boot[[length(svy_boot)]]
-    means_bench2<-means_bench[[length(means_bench)]]
+    if(is_named_vector(y)==FALSE){means_bench2<-means_bench[[length(means_bench)]]}
+    if(is_named_vector(y)){means_bench2<-means_bench}
     abs<-FALSE
     
       if (func_name %in% c("abs_rel_mean", "abs_rel_prop",
@@ -719,12 +744,10 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
                                       conf_level=(1-alpha_adjusted),value = "upper_ci", abs=abs, method=func_name,
                                       variables = variables)
     
-    
-    
-  }
+}
   
   svy_boot<-svy_boot[1:(length(svy_boot)-1)]
-  means_bench<-means_bench[1:(length(means_bench)-1)]
+  if(is_named_vector(y)==FALSE){means_bench<-means_bench[1:(length(means_bench)-1)]}
   
   
   t_vec<-measure_function(svy_boot,means_bench,func = func,out = "diff",alpha=alpha)
@@ -755,7 +778,7 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   data$ci_lower<-lower_ci
   data$ci_upper<-upper_ci
   data$ci_level<- 1-alpha
-
+  
   if (is.null(conf_adjustment)==FALSE){
 
     data$ci_lower_adjusted<-lower_ci_adjusted
@@ -769,8 +792,11 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
     
   }
   
+  
   data$n_df<-as.vector(sapply(variables,n_df_func,df=x))
-  data$n_bench<-as.vector(sapply(variables,n_df_func,df=y))
+  if(is_named_vector(y)==F) {data$n_bench<-as.vector(sapply(variables,n_df_func,df=y))}
+  if(is.null(n_bench)) data$n_bench<-NA
+  if(is.null(n_bench)==F) data$n_bench<-n_bench
 
   if (is.null(conf_adjustment)){
     names(data) <- c("t_vec", "se_vec", "varnames","ci_lower","ci_upper","ci_level","n_df","n_bench")}
@@ -815,17 +841,22 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=FALSE, m
     ### prepare relevant values for weighted and unweighted 
     
     n_df<- length(stats::na.omit(design_df$variables[,variable]))
-    n_bench<- length(stats::na.omit(design_bench$variables[,variable]))
+    #n_bench<- length(stats::na.omit(design_bench$variables[,variable]))
     
     variance_df<- survey::svyvar(stats::reformulate(variable),design_df, na.rm=TRUE)
-    variance_bench<- survey::svyvar(stats::reformulate(variable),design_bench, na.rm=TRUE)
+    #variance_bench<- survey::svyvar(stats::reformulate(variable),design_bench, na.rm=TRUE)
     
     mean_df<- survey::svymean(stats::reformulate(variable),design_df, na.rm=TRUE)
-    mean_bench<- survey::svymean(stats::reformulate(variable),design_bench, na.rm=TRUE)
+    if(is_named_vector(design_bench)==F){
+      mean_bench<- survey::svymean(stats::reformulate(variable),design_bench, na.rm=TRUE)}
+    if(is_named_vector(design_bench)){
+      mean_bench<-design_bench[variable]
+    }
     
     table_df<- survey::svytable(stats::reformulate(variable),design_df)
-    table_bench<- survey::svytable(stats::reformulate(variable),design_bench)
-    mode<-names(table_bench[which.max(table_bench)])
+    if(is_named_vector(design_bench)==F){
+      table_bench<- survey::svytable(stats::reformulate(variable),design_bench)
+    mode<-names(table_bench[which.max(table_bench)])}
     
     alpha<-1-conf_level
     
@@ -1267,17 +1298,26 @@ measure_function<-function(svyboot_object,mean_bench_object,func="abs_rel_mean",
                                    out="diff", alpha=0.05){
       
       
-      diff<-abs((svyboot_object_part[[1]][1]-mean_bench_object_part[[1]])/mean_bench_object_part[[1]])
+      if(is_named_vector(mean_bench_object_part)==FALSE){
+        diff<-abs((svyboot_object_part[[1]][1]-mean_bench_object_part[[1]])/mean_bench_object_part[[1]])
+        }
+      if(is_named_vector(mean_bench_object_part)){
+        diff<-abs((svyboot_object_part[[1]][1]-mean_bench_object_part)/mean_bench_object_part)
+        }
       if (out=="diff") return(diff)
       
       if(boot_all==FALSE & percentile_ci==FALSE){
-      var_rel<-(1/mean_bench_object_part[[1]]^2)*stats::var(svyboot_object_part[[2]])
+          var_rel<-abs((1/mean_bench_object_part[[1]]^2)*stats::var(svyboot_object_part[[2]]))
       SE<-sqrt(var_rel)
       upper_ci<- diff + stats::qnorm(1-alpha/2) * SE
       lower_ci<- diff - stats::qnorm(1-alpha/2) * SE}
       
       if(boot_all==FALSE & percentile_ci==TRUE){
-          diff<- abs((svyboot_object_part[[2]] - mean_bench_object_part[[1]])/mean_bench_object_part[[1]])
+        if(is_named_vector(mean_bench_object_part)==FALSE){
+          diff<- abs((svyboot_object_part[[2]] - mean_bench_object_part[[1]])/mean_bench_object_part[[1]])}
+        if(is_named_vector(mean_bench_object_part)==FALSE){
+          diff<- abs((svyboot_object_part[[2]] - mean_bench_object_part)/mean_bench_object_part)}
+        
           upper_ci<-stats::quantile(diff, probs=(1-(alpha/2)),na.rm=TRUE)
           lower_ci<-stats::quantile(diff, probs=(alpha/2),na.rm=TRUE)
           SE<- stats::sd(diff)
@@ -1306,7 +1346,7 @@ measure_function<-function(svyboot_object,mean_bench_object,func="abs_rel_mean",
     }
     results<-mapply(subfunc_abs_rel_mean,svyboot_object,mean_bench_object,
                     MoreArgs=list(out=out, alpha=alpha))
-  }
+}
   
   if(func == "rel_mean" | func =="rel_prop"){
     subfunc_rel_mean<-function(svyboot_object_part,mean_bench_object_part,
@@ -1771,3 +1811,7 @@ calculate_summetric<-function(data, summetric=NULL, funct, name_dfs,name_benchma
   
   return(label_summet)
 }
+
+
+is_named_vector <- function(x) 
+{is.vector(x,mode = "numeric") & !is.null(names(x)) & !any(is.na(names(x)))}

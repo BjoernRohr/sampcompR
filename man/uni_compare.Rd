@@ -9,6 +9,7 @@ uni_compare(
   benchmarks,
   variables = NULL,
   nboots = 2000,
+  n_bench = NULL,
   boot_all = FALSE,
   funct = "rel_mean",
   data = TRUE,
@@ -48,9 +49,10 @@ uni_compare(
 
 \item{benchmarks}{A character vector containing the names of benchmarks to compare the data frames against.
 The vector must either be the same length as \code{dfs}, or length 1. If it has length 1 every
-df will be compared against the same benchmark. Benchmarks can either be the name of data frames or
-the name of a list of tables. The tables in the list need to be named as the respective variables
-in the data frame of comparison.}
+df will be compared against the same benchmark. Benchmarks can either be the name of data frames,
+the name of a list of tables, or a named vector of means. The tables in the list need to be named as the respective variables
+in the data frame of comparison. When they are a named vector of means, the means need to be named as the respective variables
+in the dfs.}
 
 \item{variables}{A character vector containing the names of the variables for the comparison. If NULL,
 all variables named similarly in both the \code{dfs} and the benchmarks will be compared. Variables missing
@@ -61,6 +63,9 @@ If >2 bootstrapping is used to calculate standard errors with \code{nboots} iter
 is calculated analytically. We do not recommend using \code{nboots} =0 because this method is not
 yet suitable for every \code{funct} used and every method. Depending on the size of the data and the
 number of bootstraps, \code{uni_compare} can take a while.}
+
+\item{n_bench}{A list of vectors containing the number of cases for every variable in the benchmark.
+This is only needed, if the benchmark is given as a vector. The list should be as long as the number of dataframes}
 
 \item{boot_all}{If TURE, both, dfs and benchmarks will be bootstrapped. Otherwise
 the benchmark estimate is assumed to be constant.}
