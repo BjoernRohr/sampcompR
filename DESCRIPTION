@@ -1,6 +1,6 @@
 Package: sampcompR
 Title: Comparing and Visualizing Differences Between Surveys
-Version: 0.2.4
+Version: 0.2.5
 Authors@R: 
     c(person("Bjoern", "Rohr",  email= "bjoern.rohr@gesis.org", role = c("aut", "cre","cph")),
     person("Barbara", "Felderer", email= "barbara.felderer@gesis.org", role = c("aut")))
