@@ -83,8 +83,18 @@ uni_compare_table<-function(uni_compare_object,
                                                ndigits=ndigits))
   
   base<-table_list[[1]]
+  levels<-uni_compare_object$variables
+  
+  if(length(i)==1){
+    if(isTRUE(ci_line)) {
+      colnames(base)<- c("Variables","name",df_names[1])}
+    if(isFALSE(ci_line)){
+      colnames(base)<- c("Variables",df_names[1])}
+  }
+  
+  if(length(i)>=2){
   for (j in 2:length(i)){
-    levels<-uni_compare_object$variables
+    
     if(isTRUE(ci_line)) {
       base<-merge(base,table_list[[j]], by=c("Variables","name"), all=TRUE)
       colnames(base)<- c("Variables","name",df_names[1:j])
@@ -94,8 +104,8 @@ uni_compare_table<-function(uni_compare_object,
       base<-merge(base,table_list[[j]], by=c("Variables"), all=TRUE) 
       colnames(base)<- c("Variables",df_names[1:j])}
     
-  } 
-  
+  }} 
+
 
   
   if(isTRUE(ci_line)) {
@@ -124,38 +134,85 @@ uni_compare_table<-function(uni_compare_object,
   ### add summetric ###
   if(is.null(uni_compare_object$summet)==FALSE){
     if(uni_compare_object$summet=="rmse1"| uni_compare_object$summet=="rmse2"){
-      base<-base::rbind(base,c("RMSE",format(round(unique(uni_compare_object$data$rmse), digits=ndigits), nsmall=ndigits)))
+      
+      rmse<- uni_compare_object$data |>
+        dplyr::mutate(name_dfs=factor("name_dfs",levels=uni_compare_object$name_dfs)) |>
+        dplyr::group_by("name_dfs") |> 
+        dplyr::summarise(unique(rmse))
+      rmse<-as.numeric(as.data.frame(rmse)[,2])
+      base<-base::rbind(base,c("RMSE",format(round(rmse, digits=ndigits), nsmall=ndigits)))
     }
     
     if(uni_compare_object$summet=="mse1"| uni_compare_object$summet=="mse2"){
-      base<-base::rbind(base,c("MSE",format(round(unique(uni_compare_object$data$mse), digits=ndigits), nsmall=ndigits)))
+      
+      mse<- uni_compare_object$data |>
+        dplyr::mutate(name_dfs=factor("name_dfs",levels=uni_compare_object$name_dfs)) |>
+        dplyr::group_by("name_dfs") |> 
+        dplyr::summarise(unique(mse))
+      mse<-as.numeric(as.data.frame(mse)[,2])
+      base<-base::rbind(base,c("MSE",format(round(mse, digits=ndigits), nsmall=ndigits)))
     }
     
     if(uni_compare_object$summet=="avg1"| uni_compare_object$summet=="avg2"){
-      base<-rbind(base,c("Average Error",format(round(unique(uni_compare_object$data$avg), digits=ndigits), nsmall=ndigits)))
+      
+      avg<- uni_compare_object$data |>
+        dplyr::mutate(name_dfs=factor("name_dfs",levels=uni_compare_object$name_dfs)) |> 
+        dplyr::group_by("name_dfs") |> 
+        dplyr::summarise(unique(avg))
+      avg<-as.numeric(as.data.frame(avg)[,2])
+      base<-rbind(base,c("Average Error",format(round(avg, digits=ndigits), nsmall=ndigits)))
     }
     
     if(uni_compare_object$summet=="R"){
-      base<-rbind(base,c("R-Indicator",format(round(unique(uni_compare_object$data$R_indicator), digits=ndigits), nsmall=ndigits)))
+      R_indicator<- uni_compare_object$data |>
+        dplyr::mutate(name_dfs=factor("name_dfs",levels=uni_compare_object$name_dfs)) |>
+        dplyr::group_by("name_dfs") |> 
+        dplyr::summarise(unique(R_indicator))
+      R_indicator<-as.numeric(as.data.frame(R_indicator)[,2])
+      base<-rbind(base,c("R-Indicator",format(round(R_indicator, digits=ndigits), nsmall=ndigits)))
     }
     
   }
   
   ### Add Error Ranking
   if(uni_compare_object$summet=="rmse1"| uni_compare_object$summet=="rmse2"){
-    base<-rbind(base,c("RANK",paste(rank(round(unique(uni_compare_object$data$rmse), digits=ndigits)))))
+    
+    rmse<- uni_compare_object$data |>
+      dplyr::mutate(name_dfs=factor("name_dfs",levels=uni_compare_object$name_dfs)) |>
+      dplyr::group_by("name_dfs") |> 
+      dplyr::summarise(unique(rmse))
+    rmse<-as.numeric(as.data.frame(rmse)[,2])
+    base<-rbind(base,c("RANK",paste(rank(round(rmse, digits=ndigits)))))
   }
   
   if(uni_compare_object$summet=="mse1"| uni_compare_object$summet=="mse2"){
-    base<-rbind(base,c("RANK",paste(rank(round(unique(uni_compare_object$data$mse), digits=ndigits)))))
+    
+    mse<- uni_compare_object$data |>
+      dplyr::mutate(name_dfs=factor("name_dfs",levels=uni_compare_object$name_dfs)) |>
+      dplyr::group_by("name_dfs") |> 
+      dplyr::summarise(unique(mse))
+    mse<-as.numeric(as.data.frame(mse)[,2])
+    base<-rbind(base,c("RANK",paste(rank(round(mse, digits=ndigits)))))
   }
   
   if(uni_compare_object$summet=="avg1"| uni_compare_object$summet=="avg2"){
-    base<-rbind(base,c("RANK",paste(rank(round(unique(uni_compare_object$data$avg), digits=ndigits)))))
+    
+    avg<- uni_compare_object$data |>
+      dplyr::mutate(name_dfs=factor("name_dfs",levels=uni_compare_object$name_dfs)) |>
+      dplyr::group_by("name_dfs") |> 
+      dplyr::summarise(unique(avg))
+    avg<-as.numeric(as.data.frame(avg)[,2])
+    base<-rbind(base,c("RANK",paste(rank(round(avg, digits=ndigits)))))
   }
   
   if(uni_compare_object$summet=="R"){
-    base<-rbind(base,c("RANK",paste(rank(round(unique(uni_compare_object$data$R_indicator), digits=ndigits)))))
+    
+    R_indicator<- uni_compare_object$data |>
+      dplyr::mutate(name_dfs=factor("name_dfs",levels=uni_compare_object$name_dfs)) |>
+      dplyr::group_by("name_dfs") |> 
+      dplyr::summarise(unique(R_indicator))
+    R_indicator<-as.numeric(as.data.frame(R_indicator)[,2])
+    base<-rbind(base,c("RANK",paste(rank(round(R_indicator, digits=ndigits)))))
   }
   
   
