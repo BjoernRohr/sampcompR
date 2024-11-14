@@ -54,6 +54,7 @@ values.</p>
 <span>  <span class="va">benchmarks</span>,</span>
 <span>  variables <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nboots <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  n_bench <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  boot_all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  funct <span class="op">=</span> <span class="st">"rel_mean"</span>,</span>
 <span>  data <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -100,9 +101,10 @@ values.</p>
 <dt id="arg-benchmarks">benchmarks<a class="anchor" aria-label="anchor" href="#arg-benchmarks"></a></dt>
 <dd><p>A character vector containing the names of benchmarks to compare the data frames against.
 The vector must either be the same length as <code>dfs</code>, or length 1. If it has length 1 every
-df will be compared against the same benchmark. Benchmarks can either be the name of data frames or
-the name of a list of tables. The tables in the list need to be named as the respective variables
-in the data frame of comparison.</p></dd>
+df will be compared against the same benchmark. Benchmarks can either be the name of data frames,
+the name of a list of tables, or a named vector of means. The tables in the list need to be named as the respective variables
+in the data frame of comparison. When they are a named vector of means, the means need to be named as the respective variables
+in the dfs.</p></dd>
 
 
 <dt id="arg-variables">variables<a class="anchor" aria-label="anchor" href="#arg-variables"></a></dt>
@@ -117,6 +119,11 @@ If &gt;2 bootstrapping is used to calculate standard errors with <code>nboots</c
 is calculated analytically. We do not recommend using <code>nboots</code> =0 because this method is not
 yet suitable for every <code>funct</code> used and every method. Depending on the size of the data and the
 number of bootstraps, <code>uni_compare</code> can take a while.</p></dd>
+
+
+<dt id="arg-n-bench">n_bench<a class="anchor" aria-label="anchor" href="#arg-n-bench"></a></dt>
+<dd><p>A list of vectors containing the number of cases for every variable in the benchmark.
+This is only needed, if the benchmark is given as a vector. The list should be as long as the number of dataframes</p></dd>
 
 
 <dt id="arg-boot-all">boot_all<a class="anchor" aria-label="anchor" href="#arg-boot-all"></a></dt>
