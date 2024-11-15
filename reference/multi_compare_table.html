@@ -95,14 +95,12 @@ the <code><a href="multi_compare.html">multi_compare</a></code> function.</p>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/" class="external-link">wooldridge</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">card</span><span class="op">&lt;-</span><span class="fu">wooldridge</span><span class="fu">::</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/reference/card.html" class="external-link">card</a></span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">south</span> <span class="op">&lt;-</span> <span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">south</span><span class="op">==</span><span class="fl">1</span>,<span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">north</span> <span class="op">&lt;-</span> <span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">south</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">black</span> <span class="op">&lt;-</span> <span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">black</span><span class="op">==</span><span class="fl">1</span>,<span class="op">]</span></span></span>
 <span class="r-in"><span><span class="va">white</span> <span class="op">&lt;-</span> <span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">black</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## use the function to plot the data</span></span></span>
 <span class="r-in"><span><span class="va">multi_data1</span> <span class="op">&lt;-</span> <span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="multi_compare.html">multi_compare</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">north</span>, </span></span>
-<span class="r-in"><span>                                         bench <span class="op">=</span> <span class="va">south</span>,</span></span>
+<span class="r-in"><span>                                         bench <span class="op">=</span> <span class="va">card</span>,</span></span>
 <span class="r-in"><span>                                         independent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>,<span class="st">"fatheduc"</span>,<span class="st">"motheduc"</span>,<span class="st">"IQ"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                         dependent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"educ"</span>,<span class="st">"wage"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                         family <span class="op">=</span> <span class="st">"ols"</span><span class="op">)</span> </span></span>
@@ -110,17 +108,17 @@ the <code><a href="multi_compare.html">multi_compare</a></code> function.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Difference in coeficients between sets of respondents </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          educ         wage        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> age      -7.91e-02*   -3.74e+00   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fatheduc -4.41e-02    -3.11e+00   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> motheduc 4.34e-02     5.40e+00    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> IQ       -1.85e-02**  8.34e-01    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> age      -2.43e-02    -8.55e-01   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fatheduc -2.37e-02    -2.93e-01   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> motheduc 1.23e-02     2.35e+00    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> IQ       -7.25e-03    4.80e-01    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Overall difference between north &amp; south: 25% of coeficients are significant different</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Overall difference between north &amp; card: 0% of coeficients are significant different</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (*p&lt;0.05 ; **p&lt;0.005 ; ***p&lt;0.001;  for t-test robust standard errors are used) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span>                                     </span></span>
-<span class="r-in"><span><span class="va">multi_data2</span> <span class="op">&lt;-</span> <span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="multi_compare.html">multi_compare</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">black</span>, </span></span>
-<span class="r-in"><span>                                         bench <span class="op">=</span> <span class="va">white</span>,</span></span>
+<span class="r-in"><span><span class="va">multi_data2</span> <span class="op">&lt;-</span> <span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="multi_compare.html">multi_compare</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">white</span>, </span></span>
+<span class="r-in"><span>                                         bench <span class="op">=</span> <span class="va">card</span>,</span></span>
 <span class="r-in"><span>                                         independent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>,<span class="st">"fatheduc"</span>,<span class="st">"motheduc"</span>,<span class="st">"IQ"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                         dependent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"educ"</span>,<span class="st">"wage"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                         family <span class="op">=</span> <span class="st">"ols"</span><span class="op">)</span> </span></span>
@@ -128,12 +126,12 @@ the <code><a href="multi_compare.html">multi_compare</a></code> function.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Difference in coeficients between sets of respondents </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          educ         wage        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> age      7.05e-02     1.27e+01    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fatheduc 7.38e-02     4.91e-01    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> motheduc -1.13e-01    6.94e-01    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> IQ       2.89e-02**   -5.40e-01   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> age      -1.20e-02    -9.51e-01   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fatheduc -1.45e-02    1.28e-01    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> motheduc 9.99e-03     2.03e-01    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> IQ       -9.28e-03    3.61e-01    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Overall difference between black &amp; white: 12.5% of coeficients are significant different</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Overall difference between white &amp; card: 0% of coeficients are significant different</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (*p&lt;0.05 ; **p&lt;0.005 ; ***p&lt;0.001;  for t-test robust standard errors are used) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span>                                     </span></span>
@@ -141,22 +139,22 @@ the <code><a href="multi_compare.html">multi_compare</a></code> function.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/noquote.html" class="external-link">noquote</a></span><span class="op">(</span><span class="va">table</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       data_frames variables educ       wage      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] north       age       -0.079*    -3.740    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]                       (0.034)    (4.455)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]             fatheduc  -0.044     -3.110    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]                       (0.035)    (4.582)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]             motheduc    0.043      5.400   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]                       (0.041)    (5.376)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]             IQ        -0.019**     0.834   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]                       (0.007)    (0.911)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] black       age         0.070     12.700   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,]                       (0.054)    (7.095)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11,]             fatheduc    0.074      0.491   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]                       (0.055)    (7.236)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13,]             motheduc  -0.113       0.694   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14,]                       (0.06)     (7.937)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15,]             IQ          0.029**  -0.540    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]                       (0.011)    (1.423)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] north       age       -0.024     -0.855    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]                       (0.025)    (3.257)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]             fatheduc  -0.024     -0.293    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]                       (0.028)    (3.682)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]             motheduc    0.012      2.350   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]                       (0.033)    (4.379)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]             IQ        -0.007       0.480   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]                       (0.005)    (0.691)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] white       age       -0.012     -0.951    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,]                       (0.023)    (3.02)    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,]             fatheduc  -0.014       0.128   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]                       (0.025)    (3.287)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13,]             motheduc    0.010      0.203   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14,]                       (0.029)    (3.915)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15,]             IQ        -0.009       0.361   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]                       (0.005)    (0.652)   </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
