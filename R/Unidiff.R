@@ -150,14 +150,12 @@
 #' require(wooldridge)
 #' card<-wooldridge::card
 #' 
-#' black<-wooldridge::card[wooldridge::card$black==1,]
 #' north<-wooldridge::card[wooldridge::card$south==0,]
 #' white<-wooldridge::card[wooldridge::card$black==0,]
-#' south<-wooldridge::card[wooldridge::card$south==1,]
 #' 
 #' ## use the function to plot the data 
 #' univar_comp<-sampcompR::uni_compare(dfs = c("north","white"),
-#'                                     benchmarks = c("south","black"),
+#'                                     benchmarks = c("card","card"),
 #'                                     variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
 #'                                     funct = "abs_rel_mean",
 #'                                     nboots=200,

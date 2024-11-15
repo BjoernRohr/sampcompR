@@ -156,13 +156,12 @@ differing methods. All \code{\link[stats]{glm}} Models can be compared.
 require(wooldridge)
 card<-wooldridge::card
 
-south <- card[card$south==1,]
 north <- card[card$south==0,]
 
 
 ## use the function to plot the data 
 multi_data1<-sampcompR::multi_compare(df = north, 
-                                     bench = south,
+                                     bench = card,
                                      independent = c("age","fatheduc","motheduc","IQ"),
                                      dependent = c("educ","wage"),
                                      family="ols") 
@@ -173,7 +172,6 @@ plot_multi_compare("multi_data1")
 ## Make a comparison with a formula_list
 card<-wooldridge::card
 
-south <- card[card$south==1,]
 north <- card[card$south==0,]
 
 form_list<-list(formula(educ~age+fatheduc+motheduc+IQ),
@@ -181,7 +179,7 @@ form_list<-list(formula(educ~age+fatheduc+motheduc+IQ),
 
 
 multi_data2 <- sampcompR::multi_compare(df = north, 
-                                        bench = south,
+                                        bench = card,
                                         formula_list = form_list,
                                         family="ols")
 

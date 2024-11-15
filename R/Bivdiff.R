@@ -512,14 +512,12 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
 #' require(wooldridge)
 #' card<-wooldridge::card
 #' 
-#' south <- card[card$south==1,]
 #' north <- card[card$south==0,]
-#' black <- card[card$black==1,]
 #' white <- card[card$black==0,]
 #' 
 #' ## use the function to plot the data 
 #' bivar_comp<-sampcompR::biv_compare(dfs = c("north","white"),
-#'                                    benchmarks = c("south","black"),
+#'                                    benchmarks = c("card","card"),
 #'                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
 #'                                    data=FALSE)
 #' bivar_comp

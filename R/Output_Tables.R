@@ -40,14 +40,12 @@
 #' require(wooldridge)
 #' card<-wooldridge::card
 #' 
-#' south <- card[card$south==1,]
 #' north <- card[card$south==0,]
-#' black <- card[card$black==1,]
 #' white <- card[card$black==0,]
 #' 
 #' ## use the function to plot the data 
 #' univar_data<-sampcompR::uni_compare(dfs = c("north","white"),
-#'                                     benchmarks = c("south","black"),
+#'                                     benchmarks = c("card","card"),
 #'                                     variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
 #'                                     funct = "abs_rel_mean",
 #'                                     nboots=0,
@@ -468,14 +466,12 @@ uni_compare_table2<-function(uni_compare_object, conf_adjustment=FALSE,names=NUL
 #' require(wooldridge)
 #' card<-wooldridge::card
 #' 
-#' south <- card[card$south==1,]
 #' north <- card[card$south==0,]
-#' black <- card[card$black==1,]
 #' white <- card[card$black==0,]
 #' 
 #' ## use the function to plot the data 
 #' bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
-#'                                    benchmarks = c("south","black"),
+#'                                    benchmarks = c("card","card"),
 #'                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
 #'                                    data=TRUE)
 #'                         
@@ -658,20 +654,18 @@ biv_compare_table<-function(biv_compare_object, type="diff", comparison_number=1
 #' require(wooldridge)
 #' card<-wooldridge::card
 #' 
-#' south <- card[card$south==1,]
 #' north <- card[card$south==0,]
-#' black <- card[card$black==1,]
 #' white <- card[card$black==0,]
 #' 
 #' ## use the function to plot the data
 #' multi_data1 <- sampcompR::multi_compare(df = north, 
-#'                                          bench = south,
+#'                                          bench = card,
 #'                                          independent = c("age","fatheduc","motheduc","IQ"),
 #'                                          dependent = c("educ","wage"),
 #'                                          family = "ols") 
 #'                                      
-#' multi_data2 <- sampcompR::multi_compare(df = black, 
-#'                                          bench = white,
+#' multi_data2 <- sampcompR::multi_compare(df = white, 
+#'                                          bench = card,
 #'                                          independent = c("age","fatheduc","motheduc","IQ"),
 #'                                          dependent = c("educ","wage"),
 #'                                          family = "ols") 
@@ -919,14 +913,12 @@ descriptive_table<-function(dfs,variables,varlabels=NULL, weight=NULL,
 #' require(wooldridge)
 #' card<-wooldridge::card
 #' 
-#' south <- card[card$south==1,]
 #' north <- card[card$south==0,]
-#' black <- card[card$black==1,]
 #' white <- card[card$black==0,]
 #' 
 #' ## use the function to plot the data 
 #' bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
-#'                                    benchmarks = c("south","black"),
+#'                                    benchmarks = c("card","card"),
 #'                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
 #'                                    data=TRUE)
 #' 
@@ -1059,20 +1051,18 @@ biv_per_variable<-function(biv_compare_object, ndigits = 1,varlabels=NULL,label_
 #' require(wooldridge)
 #' card<-wooldridge::card
 #' 
-#' south <- card[card$south==1,]
 #' north <- card[card$south==0,]
-#' black <- card[card$black==1,]
 #' white <- card[card$black==0,]
 #' 
 #' ## use the function to plot the data
 #' multi_data1 <- sampcompR::multi_compare(df = north, 
-#'                                         bench = south,
+#'                                         bench = card,
 #'                                         independent = c("age","fatheduc","motheduc","IQ"),
 #'                                         dependent = c("educ","wage"),
 #'                                         family = "ols") 
 #'
-#' multi_data2 <- sampcompR::multi_compare(df = black, 
-#'                                         bench = white,
+#' multi_data2 <- sampcompR::multi_compare(df = white, 
+#'                                         bench = card,
 #'                                         independent = c("age","fatheduc","motheduc","IQ"),
 #'                                         dependent = c("educ","wage"),
 #'                                         family = "ols") 

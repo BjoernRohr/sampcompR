@@ -53,20 +53,18 @@ function.
 require(wooldridge)
 card<-wooldridge::card
 
-south <- card[card$south==1,]
 north <- card[card$south==0,]
-black <- card[card$black==1,]
 white <- card[card$black==0,]
 
 ## use the function to plot the data
 multi_data1 <- sampcompR::multi_compare(df = north, 
-                                        bench = south,
+                                        bench = card,
                                         independent = c("age","fatheduc","motheduc","IQ"),
                                         dependent = c("educ","wage"),
                                         family = "ols") 
 
-multi_data2 <- sampcompR::multi_compare(df = black, 
-                                        bench = white,
+multi_data2 <- sampcompR::multi_compare(df = white, 
+                                        bench = card,
                                         independent = c("age","fatheduc","motheduc","IQ"),
                                         dependent = c("educ","wage"),
                                         family = "ols") 
