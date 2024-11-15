@@ -4,6 +4,7 @@
 
 * Added the possibility to input benchmarks as a named vector of means in univariate comparison
 * Fixed small errors in the uni_compare_table functions that occurred when only one benchmark and survey were compared.
+* Changed example to show bias comparison (estimating bias if only white respondents or if only north respondents would have been recruited)
 
 ## Changes in version 0.2.4 (2024-10-11)
 
