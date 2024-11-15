@@ -15,3 +15,5 @@
 ^docs$
 ^pkgdown$
 ^CRAN-SUBMISSION$
+^README_old\.Rmd$
+^README_HTML_old\.Rmd$

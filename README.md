@@ -4,11 +4,9 @@ This is only a beta version of sampcompR. It is still in development and
 may contain bugs. If you use the package and a bug crosses your way,
 feel free to contact the Author (<bjoern.rohr@gesis.org>).
 
-# sampcompR <a href="https://bjoernrohr.github.io/sampcompR/"><img src="man/figures/logo.png" align="right" height="120" alt="sampcompR website" /></a>
+# sampcompR
 
 <!-- badges: start -->
-
-[![R-CMD-check](https://github.com/BjoernRohr/sampcompR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/BjoernRohr/sampcompR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 SampcompR aims to compare the similarity of one or more data frames with
@@ -71,26 +69,25 @@ library(knitr)
 library(kableExtra)
 
 
-card<-wooldridge::card
+whole_card<-wooldridge::card # the full survey
 
 # we recode the married variable to a dummy, idicating of the respondents are married or not, which will be needed later. 
-card$married[card$married!=1]<-0
+whole_card$married[whole_card$married!=1]<-0
 
-south<-card[card$south==1,] # only respondets that lived in the south
-north<-card[card$south==0,] # only respondets that lived in the north
-black<-card[card$black==1,] # only black respondets.
-white<-card[card$black==0,] # only white respondets.
+north<-whole_card[whole_card$south==0,] # only respondets that lived in the north
+white<-whole_card[whole_card$black==0,] # only white respondets.
 
 
 ### install some other 
 ```
 
-Splitting the data frame into subgroups allows us to compare if the
-subgroups differ, for example, if the respondents living in the `North`
-are different from those living in the `South` or if `black` respondents
-are different from `white`. This could be useful, for example, as a
-robustness check, if we fear that the estimates we found in our study
-based on the whole data frame might differ for specific sub-groups.
+Separating respondents that live in the `North` and `white` respondents
+lets us estimate the bias in the data frame, that would occur, when only
+those respondents would have been sampled, but the results should
+nevertheless be generalized to the whole population. Those subgroups
+were chosen due to their availability in the data frame. Nonetheless, a
+similar use case could occur in a real situation, for example to analyse
+bias in a mixed mode survey, if only one mode was used to conduct it.
 
 ### Univariate Comparison
 
@@ -100,14 +97,21 @@ similarly, we will start with a univariate comparison.
 ``` r
 library(sampcompR)
 
-univar_data<-sampcompR::uni_compare(dfs = c("north","black"),
-                                    benchmarks = c("south","white"),
+univar_data<-sampcompR::uni_compare(dfs = c("north","white"),
+                                    benchmarks = c("whole_card","whole_card"),
                                     variables=c("age","educ","fatheduc",
                                                 "motheduc","wage","IQ"),
                                     funct = "rel_mean",
                                     nboots=0,
                                     summetric="avg2",
                                     data=T,type = "comparison")
+#> 
+#> Attache Paket: 'purrr'
+#> Das folgende Objekt ist maskiert 'package:magrittr':
+#> 
+#>     set_names
+#> survey 1 of 2 is compared
+#> survey 2 of 2 is compared
 sampcompR::plot_uni_compare(univar_data)
 ```
 
@@ -135,33 +139,49 @@ RMarkdown).
 
 ``` r
 uni_output_table<-sampcompR::uni_compare_table(univar_data)
+#> Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
+#> dplyr 1.1.0.
+#> ℹ Please use `reframe()` instead.
+#> ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`
+#>   always returns an ungrouped data frame and adjust accordingly.
+#> ℹ The deprecated feature was likely used in the sampcompR package.
+#>   Please report the issue to the authors.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 ```
 
 **Table 1**
 
-| Variables     |      north       |      black       |
-|:--------------|:----------------:|:----------------:|
-| age           |      0.006       |      -0.012      |
-|               | (\>0.000, 0.011) | (-0.020, -0.004) |
-| educ          |      0.087       |      -0.125      |
-|               |  (0.078, 0.096)  | (-0.139, -0.111) |
-| fatheduc      |      0.186       |      -0.304      |
-|               |  (0.168, 0.205)  | (-0.341, -0.267) |
-| motheduc      |      0.149       |      -0.230      |
-|               |  (0.135, 0.163)  | (-0.256, -0.204) |
-| wage          |      0.276       |      -0.273      |
-|               |  (0.251, 0.301)  | (-0.296, -0.250) |
-| IQ            |      0.065       |      -0.177      |
-|               |  (0.057, 0.073)  | (-0.193, -0.161) |
-| Average Error |      0.128       |      0.187       |
-| RANK          |        1         |        2         |
-| N             |   1358 - 1795    |    297 - 703     |
+| Variables     |      north      |      white      |
+|:--------------|:---------------:|:---------------:|
+| age           |      0.002      |      0.003      |
+|               | (-0.003, 0.007) | (-0.002, 0.007) |
+| educ          |      0.033      |      0.030      |
+|               | ( 0.025, 0.042) | ( 0.022, 0.038) |
+| fatheduc      |      0.063      |      0.053      |
+|               | ( 0.046, 0.080) | ( 0.038, 0.068) |
+| motheduc      |      0.054      |      0.049      |
+|               | ( 0.041, 0.067) | ( 0.037, 0.061) |
+| wage          |      0.096      |      0.068      |
+|               | ( 0.074, 0.117) | ( 0.049, 0.087) |
+| IQ            |      0.021      |      0.026      |
+|               | ( 0.014, 0.029) | ( 0.020, 0.032) |
+| Average Error |      0.045      |      0.038      |
+| RANK          |        2        |        1        |
+| N             |   1358 - 1795   |   1764 - 2307   |
 
 Difference in Relative Means off different Survey Groups
 
 The table displays the difference between dfs and benchmarks for all
 variables, the confidence intervals, and the summary metric specified
-when creating the `uni_compare_object` for every comparison.
+when creating the `uni_compare_object` for every comparison. As we can
+see in the table, as well as in the plot before, surveying only
+respondents living in the `North` would have let to an overestimation of
+education, wage and IQ, however the age would have been estimated rather
+similar. We find similar results for the second comparison. Of cause the
+data frame for this example is rather dated and a newer data frame might
+have led to different results.
 
 ### Bivariate Comparison
 
@@ -170,18 +190,13 @@ calculate the bivariate difference between the data frames and plot the
 results.
 
 ``` r
-biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
-                                 benchmarks = c("south","white"),
+biv_data<-sampcompR::biv_compare(dfs = c("north","white"),
+                                 benchmarks = c("whole_card","whole_card"),
                                  variables= c("age","educ","fatheduc",
                                              "motheduc","wage","IQ"),
                                  data=T, corrtype = "rho",
                                  weight = "weight",
                                  id="id")
-#> 
-#> Attache Paket: 'purrr'
-#> Das folgende Objekt ist maskiert 'package:magrittr':
-#> 
-#>     set_names
 #> survey 1 of 2 is compared
 #> survey 2 of 2 is compared
 
@@ -204,16 +219,16 @@ Pearson’s r correlations could be of different directions (e.g., one is
 positive, while the other is negative). Second, it could be that one of
 them is double the size of the other.
 
-In our example, we can see on the left that the respondents living in
-the `North` are very different from those living in the `South`
-regarding the investigated bivariate correlations. Only 33.3% of all
-correlations are similar between both groups (`Same`) and would lead to
-similar interpretations measured with either group of the survey. 46,7%
-of correlations show minor differences (`Small Diff`), meaning that
-similar interpretations may not be guaranteed, while 20% of the
+In our example, we can see on the left that the a survey containing only
+respondents living in the `North` is very different from the complete
+survey regarding the investigated bivariate correlations. Only 46.7% of
+all correlations are similar between both groups (`Same`) and would lead
+to similar interpretations measured with either group of the survey.
+40.0% of correlations show minor differences (`Small Diff`), meaning
+that similar interpretations may not be guaranteed, while 13.3% of the
 correlations are very different (`Large Diff`) between the groups. The
-right half of the plot shows the comparison between `black` and `white`
-respondents, where fewer differences are found.
+right half of the plot shows the comparison between `white` respondents
+and the whole survey, where similar results are found.
 
 As before, we can also take a closer look at the exact values by putting
 the `biv_compare_object` into the `biv_compare_table` function of our
@@ -226,25 +241,25 @@ table_biv1<-sampcompR::biv_compare_table(biv_data,type = "diff",comparison_numbe
 
 **Table 2**
 
-|          |    age     |    educ     |  fatheduc   |  motheduc   | wage  | IQ  |
-|:---------|:----------:|:-----------:|:-----------:|:-----------:|:-----:|:---:|
-| age      |            |             |             |             |       |     |
-| educ     |  0.12\*\*  |             |             |             |       |     |
-| fatheduc |    0.00    | -0.11\*\*\* |             |             |       |     |
-| motheduc |   -0.06    | -0.14\*\*\* | -0.09\*\*\* |             |       |     |
-| wage     | 0.12\*\*\* | -0.19\*\*\* | -0.16\*\*\* | -0.19\*\*\* |       |     |
-| IQ       |    0.04    |    0.00     |  -0.15\*\*  |  -0.12\*\*  | -0.08 |     |
+|          |  age  |    educ     | fatheduc  |  motheduc   | wage  | IQ  |
+|:---------|:-----:|:-----------:|:---------:|:-----------:|:-----:|:---:|
+| age      |       |             |           |             |       |     |
+| educ     | 0.05  |             |           |             |       |     |
+| fatheduc | -0.02 |   -0.07\*   |           |             |       |     |
+| motheduc | -0.04 | -0.09\*\*\* | -0.06\*\* |             |       |     |
+| wage     | 0.05  | -0.11\*\*\* | -0.10\*\* | -0.12\*\*\* |       |     |
+| IQ       | 0.01  |    -0.01    |  -0.08\*  |   -0.07\*   | -0.06 |     |
 
 Difference in Pearson’s r for the North/South Sample
 
 Using `type = diff` gives us a matrix for the difference in Pearson’s r
 between the surveys, while `comparison_number = 1` indicates that the
 table should be for the first comparison (between the`north` and the
-`south` sample). Here we can again see what correlations significantly
+whole sample). Here we can again see which correlations significantly
 differ between the surveys and to what extent. However, to know why the
 colors are as they are in the plot, we must also look at the individual
 correlation matrices for both surveys. Here we only look at the tables
-for comparing north versus south respondents as an example.
+for comparing `north` versus the whole sample respondents as an example.
 
 ``` r
 # North correlation matrix of the first comparison
@@ -272,29 +287,26 @@ Pearson’s r correlation matrix for the North Sample
 |          |    age     |    educ    |  fatheduc  |  motheduc  |    wage    | IQ  |
 |:---------|:----------:|:----------:|:----------:|:----------:|:----------:|:---:|
 | age      |            |            |            |            |            |     |
-| educ     | -0.08\*\*  |            |            |            |            |     |
-| fatheduc |  -0.09\*   | 0.52\*\*\* |            |            |            |     |
-| motheduc |   -0.02    | 0.49\*\*\* | 0.66\*\*\* |            |            |     |
-| wage     | 0.23\*\*\* | 0.38\*\*\* | 0.25\*\*\* | 0.28\*\*\* |            |     |
-| IQ       |  -0.09\*   | 0.51\*\*\* | 0.40\*\*\* | 0.35\*\*\* | 0.21\*\*\* |     |
+| educ     |   -0.01    |            |            |            |            |     |
+| fatheduc | -0.06\*\*  | 0.47\*\*\* |            |            |            |     |
+| motheduc |  -0.04\*   | 0.45\*\*\* | 0.63\*\*\* |            |            |     |
+| wage     | 0.30\*\*\* | 0.30\*\*\* | 0.19\*\*\* | 0.20\*\*\* |            |     |
+| IQ       | -0.06\*\*  | 0.51\*\*\* | 0.33\*\*\* | 0.31\*\*\* | 0.19\*\*\* |     |
 
-Pearson’s r correlation matrix for the South Sample
+Pearson’s r correlation matrix for the Whole Crad Survey
 
-This shows us the whole picture. Looking at the correlation between age
-and education, for example, we can see that the correlations in both
-surveys are small. Additionally, the correlation is positive and
-insignificant in the north group, while it is negative and significant
-in the south group. Here, in addition to the conditions for a slight
-difference, both conditions for a `Large Diff` are true. However,
-looking at the correlations between wage and the father’s education, as
-well as the mother’s education, we see that only the difference in size
-was the reason for the `Large Diff` category. Nonetheless, we would come
-to very different conclusions measuring those correlations for either
-group.
+This shows us the whole picture. Looking at the correlation between wage
+and fathers education, for example, we can see that the correlations in
+both surveys are different. While, the correlation is positive and small
+in the north group, stronger for the in the whole survey. Here, in
+addition to the conditions for a slight difference, one condition for a
+`Large Diff` are true (i.e., one Pearson’s r value is at least double
+the size if the other, 0.09 vs. 0.19). Therefore, we could come to very
+different conclusions measuring those correlations for either group.
 
 ### Multivariate Comparison
 
-When you want to know how different certain data frames or sub-data
+When we want to know how different certain data frames or sub-data
 frames are, it may also be interesting to see if those differences exist
 in multivariate comparisons. For this, the first step is to choose the
 multivariate models we want to compare. This function
@@ -322,7 +334,7 @@ independent<-c("age","fatheduc","motheduc","IQ")
 
 # compare the north and south data frames
 multi_data1_ols<-sampcompR::multi_compare(df=north, 
-                                     bench=south,
+                                     bench=whole_card,
                                      independent = independent,
                                      dependent = dependent_ols,
                                      family = "ols")  
@@ -330,18 +342,18 @@ multi_data1_ols<-sampcompR::multi_compare(df=north,
 #> Difference in coeficients between sets of respondents 
 #>  
 #>          wage         educ        
-#> age      -3.74e+00    -7.91e-02*  
-#> fatheduc -3.11e+00    -4.41e-02   
-#> motheduc 5.40e+00     4.34e-02    
-#> IQ       8.34e-01     -1.85e-02** 
+#> age      -8.55e-01    -2.43e-02   
+#> fatheduc -2.93e-01    -2.37e-02   
+#> motheduc 2.35e+00     1.23e-02    
+#> IQ       4.80e-01     -7.25e-03   
 #> 
-#> Overall difference between north & south: 25% of coeficients are significant different
+#> Overall difference between north & whole_card: 0% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
 
 # compare the black and white data frames
-multi_data2_ols<-sampcompR::multi_compare(df=black, 
-                                     bench=white,
+multi_data2_ols<-sampcompR::multi_compare(df=white, 
+                                     bench=whole_card,
                                      independent = independent,
                                      dependent = dependent_ols,
                                      family = "ols")
@@ -349,18 +361,18 @@ multi_data2_ols<-sampcompR::multi_compare(df=black,
 #> Difference in coeficients between sets of respondents 
 #>  
 #>          wage         educ        
-#> age      1.27e+01     7.05e-02    
-#> fatheduc 4.91e-01     7.38e-02    
-#> motheduc 6.94e-01     -1.13e-01   
-#> IQ       -5.40e-01    2.89e-02**  
+#> age      -9.51e-01    -1.20e-02   
+#> fatheduc 1.28e-01     -1.45e-02   
+#> motheduc 2.03e-01     9.99e-03    
+#> IQ       3.61e-01     -9.28e-03   
 #> 
-#> Overall difference between black & white: 12.5% of coeficients are significant different
+#> Overall difference between white & whole_card: 0% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
 
 # plot the results
 sampcompR::plot_multi_compare(c("multi_data1_ols","multi_data2_ols"),
-                             plots_label=c("north","black"))
+                             plots_label=c("north","white"))
 ```
 
 <img src="man/figures/README-ols_models-1.png" width="100%" />
@@ -377,13 +389,12 @@ models. If those conditions are true, it is red (Large Diff) if the
 coefficients differ in direction or one is the size of the other and
 yellow (Small Diff) otherwise.
 
-As we can see here in those models, there are fewer differences than
-before in the bivariate comparison, especially in the models based on
-the comparison between the black and the white sub-data frames, at least
-for those models compared. Also, we can see that the differences on the
-wage variable we found in previous comparisons are not present in the
-multivariate model. However, even in multivariate regression, education
-seems more prone to group differences.
+As we can see here in those models, other than before in the bivariate
+comparison, there are no differences, at least for those models
+compared. Also, we can see that the differences on the wage variable we
+found in previous comparisons are not present in the multivariate model.
+However, even in multivariate regression, education seems more prone to
+group differences.
 
 In addition to the models, we can answer with an ols regression, it
 would also be interesting to add a model estimating the effect of the
@@ -400,7 +411,7 @@ dependent_log<-c("married")
 
 # compare the north and south data frames
 multi_data1_log<-sampcompR::multi_compare(df=north, 
-                                     bench=south,
+                                     bench=whole_card,
                                      independent = independent,
                                      dependent = dependent_log,
                                      family = "logit")  
@@ -408,18 +419,18 @@ multi_data1_log<-sampcompR::multi_compare(df=north,
 #> Difference in coeficients between sets of respondents 
 #>  
 #>          married     
-#> age      1.86e-02    
-#> fatheduc -1.00e-02   
-#> motheduc 2.17e-02    
-#> IQ       1.07e-03    
+#> age      5.37e-03    
+#> fatheduc -3.82e-03   
+#> motheduc 8.77e-03    
+#> IQ       -6.37e-06   
 #> 
-#> Overall difference between north & south: 0% of coeficients are significant different
+#> Overall difference between north & whole_card: 0% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
 
 # compare the black and white data frames
-multi_data2_log<-sampcompR::multi_compare(df=black, 
-                                     bench=white,
+multi_data2_log<-sampcompR::multi_compare(df=white, 
+                                     bench=whole_card,
                                      independent = independent,
                                      dependent = dependent_log,
                                      family = "logit")
@@ -427,12 +438,12 @@ multi_data2_log<-sampcompR::multi_compare(df=black,
 #> Difference in coeficients between sets of respondents 
 #>  
 #>          married     
-#> age      3.54e-02    
-#> fatheduc -8.37e-02   
-#> motheduc 1.99e-01*   
-#> IQ       -4.24e-03   
+#> age      -1.40e-03   
+#> fatheduc 1.46e-02    
+#> motheduc -2.47e-02   
+#> IQ       6.73e-03    
 #> 
-#> Overall difference between black & white: 25% of coeficients are significant different
+#> Overall difference between white & whole_card: 0% of coeficients are significant different
 #> (*p<0.05 ; **p<0.005 ; ***p<0.001;  for t-test robust standard errors are used) 
 #> 
 
@@ -456,8 +467,9 @@ the new dependent variable, it would still be interesting to plot all
 models together. This can be done with the function
 `multi_compare_merge`, which adds multi_compare_objects together and use
 the newly created objects for the plot. This shows us that in addition
-to the education model, in the marriage model, one coefficient is
-different for black respondents than for white respondents.
+to the education model, in the marriage model, again no coefficient is
+different for white respondents from the same models conducted on the
+whole survey.
 
 We also add the objects into the provided table function to look at the
 differences closer.
@@ -471,24 +483,24 @@ multi_table3 <-sampcompR::multi_compare_table(c("final_multi1","final_multi2"),t
 
 **Table 5**
 
-| data_frames | variables |  wage   |    educ    | married |
-|:------------|:---------:|:-------:|:----------:|:-------:|
-| north       |    age    | -3.740  |  -0.079\*  |  0.019  |
-|             |           | (4.455) |  (0.034)   | (0.048) |
-|             | fatheduc  | -3.110  |   -0.044   | -0.010  |
-|             |           | (4.582) |  (0.035)   | (0.045) |
-|             | motheduc  |  5.400  |   0.043    |  0.022  |
-|             |           | (5.376) |  (0.041)   | (0.054) |
-|             |    IQ     |  0.834  | -0.019\*\* |  0.001  |
-|             |           | (0.911) |  (0.007)   | (0.009) |
-| black       |    age    | 12.700  |   0.070    |  0.035  |
-|             |           | (7.095) |  (0.054)   | (0.069) |
-|             | fatheduc  |  0.491  |   0.074    | -0.084  |
-|             |           | (7.236) |  (0.055)   | (0.067) |
-|             | motheduc  |  0.694  |   -0.113   | 0.199\* |
-|             |           | (7.937) |   (0.06)   | (0.08)  |
-|             |    IQ     | -0.540  | 0.029\*\*  | -0.004  |
-|             |           | (1.423) |  (0.011)   | (0.013) |
+| data_frames | variables |  wage   |  educ   | married |
+|:------------|:---------:|:-------:|:-------:|:-------:|
+| north       |    age    | -0.855  | -0.024  |  0.005  |
+|             |           | (3.257) | (0.025) | (0.033) |
+|             | fatheduc  | -0.293  | -0.024  | -0.004  |
+|             |           | (3.682) | (0.028) | (0.035) |
+|             | motheduc  |  2.350  |  0.012  |  0.009  |
+|             |           | (4.379) | (0.033) | (0.043) |
+|             |    IQ     |  0.480  | -0.007  |  0.000  |
+|             |           | (0.691) | (0.005) | (0.006) |
+| white       |    age    | -0.951  | -0.012  | -0.001  |
+|             |           | (3.02)  | (0.023) | (0.032) |
+|             | fatheduc  |  0.128  | -0.014  |  0.015  |
+|             |           | (3.287) | (0.025) | (0.032) |
+|             | motheduc  |  0.203  |  0.010  | -0.025  |
+|             |           | (3.915) | (0.029) | (0.039) |
+|             |    IQ     |  0.361  | -0.009  |  0.007  |
+|             |           | (0.652) | (0.005) | (0.006) |
 
 Multivariate Comparison of Subgroups of the Card Sample : Interaction
 Models
@@ -505,14 +517,14 @@ Models
 |             |           |   (3.518)    |   (0.026)   |   (0.034)   |
 |             |    IQ     | 2.050\*\*\*  | 0.068\*\*\* |   -0.002    |
 |             |           |   (0.545)    |   (0.004)   |   (0.005)   |
-| black       |    age    | 21.000\*\*\* |    0.016    |   0.139\*   |
-|             |           |   (5.425)    |   (0.054)   |   (0.065)   |
-|             | fatheduc  |    4.710     |    0.073    |    0.049    |
-|             |           |    (5.49)    |   (0.054)   |   (0.063)   |
-|             | motheduc  |    4.260     | 0.200\*\*\* | -0.231\*\*  |
-|             |           |   (5.952)    |   (0.059)   |   (0.075)   |
-|             |    IQ     |   2.710\*    | 0.041\*\*\* |   -0.004    |
-|             |           |   (1.075)    |   (0.011)   |   (0.012)   |
+| white       |    age    | 33.700\*\*\* | 0.087\*\*\* | 0.174\*\*\* |
+|             |           |    (2.21)    |   (0.016)   |   (0.023)   |
+|             | fatheduc  |   5.200\*    | 0.147\*\*\* |   -0.035    |
+|             |           |   (2.415)    |   (0.018)   |   (0.023)   |
+|             | motheduc  |    4.950     | 0.088\*\*\* |   -0.032    |
+|             |           |   (2.894)    |   (0.021)   |   (0.028)   |
+|             |    IQ     | 2.170\*\*\*  | 0.070\*\*\* |   -0.009    |
+|             |           |   (0.491)    |   (0.004)   |   (0.005)   |
 
 Multivariate Comparison of Subgroups of the Card Sample : North and
 Black Sample Models
@@ -521,41 +533,32 @@ Black Sample Models
 
 | data_frames | variables |     wage     |    educ     |   married   |
 |:------------|:---------:|:------------:|:-----------:|:-----------:|
-| south       |    age    | 29.800\*\*\* |    0.020    | 0.186\*\*\* |
-|             |           |   (4.008)    |   (0.029)   |   (0.044)   |
-|             | fatheduc  |    2.520     | 0.112\*\*\* |   -0.026    |
-|             |           |   (3.598)    |   (0.029)   |   (0.035)   |
-|             | motheduc  |   8.210\*    | 0.129\*\*\* |   -0.044    |
-|             |           |   (3.642)    |   (0.033)   |   (0.041)   |
-|             |    IQ     | 2.880\*\*\*  | 0.050\*\*\* |   -0.001    |
-|             |           |   (0.712)    |   (0.006)   |   (0.008)   |
-| white       |    age    | 33.700\*\*\* | 0.087\*\*\* | 0.174\*\*\* |
-|             |           |   (2.507)    |   (0.017)   |   (0.024)   |
-|             | fatheduc  |   5.200\*    | 0.147\*\*\* |   -0.035    |
-|             |           |    (2.45)    |   (0.019)   |   (0.022)   |
-|             | motheduc  |    4.950     | 0.088\*\*\* |   -0.032    |
-|             |           |   (3.044)    |   (0.023)   |   (0.029)   |
-|             |    IQ     | 2.170\*\*\*  | 0.070\*\*\* |   -0.009    |
-|             |           |   (0.516)    |   (0.004)   |   (0.005)   |
+| whole_card  |    age    | 32.700\*\*\* | 0.075\*\*\* | 0.173\*\*\* |
+|             |           |   (2.344)    |   (0.016)   |   (0.022)   |
+|             | fatheduc  |   5.330\*    | 0.132\*\*\* |   -0.020    |
+|             |           |   (2.243)    |   (0.018)   |   (0.021)   |
+|             | motheduc  |    5.160     | 0.098\*\*\* |  -0.057\*   |
+|             |           |   (2.735)    |   (0.021)   |   (0.027)   |
+|             |    IQ     | 2.530\*\*\*  | 0.061\*\*\* |   -0.002    |
+|             |           |    (0.44)    |   (0.003)   |   (0.004)   |
+| whole_card  |    age    | 32.700\*\*\* | 0.075\*\*\* | 0.173\*\*\* |
+|             |           |   (2.344)    |   (0.016)   |   (0.022)   |
+|             | fatheduc  |   5.330\*    | 0.132\*\*\* |   -0.020    |
+|             |           |   (2.243)    |   (0.018)   |   (0.021)   |
+|             | motheduc  |    5.160     | 0.098\*\*\* |  -0.057\*   |
+|             |           |   (2.735)    |   (0.021)   |   (0.027)   |
+|             |    IQ     | 2.530\*\*\*  | 0.061\*\*\* |   -0.002    |
+|             |           |    (0.44)    |   (0.003)   |   (0.004)   |
 
 Multivariate Comparison of Subgroups of the Card Sample : South and
 White Sample Models
 
-Now looking, for example, at the `motheduc` coefficient in the second
-comparison, we can see that there is a significant negative effect of
-the mother’s education getting married. At the same time, there is no
-significant effect for white respondents. This means that a model based
-on the whole sample could lead to wrong conclusions for this
-coefficient. On the other hand father’s education seems to have a
-similar effect on both groups.
-
-Overall the comparison shows differences between the sub-groups in some
-cases. Suppose those cases play a role in the overall analyses of a
-research project. Splitting the data and reporting different results
-depending on the group could make sense in that case. On the other hand,
-if we only want to look at the `wage` model, there seem to be fewer
-differences in our example, and splitting the data frame into different
-groups might be unnecessary.
+Overall the comparison shows no differences between the sub-groups and
+the whole survey. Suppose those models play a role in the overall
+analyses of a research project, one would come to similar results using
+any survey. In other words, for those multivariate models, we would not
+find any bias, had we only sampled parts of the population. Notheless,
+there could be other models, where bias can be prevalant.
 
 ## Further Use-Cases
 
@@ -567,7 +570,7 @@ to non-respondents (e.g., by comparing information known in the sample
 frame in probability surveys) or comparing two survey modes when a
 sample was gathered using differing modes.
 
-In a preprint (Rohr et al., 2023), we used the package (which was
+In a recent paper (Rohr et al., 2024), we used the package (which was
 created and designed in this context) to compare several non-probability
 and probability surveys against a benchmark survey.
 
@@ -619,6 +622,9 @@ multiple comparisons.
 -   `multi_compare_table()` can be used to get a table for the results
     of the `multi_compare()` function.
 
+-   `multi_compare_merge()` can combine objects of the multi_compare()
+    function, to plot them together.
+
 ### Miscellaneous Functions
 
 -   `dataequalizer()` can be used to reduce one data frame to only
@@ -626,11 +632,12 @@ multiple comparisons.
     variables given to the function.
 
 -   `descriptive_table` can be used to get a descriptive table for a
-    dataset, including weighting.
+    data frame, including weighting.
 
 ## References
 
-Rohr, B., Silber, H., Felderer, B. (2024), “Comparing the accuracy of
-univariate, bivariate, and multivariate estimates across probability and
-non-probability surveys with populations benchmarks”, SocArXiv,
-Available at <https://doi.org/10.31235/osf.io/n6ehf>
+Rohr, B., Silber, H., & Felderer, B. (2024). Comparing the Accuracy of
+Univariate, Bivariate, and Multivariate Estimates across Probability and
+Nonprobability Surveys with Population Benchmarks. Sociological
+Methodology, 00811750241280963.
+<https://doi.org/10.1177/00811750241280963>
