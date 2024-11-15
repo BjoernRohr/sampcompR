@@ -54,11 +54,10 @@
 <p>This is only a beta version of sampcompR. It is still in development and may contain bugs. If you use the package and a bug crosses your way, feel free to contact the Author (<a href="mailto:bjoern.rohr@gesis.org" class="email">bjoern.rohr@gesis.org</a>).</p>
 </div>
 <div class="section level1">
-<h1 id="sampcompr-">sampcompR 
-<a class="anchor" aria-label="anchor" href="#sampcompr-"></a>
+<h1 id="sampcompr">sampcompR<a class="anchor" aria-label="anchor" href="#sampcompr"></a>
 </h1>
 <!-- badges: start -->
-
+<!-- badges: end -->
 <p>SampcompR aims to compare the similarity of one or more data frames with one or more benchmark data frames. This is done on a univariate, bivariate, and multivariate level. The main intention of the package was to compare surveys to benchmark surveys, although other comparisons are also viable. (e.g., mode-comparisons)</p>
 <ul>
 <li><p>On the univariate level, the variables with the same name in data frames and benchmarks are compared using one of the different measures. Then a plot can be generated to visualize the differences and present a value indicating the overall difference of all variables (e.g., average difference, RMSE).</p></li>
@@ -96,19 +95,17 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/" class="external-link">kableExtra</a></span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="va">card</span><span class="op">&lt;-</span><span class="fu">wooldridge</span><span class="fu">::</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/reference/card.html" class="external-link">card</a></span></span>
+<span><span class="va">whole_card</span><span class="op">&lt;-</span><span class="fu">wooldridge</span><span class="fu">::</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/reference/card.html" class="external-link">card</a></span> <span class="co"># the full survey</span></span>
 <span></span>
 <span><span class="co"># we recode the married variable to a dummy, idicating of the respondents are married or not, which will be needed later. </span></span>
-<span><span class="va">card</span><span class="op">$</span><span class="va">married</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">married</span><span class="op">!=</span><span class="fl">1</span><span class="op">]</span><span class="op">&lt;-</span><span class="fl">0</span></span>
+<span><span class="va">whole_card</span><span class="op">$</span><span class="va">married</span><span class="op">[</span><span class="va">whole_card</span><span class="op">$</span><span class="va">married</span><span class="op">!=</span><span class="fl">1</span><span class="op">]</span><span class="op">&lt;-</span><span class="fl">0</span></span>
 <span></span>
-<span><span class="va">south</span><span class="op">&lt;-</span><span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">south</span><span class="op">==</span><span class="fl">1</span>,<span class="op">]</span> <span class="co"># only respondets that lived in the south</span></span>
-<span><span class="va">north</span><span class="op">&lt;-</span><span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">south</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span> <span class="co"># only respondets that lived in the north</span></span>
-<span><span class="va">black</span><span class="op">&lt;-</span><span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">black</span><span class="op">==</span><span class="fl">1</span>,<span class="op">]</span> <span class="co"># only black respondets.</span></span>
-<span><span class="va">white</span><span class="op">&lt;-</span><span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">black</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span> <span class="co"># only white respondets.</span></span>
+<span><span class="va">north</span><span class="op">&lt;-</span><span class="va">whole_card</span><span class="op">[</span><span class="va">whole_card</span><span class="op">$</span><span class="va">south</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span> <span class="co"># only respondets that lived in the north</span></span>
+<span><span class="va">white</span><span class="op">&lt;-</span><span class="va">whole_card</span><span class="op">[</span><span class="va">whole_card</span><span class="op">$</span><span class="va">black</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span> <span class="co"># only white respondets.</span></span>
 <span></span>
 <span></span>
 <span><span class="co">### install some other </span></span></code></pre></div>
-<p>Splitting the data frame into subgroups allows us to compare if the subgroups differ, for example, if the respondents living in the <code>North</code> are different from those living in the <code>South</code> or if <code>black</code> respondents are different from <code>white</code>. This could be useful, for example, as a robustness check, if we fear that the estimates we found in our study based on the whole data frame might differ for specific sub-groups.</p>
+<p>Separating respondents that live in the <code>North</code> and <code>white</code> respondents lets us estimate the bias in the data frame, that would occur, when only those respondents would have been sampled, but the results should nevertheless be generalized to the whole population. Those subgroups were chosen due to their availability in the data frame. Nonetheless, a similar use case could occur in a real situation, for example to analyse bias in a mixed mode survey, if only one mode was used to conduct it.</p>
 </div>
 <div class="section level3">
 <h3 id="univariate-comparison">Univariate Comparison<a class="anchor" aria-label="anchor" href="#univariate-comparison"></a>
@@ -117,120 +114,14 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bjoernrohr.github.io/sampcompR/">sampcompR</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">univar_data</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/uni_compare.html">uni_compare</a></span><span class="op">(</span>dfs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"north"</span>,<span class="st">"black"</span><span class="op">)</span>,</span>
-<span>                                    benchmarks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"south"</span>,<span class="st">"white"</span><span class="op">)</span>,</span>
+<span><span class="va">univar_data</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/uni_compare.html">uni_compare</a></span><span class="op">(</span>dfs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"north"</span>,<span class="st">"white"</span><span class="op">)</span>,</span>
+<span>                                    benchmarks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"whole_card"</span>,<span class="st">"whole_card"</span><span class="op">)</span>,</span>
 <span>                                    variables<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>,<span class="st">"educ"</span>,<span class="st">"fatheduc"</span>,</span>
 <span>                                                <span class="st">"motheduc"</span>,<span class="st">"wage"</span>,<span class="st">"IQ"</span><span class="op">)</span>,</span>
 <span>                                    funct <span class="op">=</span> <span class="st">"rel_mean"</span>,</span>
 <span>                                    nboots<span class="op">=</span><span class="fl">0</span>,</span>
 <span>                                    summetric<span class="op">=</span><span class="st">"avg2"</span>,</span>
 <span>                                    data<span class="op">=</span><span class="cn">T</span>,type <span class="op">=</span> <span class="st">"comparison"</span><span class="op">)</span></span>
-<span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/plot_uni_compare.html">plot_uni_compare</a></span><span class="op">(</span><span class="va">univar_data</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-univariate_comparison-1.png" width="100%"></p>
-<p>Here we can see a plot showing the difference in mean for several variables (indicated in the <code>variables</code> parameter) in the data frames. The first data frame, named as a character in <code>dfs</code>, is compared to the first data frame in <code>benchmarks</code>, while the second is compared to the second, and so forth. Another important parameter is <code>nboots</code>. It indicates the number of bootstraps to calculate the confidence intervals. We recommend using at least 2000 to 10000 bootstraps, although this may take a while. It is also possible to set <code>nboots==0</code>, as we did in this example. In this case, the confidence intervals will be calculated analytically. The upper right corner of the plot shows the average relative difference in mean, which is chosen by using <code>summetric=="avg2"</code>. Last, the parameter data indicates if the function should return a <code>uni_compare_object</code> which can be used in other package functions (e.g., <code>plot_uni_compare</code>).</p>
-<p>Also, the difference can be shown in a table that can be helpful to document the results. We can easily get a good result table by adding the resulting table to other functions (e.g., the kable() function in RMarkdown).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">uni_output_table</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/uni_compare_table.html">uni_compare_table</a></span><span class="op">(</span><span class="va">univar_data</span><span class="op">)</span></span></code></pre></div>
-<p><strong>Table 1</strong></p>
-<table class="table">
-<thead><tr class="header">
-<th align="left">Variables</th>
-<th align="center">north</th>
-<th align="center">black</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">age</td>
-<td align="center">0.006</td>
-<td align="center">-0.012</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center">(&gt;0.000, 0.011)</td>
-<td align="center">(-0.020, -0.004)</td>
-</tr>
-<tr class="odd">
-<td align="left">educ</td>
-<td align="center">0.087</td>
-<td align="center">-0.125</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center">(0.078, 0.096)</td>
-<td align="center">(-0.139, -0.111)</td>
-</tr>
-<tr class="odd">
-<td align="left">fatheduc</td>
-<td align="center">0.186</td>
-<td align="center">-0.304</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center">(0.168, 0.205)</td>
-<td align="center">(-0.341, -0.267)</td>
-</tr>
-<tr class="odd">
-<td align="left">motheduc</td>
-<td align="center">0.149</td>
-<td align="center">-0.230</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center">(0.135, 0.163)</td>
-<td align="center">(-0.256, -0.204)</td>
-</tr>
-<tr class="odd">
-<td align="left">wage</td>
-<td align="center">0.276</td>
-<td align="center">-0.273</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center">(0.251, 0.301)</td>
-<td align="center">(-0.296, -0.250)</td>
-</tr>
-<tr class="odd">
-<td align="left">IQ</td>
-<td align="center">0.065</td>
-<td align="center">-0.177</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center">(0.057, 0.073)</td>
-<td align="center">(-0.193, -0.161)</td>
-</tr>
-<tr class="odd">
-<td align="left">Average Error</td>
-<td align="center">0.128</td>
-<td align="center">0.187</td>
-</tr>
-<tr class="even">
-<td align="left">RANK</td>
-<td align="center">1</td>
-<td align="center">2</td>
-</tr>
-<tr class="odd">
-<td align="left">N</td>
-<td align="center">1358 - 1795</td>
-<td align="center">297 - 703</td>
-</tr>
-</tbody>
-</table>
-<p>Difference in Relative Means off different Survey Groups</p>
-<p>The table displays the difference between dfs and benchmarks for all variables, the confidence intervals, and the summary metric specified when creating the <code>uni_compare_object</code> for every comparison.</p>
-</div>
-<div class="section level3">
-<h3 id="bivariate-comparison">Bivariate Comparison<a class="anchor" aria-label="anchor" href="#bivariate-comparison"></a>
-</h3>
-<p>As with the univariate comparison, we start with a general function to calculate the bivariate difference between the data frames and plot the results.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">biv_data</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/biv_compare.html">biv_compare</a></span><span class="op">(</span>dfs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"north"</span>,<span class="st">"black"</span><span class="op">)</span>,</span>
-<span>                                 benchmarks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"south"</span>,<span class="st">"white"</span><span class="op">)</span>,</span>
-<span>                                 variables<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>,<span class="st">"educ"</span>,<span class="st">"fatheduc"</span>,</span>
-<span>                                             <span class="st">"motheduc"</span>,<span class="st">"wage"</span>,<span class="st">"IQ"</span><span class="op">)</span>,</span>
-<span>                                 data<span class="op">=</span><span class="cn">T</span>, corrtype <span class="op">=</span> <span class="st">"rho"</span>,</span>
-<span>                                 weight <span class="op">=</span> <span class="st">"weight"</span>,</span>
-<span>                                 id<span class="op">=</span><span class="st">"id"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attache Paket: 'purrr'</span></span>
 <span><span class="co">#&gt; Das folgende Objekt ist maskiert 'package:magrittr':</span></span>
@@ -238,11 +129,129 @@
 <span><span class="co">#&gt;     set_names</span></span>
 <span><span class="co">#&gt; survey 1 of 2 is compared</span></span>
 <span><span class="co">#&gt; survey 2 of 2 is compared</span></span>
+<span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/plot_uni_compare.html">plot_uni_compare</a></span><span class="op">(</span><span class="va">univar_data</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-univariate_comparison-1.png" width="100%"></p>
+<p>Here we can see a plot showing the difference in mean for several variables (indicated in the <code>variables</code> parameter) in the data frames. The first data frame, named as a character in <code>dfs</code>, is compared to the first data frame in <code>benchmarks</code>, while the second is compared to the second, and so forth. Another important parameter is <code>nboots</code>. It indicates the number of bootstraps to calculate the confidence intervals. We recommend using at least 2000 to 10000 bootstraps, although this may take a while. It is also possible to set <code>nboots==0</code>, as we did in this example. In this case, the confidence intervals will be calculated analytically. The upper right corner of the plot shows the average relative difference in mean, which is chosen by using <code>summetric=="avg2"</code>. Last, the parameter data indicates if the function should return a <code>uni_compare_object</code> which can be used in other package functions (e.g., <code>plot_uni_compare</code>).</p>
+<p>Also, the difference can be shown in a table that can be helpful to document the results. We can easily get a good result table by adding the resulting table to other functions (e.g., the kable() function in RMarkdown).</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">uni_output_table</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/uni_compare_table.html">uni_compare_table</a></span><span class="op">(</span><span class="va">univar_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in</span></span>
+<span><span class="co">#&gt; dplyr 1.1.0.</span></span>
+<span><span class="co">#&gt; ℹ Please use `reframe()` instead.</span></span>
+<span><span class="co">#&gt; ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`</span></span>
+<span><span class="co">#&gt;   always returns an ungrouped data frame and adjust accordingly.</span></span>
+<span><span class="co">#&gt; ℹ The deprecated feature was likely used in the sampcompR package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span>
+<span><span class="co">#&gt; This warning is displayed once every 8 hours.</span></span>
+<span><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span>
+<span><span class="co">#&gt; generated.</span></span></code></pre></div>
+<p><strong>Table 1</strong></p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Variables</th>
+<th align="center">north</th>
+<th align="center">white</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">age</td>
+<td align="center">0.002</td>
+<td align="center">0.003</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">(-0.003, 0.007)</td>
+<td align="center">(-0.002, 0.007)</td>
+</tr>
+<tr class="odd">
+<td align="left">educ</td>
+<td align="center">0.033</td>
+<td align="center">0.030</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">( 0.025, 0.042)</td>
+<td align="center">( 0.022, 0.038)</td>
+</tr>
+<tr class="odd">
+<td align="left">fatheduc</td>
+<td align="center">0.063</td>
+<td align="center">0.053</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">( 0.046, 0.080)</td>
+<td align="center">( 0.038, 0.068)</td>
+</tr>
+<tr class="odd">
+<td align="left">motheduc</td>
+<td align="center">0.054</td>
+<td align="center">0.049</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">( 0.041, 0.067)</td>
+<td align="center">( 0.037, 0.061)</td>
+</tr>
+<tr class="odd">
+<td align="left">wage</td>
+<td align="center">0.096</td>
+<td align="center">0.068</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">( 0.074, 0.117)</td>
+<td align="center">( 0.049, 0.087)</td>
+</tr>
+<tr class="odd">
+<td align="left">IQ</td>
+<td align="center">0.021</td>
+<td align="center">0.026</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">( 0.014, 0.029)</td>
+<td align="center">( 0.020, 0.032)</td>
+</tr>
+<tr class="odd">
+<td align="left">Average Error</td>
+<td align="center">0.045</td>
+<td align="center">0.038</td>
+</tr>
+<tr class="even">
+<td align="left">RANK</td>
+<td align="center">2</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="left">N</td>
+<td align="center">1358 - 1795</td>
+<td align="center">1764 - 2307</td>
+</tr>
+</tbody>
+</table>
+<p>Difference in Relative Means off different Survey Groups</p>
+<p>The table displays the difference between dfs and benchmarks for all variables, the confidence intervals, and the summary metric specified when creating the <code>uni_compare_object</code> for every comparison. As we can see in the table, as well as in the plot before, surveying only respondents living in the <code>North</code> would have let to an overestimation of education, wage and IQ, however the age would have been estimated rather similar. We find similar results for the second comparison. Of cause the data frame for this example is rather dated and a newer data frame might have led to different results.</p>
+</div>
+<div class="section level3">
+<h3 id="bivariate-comparison">Bivariate Comparison<a class="anchor" aria-label="anchor" href="#bivariate-comparison"></a>
+</h3>
+<p>As with the univariate comparison, we start with a general function to calculate the bivariate difference between the data frames and plot the results.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">biv_data</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/biv_compare.html">biv_compare</a></span><span class="op">(</span>dfs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"north"</span>,<span class="st">"white"</span><span class="op">)</span>,</span>
+<span>                                 benchmarks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"whole_card"</span>,<span class="st">"whole_card"</span><span class="op">)</span>,</span>
+<span>                                 variables<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>,<span class="st">"educ"</span>,<span class="st">"fatheduc"</span>,</span>
+<span>                                             <span class="st">"motheduc"</span>,<span class="st">"wage"</span>,<span class="st">"IQ"</span><span class="op">)</span>,</span>
+<span>                                 data<span class="op">=</span><span class="cn">T</span>, corrtype <span class="op">=</span> <span class="st">"rho"</span>,</span>
+<span>                                 weight <span class="op">=</span> <span class="st">"weight"</span>,</span>
+<span>                                 id<span class="op">=</span><span class="st">"id"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; survey 1 of 2 is compared</span></span>
+<span><span class="co">#&gt; survey 2 of 2 is compared</span></span>
 <span></span>
 <span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/plot_biv_compare.html">plot_biv_compare</a></span><span class="op">(</span><span class="va">biv_data</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-bivariate_comparison-1.png" width="100%"></p>
 <p>In this comparison, the Pearson’s r correlations of all variables indicated in the <code>variables</code> parameter are compared between the data frames and benchmarks. The plotted heatmap shows the difference in three categories. A correlation is green (Same) for one of two reasons. On the one hand, it can be that the Pearson’s r correlation of this variable pair is not significant in the data frame and in the benchmark. On the other hand, it can be that both z standardized Pearson’s r values are not significantly different. If neither of these conditions is true, the plot’s correlations are marked yellow (Small Diff) or red (Large Diff). To be red, it must also fulfill one of two additional conditions. The Pearson’s r correlations could be of different directions (e.g., one is positive, while the other is negative). Second, it could be that one of them is double the size of the other.</p>
-<p>In our example, we can see on the left that the respondents living in the <code>North</code> are very different from those living in the <code>South</code> regarding the investigated bivariate correlations. Only 33.3% of all correlations are similar between both groups (<code>Same</code>) and would lead to similar interpretations measured with either group of the survey. 46,7% of correlations show minor differences (<code>Small Diff</code>), meaning that similar interpretations may not be guaranteed, while 20% of the correlations are very different (<code>Large Diff</code>) between the groups. The right half of the plot shows the comparison between <code>black</code> and <code>white</code> respondents, where fewer differences are found.</p>
+<p>In our example, we can see on the left that the a survey containing only respondents living in the <code>North</code> is very different from the complete survey regarding the investigated bivariate correlations. Only 46.7% of all correlations are similar between both groups (<code>Same</code>) and would lead to similar interpretations measured with either group of the survey. 40.0% of correlations show minor differences (<code>Small Diff</code>), meaning that similar interpretations may not be guaranteed, while 13.3% of the correlations are very different (<code>Large Diff</code>) between the groups. The right half of the plot shows the comparison between <code>white</code> respondents and the whole survey, where similar results are found.</p>
 <p>As before, we can also take a closer look at the exact values by putting the <code>biv_compare_object</code> into the <code>biv_compare_table</code> function of our package.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Difference correlation matrix of the first comparison</span></span>
@@ -250,13 +259,13 @@
 <p><strong>Table 2</strong></p>
 <table class="table">
 <colgroup>
-<col width="13%">
+<col width="15%">
+<col width="10%">
+<col width="19%">
 <col width="16%">
-<col width="17%">
-<col width="17%">
-<col width="17%">
-<col width="9%">
-<col width="6%">
+<col width="19%">
+<col width="10%">
+<col width="7%">
 </colgroup>
 <thead><tr class="header">
 <th align="left"></th>
@@ -279,7 +288,7 @@
 </tr>
 <tr class="even">
 <td align="left">educ</td>
-<td align="center">0.12**</td>
+<td align="center">0.05</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -288,8 +297,8 @@
 </tr>
 <tr class="odd">
 <td align="left">fatheduc</td>
-<td align="center">0.00</td>
-<td align="center">-0.11***</td>
+<td align="center">-0.02</td>
+<td align="center">-0.07*</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -297,35 +306,35 @@
 </tr>
 <tr class="even">
 <td align="left">motheduc</td>
-<td align="center">-0.06</td>
-<td align="center">-0.14***</td>
+<td align="center">-0.04</td>
 <td align="center">-0.09***</td>
+<td align="center">-0.06**</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
 </tr>
 <tr class="odd">
 <td align="left">wage</td>
-<td align="center">0.12***</td>
-<td align="center">-0.19***</td>
-<td align="center">-0.16***</td>
-<td align="center">-0.19***</td>
+<td align="center">0.05</td>
+<td align="center">-0.11***</td>
+<td align="center">-0.10**</td>
+<td align="center">-0.12***</td>
 <td align="center"></td>
 <td align="center"></td>
 </tr>
 <tr class="even">
 <td align="left">IQ</td>
-<td align="center">0.04</td>
-<td align="center">0.00</td>
-<td align="center">-0.15**</td>
-<td align="center">-0.12**</td>
-<td align="center">-0.08</td>
+<td align="center">0.01</td>
+<td align="center">-0.01</td>
+<td align="center">-0.08*</td>
+<td align="center">-0.07*</td>
+<td align="center">-0.06</td>
 <td align="center"></td>
 </tr>
 </tbody>
 </table>
 <p>Difference in Pearson’s r for the North/South Sample</p>
-<p>Using <code>type = diff</code> gives us a matrix for the difference in Pearson’s r between the surveys, while <code>comparison_number = 1</code> indicates that the table should be for the first comparison (between the<code>north</code> and the <code>south</code> sample). Here we can again see what correlations significantly differ between the surveys and to what extent. However, to know why the colors are as they are in the plot, we must also look at the individual correlation matrices for both surveys. Here we only look at the tables for comparing north versus south respondents as an example.</p>
+<p>Using <code>type = diff</code> gives us a matrix for the difference in Pearson’s r between the surveys, while <code>comparison_number = 1</code> indicates that the table should be for the first comparison (between the<code>north</code> and the whole sample). Here we can again see which correlations significantly differ between the surveys and to what extent. However, to know why the colors are as they are in the plot, we must also look at the individual correlation matrices for both surveys. Here we only look at the tables for comparing <code>north</code> versus the whole sample respondents as an example.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># North correlation matrix of the first comparison</span></span>
 <span><span class="va">table_biv2</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/biv_compare_table.html">biv_compare_table</a></span><span class="op">(</span><span class="va">biv_data</span>,type <span class="op">=</span> <span class="st">"dfs"</span>,comparison_number<span class="op">=</span><span class="fl">1</span><span class="op">)</span> </span>
@@ -442,7 +451,7 @@
 </tr>
 <tr class="even">
 <td align="left">educ</td>
-<td align="center">-0.08**</td>
+<td align="center">-0.01</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -451,8 +460,8 @@
 </tr>
 <tr class="odd">
 <td align="left">fatheduc</td>
-<td align="center">-0.09*</td>
-<td align="center">0.52***</td>
+<td align="center">-0.06**</td>
+<td align="center">0.47***</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -460,40 +469,40 @@
 </tr>
 <tr class="even">
 <td align="left">motheduc</td>
-<td align="center">-0.02</td>
-<td align="center">0.49***</td>
-<td align="center">0.66***</td>
+<td align="center">-0.04*</td>
+<td align="center">0.45***</td>
+<td align="center">0.63***</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
 </tr>
 <tr class="odd">
 <td align="left">wage</td>
-<td align="center">0.23***</td>
-<td align="center">0.38***</td>
-<td align="center">0.25***</td>
-<td align="center">0.28***</td>
+<td align="center">0.30***</td>
+<td align="center">0.30***</td>
+<td align="center">0.19***</td>
+<td align="center">0.20***</td>
 <td align="center"></td>
 <td align="center"></td>
 </tr>
 <tr class="even">
 <td align="left">IQ</td>
-<td align="center">-0.09*</td>
+<td align="center">-0.06**</td>
 <td align="center">0.51***</td>
-<td align="center">0.40***</td>
-<td align="center">0.35***</td>
-<td align="center">0.21***</td>
+<td align="center">0.33***</td>
+<td align="center">0.31***</td>
+<td align="center">0.19***</td>
 <td align="center"></td>
 </tr>
 </tbody>
 </table>
-<p>Pearson’s r correlation matrix for the South Sample</p>
-<p>This shows us the whole picture. Looking at the correlation between age and education, for example, we can see that the correlations in both surveys are small. Additionally, the correlation is positive and insignificant in the north group, while it is negative and significant in the south group. Here, in addition to the conditions for a slight difference, both conditions for a <code>Large Diff</code> are true. However, looking at the correlations between wage and the father’s education, as well as the mother’s education, we see that only the difference in size was the reason for the <code>Large Diff</code> category. Nonetheless, we would come to very different conclusions measuring those correlations for either group.</p>
+<p>Pearson’s r correlation matrix for the Whole Crad Survey</p>
+<p>This shows us the whole picture. Looking at the correlation between wage and fathers education, for example, we can see that the correlations in both surveys are different. While, the correlation is positive and small in the north group, stronger for the in the whole survey. Here, in addition to the conditions for a slight difference, one condition for a <code>Large Diff</code> are true (i.e., one Pearson’s r value is at least double the size if the other, 0.09 vs. 0.19). Therefore, we could come to very different conclusions measuring those correlations for either group.</p>
 </div>
 <div class="section level3">
 <h3 id="multivariate-comparison">Multivariate Comparison<a class="anchor" aria-label="anchor" href="#multivariate-comparison"></a>
 </h3>
-<p>When you want to know how different certain data frames or sub-data frames are, it may also be interesting to see if those differences exist in multivariate comparisons. For this, the first step is to choose the multivariate models we want to compare. This function <code>(multi_compare())</code> is restricted to any model commutable with <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm()</a></code> (without weighting) or <code>svyglm()</code> (when weights are provided). In this example, we want to see if there are differences between the groups when looking at the regression of <code>age</code>, <code>father's education</code>, <code>mother's education</code>, and <code>IQ</code> on wage and education.</p>
+<p>When we want to know how different certain data frames or sub-data frames are, it may also be interesting to see if those differences exist in multivariate comparisons. For this, the first step is to choose the multivariate models we want to compare. This function <code>(multi_compare())</code> is restricted to any model commutable with <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm()</a></code> (without weighting) or <code>svyglm()</code> (when weights are provided). In this example, we want to see if there are differences between the groups when looking at the regression of <code>age</code>, <code>father's education</code>, <code>mother's education</code>, and <code>IQ</code> on wage and education.</p>
 <p>After choosing independent and dependent variables, all information can be given into <code><a href="reference/multi_compare.html">multi_compare()</a></code>. For this comparison, three similar regression models are performed. One model with either survey and one model with the combined surveys, including an interaction variable that indicates what survey the respondents are from. After this, for every coefficient, a similar classification is used, as in the bivariate comparison:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -505,7 +514,7 @@
 <span></span>
 <span><span class="co"># compare the north and south data frames</span></span>
 <span><span class="va">multi_data1_ols</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/multi_compare.html">multi_compare</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">north</span>, </span>
-<span>                                     bench<span class="op">=</span><span class="va">south</span>,</span>
+<span>                                     bench<span class="op">=</span><span class="va">whole_card</span>,</span>
 <span>                                     independent <span class="op">=</span> <span class="va">independent</span>,</span>
 <span>                                     dependent <span class="op">=</span> <span class="va">dependent_ols</span>,</span>
 <span>                                     family <span class="op">=</span> <span class="st">"ols"</span><span class="op">)</span>  </span>
@@ -513,18 +522,18 @@
 <span><span class="co">#&gt; Difference in coeficients between sets of respondents </span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt;          wage         educ        </span></span>
-<span><span class="co">#&gt; age      -3.74e+00    -7.91e-02*  </span></span>
-<span><span class="co">#&gt; fatheduc -3.11e+00    -4.41e-02   </span></span>
-<span><span class="co">#&gt; motheduc 5.40e+00     4.34e-02    </span></span>
-<span><span class="co">#&gt; IQ       8.34e-01     -1.85e-02** </span></span>
+<span><span class="co">#&gt; age      -8.55e-01    -2.43e-02   </span></span>
+<span><span class="co">#&gt; fatheduc -2.93e-01    -2.37e-02   </span></span>
+<span><span class="co">#&gt; motheduc 2.35e+00     1.23e-02    </span></span>
+<span><span class="co">#&gt; IQ       4.80e-01     -7.25e-03   </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Overall difference between north &amp; south: 25% of coeficients are significant different</span></span>
+<span><span class="co">#&gt; Overall difference between north &amp; whole_card: 0% of coeficients are significant different</span></span>
 <span><span class="co">#&gt; (*p&lt;0.05 ; **p&lt;0.005 ; ***p&lt;0.001;  for t-test robust standard errors are used) </span></span>
 <span><span class="co">#&gt; </span></span>
 <span></span>
 <span><span class="co"># compare the black and white data frames</span></span>
-<span><span class="va">multi_data2_ols</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/multi_compare.html">multi_compare</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">black</span>, </span>
-<span>                                     bench<span class="op">=</span><span class="va">white</span>,</span>
+<span><span class="va">multi_data2_ols</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/multi_compare.html">multi_compare</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">white</span>, </span>
+<span>                                     bench<span class="op">=</span><span class="va">whole_card</span>,</span>
 <span>                                     independent <span class="op">=</span> <span class="va">independent</span>,</span>
 <span>                                     dependent <span class="op">=</span> <span class="va">dependent_ols</span>,</span>
 <span>                                     family <span class="op">=</span> <span class="st">"ols"</span><span class="op">)</span></span>
@@ -532,21 +541,21 @@
 <span><span class="co">#&gt; Difference in coeficients between sets of respondents </span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt;          wage         educ        </span></span>
-<span><span class="co">#&gt; age      1.27e+01     7.05e-02    </span></span>
-<span><span class="co">#&gt; fatheduc 4.91e-01     7.38e-02    </span></span>
-<span><span class="co">#&gt; motheduc 6.94e-01     -1.13e-01   </span></span>
-<span><span class="co">#&gt; IQ       -5.40e-01    2.89e-02**  </span></span>
+<span><span class="co">#&gt; age      -9.51e-01    -1.20e-02   </span></span>
+<span><span class="co">#&gt; fatheduc 1.28e-01     -1.45e-02   </span></span>
+<span><span class="co">#&gt; motheduc 2.03e-01     9.99e-03    </span></span>
+<span><span class="co">#&gt; IQ       3.61e-01     -9.28e-03   </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Overall difference between black &amp; white: 12.5% of coeficients are significant different</span></span>
+<span><span class="co">#&gt; Overall difference between white &amp; whole_card: 0% of coeficients are significant different</span></span>
 <span><span class="co">#&gt; (*p&lt;0.05 ; **p&lt;0.005 ; ***p&lt;0.001;  for t-test robust standard errors are used) </span></span>
 <span><span class="co">#&gt; </span></span>
 <span></span>
 <span><span class="co"># plot the results</span></span>
 <span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/plot_multi_compare.html">plot_multi_compare</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"multi_data1_ols"</span>,<span class="st">"multi_data2_ols"</span><span class="op">)</span>,</span>
-<span>                             plots_label<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"north"</span>,<span class="st">"black"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>                             plots_label<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"north"</span>,<span class="st">"white"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-ols_models-1.png" width="100%"></p>
 <p>The plot looks very similar to that of the bivariate comparison, except that every row shows a coefficient while every column shows a model. Here the green color (Same) indicates that a coefficient is not significantly different in any of the models performed with the individual surveys or that the interaction effect in the model on the pooled data frames is not significant. Similarly, yellow (Small Diff) or red (Large Diff) indicates that the coefficient is significant in one of the base models, and the interaction effect is significant in the pooled models. If those conditions are true, it is red (Large Diff) if the coefficients differ in direction or one is the size of the other and yellow (Small Diff) otherwise.</p>
-<p>As we can see here in those models, there are fewer differences than before in the bivariate comparison, especially in the models based on the comparison between the black and the white sub-data frames, at least for those models compared. Also, we can see that the differences on the wage variable we found in previous comparisons are not present in the multivariate model. However, even in multivariate regression, education seems more prone to group differences.</p>
+<p>As we can see here in those models, other than before in the bivariate comparison, there are no differences, at least for those models compared. Also, we can see that the differences on the wage variable we found in previous comparisons are not present in the multivariate model. However, even in multivariate regression, education seems more prone to group differences.</p>
 <p>In addition to the models, we can answer with an ols regression, it would also be interesting to add a model estimating the effect of the coefficients on the probability of marriage. However, for this, we need a logit regression, which now follows.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -558,7 +567,7 @@
 <span></span>
 <span><span class="co"># compare the north and south data frames</span></span>
 <span><span class="va">multi_data1_log</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/multi_compare.html">multi_compare</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">north</span>, </span>
-<span>                                     bench<span class="op">=</span><span class="va">south</span>,</span>
+<span>                                     bench<span class="op">=</span><span class="va">whole_card</span>,</span>
 <span>                                     independent <span class="op">=</span> <span class="va">independent</span>,</span>
 <span>                                     dependent <span class="op">=</span> <span class="va">dependent_log</span>,</span>
 <span>                                     family <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>  </span>
@@ -566,18 +575,18 @@
 <span><span class="co">#&gt; Difference in coeficients between sets of respondents </span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt;          married     </span></span>
-<span><span class="co">#&gt; age      1.86e-02    </span></span>
-<span><span class="co">#&gt; fatheduc -1.00e-02   </span></span>
-<span><span class="co">#&gt; motheduc 2.17e-02    </span></span>
-<span><span class="co">#&gt; IQ       1.07e-03    </span></span>
+<span><span class="co">#&gt; age      5.37e-03    </span></span>
+<span><span class="co">#&gt; fatheduc -3.82e-03   </span></span>
+<span><span class="co">#&gt; motheduc 8.77e-03    </span></span>
+<span><span class="co">#&gt; IQ       -6.37e-06   </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Overall difference between north &amp; south: 0% of coeficients are significant different</span></span>
+<span><span class="co">#&gt; Overall difference between north &amp; whole_card: 0% of coeficients are significant different</span></span>
 <span><span class="co">#&gt; (*p&lt;0.05 ; **p&lt;0.005 ; ***p&lt;0.001;  for t-test robust standard errors are used) </span></span>
 <span><span class="co">#&gt; </span></span>
 <span></span>
 <span><span class="co"># compare the black and white data frames</span></span>
-<span><span class="va">multi_data2_log</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/multi_compare.html">multi_compare</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">black</span>, </span>
-<span>                                     bench<span class="op">=</span><span class="va">white</span>,</span>
+<span><span class="va">multi_data2_log</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/multi_compare.html">multi_compare</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">white</span>, </span>
+<span>                                     bench<span class="op">=</span><span class="va">whole_card</span>,</span>
 <span>                                     independent <span class="op">=</span> <span class="va">independent</span>,</span>
 <span>                                     dependent <span class="op">=</span> <span class="va">dependent_log</span>,</span>
 <span>                                     family <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span></span>
@@ -585,12 +594,12 @@
 <span><span class="co">#&gt; Difference in coeficients between sets of respondents </span></span>
 <span><span class="co">#&gt;  </span></span>
 <span><span class="co">#&gt;          married     </span></span>
-<span><span class="co">#&gt; age      3.54e-02    </span></span>
-<span><span class="co">#&gt; fatheduc -8.37e-02   </span></span>
-<span><span class="co">#&gt; motheduc 1.99e-01*   </span></span>
-<span><span class="co">#&gt; IQ       -4.24e-03   </span></span>
+<span><span class="co">#&gt; age      -1.40e-03   </span></span>
+<span><span class="co">#&gt; fatheduc 1.46e-02    </span></span>
+<span><span class="co">#&gt; motheduc -2.47e-02   </span></span>
+<span><span class="co">#&gt; IQ       6.73e-03    </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Overall difference between black &amp; white: 25% of coeficients are significant different</span></span>
+<span><span class="co">#&gt; Overall difference between white &amp; whole_card: 0% of coeficients are significant different</span></span>
 <span><span class="co">#&gt; (*p&lt;0.05 ; **p&lt;0.005 ; ***p&lt;0.001;  for t-test robust standard errors are used) </span></span>
 <span><span class="co">#&gt; </span></span>
 <span></span>
@@ -606,7 +615,7 @@
 <span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/plot_multi_compare.html">plot_multi_compare</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"final_multi1"</span>,<span class="st">"final_multi2"</span><span class="op">)</span>,</span>
 <span>                             plots_label<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"north"</span>,<span class="st">"black"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-adding_logit_models-1.png" width="100%"></p>
-<p>After performing the same comparison with the <code>method = logit</code>, and with the new dependent variable, it would still be interesting to plot all models together. This can be done with the function <code>multi_compare_merge</code>, which adds multi_compare_objects together and use the newly created objects for the plot. This shows us that in addition to the education model, in the marriage model, one coefficient is different for black respondents than for white respondents.</p>
+<p>After performing the same comparison with the <code>method = logit</code>, and with the new dependent variable, it would still be interesting to plot all models together. This can be done with the function <code>multi_compare_merge</code>, which adds multi_compare_objects together and use the newly created objects for the plot. This shows us that in addition to the education model, in the marriage model, again no coefficient is different for white respondents from the same models conducted on the whole survey.</p>
 <p>We also add the objects into the provided table function to look at the differences closer.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### difference table</span></span>
@@ -626,114 +635,114 @@
 <tr class="odd">
 <td align="left">north</td>
 <td align="center">age</td>
-<td align="center">-3.740</td>
-<td align="center">-0.079*</td>
-<td align="center">0.019</td>
+<td align="center">-0.855</td>
+<td align="center">-0.024</td>
+<td align="center">0.005</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="center"></td>
-<td align="center">(4.455)</td>
-<td align="center">(0.034)</td>
-<td align="center">(0.048)</td>
+<td align="center">(3.257)</td>
+<td align="center">(0.025)</td>
+<td align="center">(0.033)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 <td align="center">fatheduc</td>
-<td align="center">-3.110</td>
-<td align="center">-0.044</td>
-<td align="center">-0.010</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(4.582)</td>
-<td align="center">(0.035)</td>
-<td align="center">(0.045)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="center">motheduc</td>
-<td align="center">5.400</td>
-<td align="center">0.043</td>
-<td align="center">0.022</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(5.376)</td>
-<td align="center">(0.041)</td>
-<td align="center">(0.054)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="center">IQ</td>
-<td align="center">0.834</td>
-<td align="center">-0.019**</td>
-<td align="center">0.001</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(0.911)</td>
-<td align="center">(0.007)</td>
-<td align="center">(0.009)</td>
-</tr>
-<tr class="odd">
-<td align="left">black</td>
-<td align="center">age</td>
-<td align="center">12.700</td>
-<td align="center">0.070</td>
-<td align="center">0.035</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(7.095)</td>
-<td align="center">(0.054)</td>
-<td align="center">(0.069)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="center">fatheduc</td>
-<td align="center">0.491</td>
-<td align="center">0.074</td>
-<td align="center">-0.084</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(7.236)</td>
-<td align="center">(0.055)</td>
-<td align="center">(0.067)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="center">motheduc</td>
-<td align="center">0.694</td>
-<td align="center">-0.113</td>
-<td align="center">0.199*</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(7.937)</td>
-<td align="center">(0.06)</td>
-<td align="center">(0.08)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="center">IQ</td>
-<td align="center">-0.540</td>
-<td align="center">0.029**</td>
+<td align="center">-0.293</td>
+<td align="center">-0.024</td>
 <td align="center">-0.004</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="center"></td>
-<td align="center">(1.423)</td>
-<td align="center">(0.011)</td>
-<td align="center">(0.013)</td>
+<td align="center">(3.682)</td>
+<td align="center">(0.028)</td>
+<td align="center">(0.035)</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">motheduc</td>
+<td align="center">2.350</td>
+<td align="center">0.012</td>
+<td align="center">0.009</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(4.379)</td>
+<td align="center">(0.033)</td>
+<td align="center">(0.043)</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">IQ</td>
+<td align="center">0.480</td>
+<td align="center">-0.007</td>
+<td align="center">0.000</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(0.691)</td>
+<td align="center">(0.005)</td>
+<td align="center">(0.006)</td>
+</tr>
+<tr class="odd">
+<td align="left">white</td>
+<td align="center">age</td>
+<td align="center">-0.951</td>
+<td align="center">-0.012</td>
+<td align="center">-0.001</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(3.02)</td>
+<td align="center">(0.023)</td>
+<td align="center">(0.032)</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">fatheduc</td>
+<td align="center">0.128</td>
+<td align="center">-0.014</td>
+<td align="center">0.015</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(3.287)</td>
+<td align="center">(0.025)</td>
+<td align="center">(0.032)</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">motheduc</td>
+<td align="center">0.203</td>
+<td align="center">0.010</td>
+<td align="center">-0.025</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(3.915)</td>
+<td align="center">(0.029)</td>
+<td align="center">(0.039)</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">IQ</td>
+<td align="center">0.361</td>
+<td align="center">-0.009</td>
+<td align="center">0.007</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(0.652)</td>
+<td align="center">(0.005)</td>
+<td align="center">(0.006)</td>
 </tr>
 </tbody>
 </table>
@@ -805,60 +814,60 @@
 <td align="center">(0.005)</td>
 </tr>
 <tr class="odd">
-<td align="left">black</td>
+<td align="left">white</td>
 <td align="center">age</td>
-<td align="center">21.000***</td>
-<td align="center">0.016</td>
-<td align="center">0.139*</td>
+<td align="center">33.700***</td>
+<td align="center">0.087***</td>
+<td align="center">0.174***</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="center"></td>
-<td align="center">(5.425)</td>
-<td align="center">(0.054)</td>
-<td align="center">(0.065)</td>
+<td align="center">(2.21)</td>
+<td align="center">(0.016)</td>
+<td align="center">(0.023)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 <td align="center">fatheduc</td>
-<td align="center">4.710</td>
-<td align="center">0.073</td>
-<td align="center">0.049</td>
+<td align="center">5.200*</td>
+<td align="center">0.147***</td>
+<td align="center">-0.035</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="center"></td>
-<td align="center">(5.49)</td>
-<td align="center">(0.054)</td>
-<td align="center">(0.063)</td>
+<td align="center">(2.415)</td>
+<td align="center">(0.018)</td>
+<td align="center">(0.023)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 <td align="center">motheduc</td>
-<td align="center">4.260</td>
-<td align="center">0.200***</td>
-<td align="center">-0.231**</td>
+<td align="center">4.950</td>
+<td align="center">0.088***</td>
+<td align="center">-0.032</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="center"></td>
-<td align="center">(5.952)</td>
-<td align="center">(0.059)</td>
-<td align="center">(0.075)</td>
+<td align="center">(2.894)</td>
+<td align="center">(0.021)</td>
+<td align="center">(0.028)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 <td align="center">IQ</td>
-<td align="center">2.710*</td>
-<td align="center">0.041***</td>
-<td align="center">-0.004</td>
+<td align="center">2.170***</td>
+<td align="center">0.070***</td>
+<td align="center">-0.009</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="center"></td>
-<td align="center">(1.075)</td>
-<td align="center">(0.011)</td>
-<td align="center">(0.012)</td>
+<td align="center">(0.491)</td>
+<td align="center">(0.004)</td>
+<td align="center">(0.005)</td>
 </tr>
 </tbody>
 </table>
@@ -874,129 +883,128 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">south</td>
+<td align="left">whole_card</td>
 <td align="center">age</td>
-<td align="center">29.800***</td>
-<td align="center">0.020</td>
-<td align="center">0.186***</td>
+<td align="center">32.700***</td>
+<td align="center">0.075***</td>
+<td align="center">0.173***</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="center"></td>
-<td align="center">(4.008)</td>
-<td align="center">(0.029)</td>
-<td align="center">(0.044)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="center">fatheduc</td>
-<td align="center">2.520</td>
-<td align="center">0.112***</td>
-<td align="center">-0.026</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(3.598)</td>
-<td align="center">(0.029)</td>
-<td align="center">(0.035)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="center">motheduc</td>
-<td align="center">8.210*</td>
-<td align="center">0.129***</td>
-<td align="center">-0.044</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(3.642)</td>
-<td align="center">(0.033)</td>
-<td align="center">(0.041)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="center">IQ</td>
-<td align="center">2.880***</td>
-<td align="center">0.050***</td>
-<td align="center">-0.001</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(0.712)</td>
-<td align="center">(0.006)</td>
-<td align="center">(0.008)</td>
-</tr>
-<tr class="odd">
-<td align="left">white</td>
-<td align="center">age</td>
-<td align="center">33.700***</td>
-<td align="center">0.087***</td>
-<td align="center">0.174***</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(2.507)</td>
-<td align="center">(0.017)</td>
-<td align="center">(0.024)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="center">fatheduc</td>
-<td align="center">5.200*</td>
-<td align="center">0.147***</td>
-<td align="center">-0.035</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="center"></td>
-<td align="center">(2.45)</td>
-<td align="center">(0.019)</td>
+<td align="center">(2.344)</td>
+<td align="center">(0.016)</td>
 <td align="center">(0.022)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
-<td align="center">motheduc</td>
-<td align="center">4.950</td>
-<td align="center">0.088***</td>
-<td align="center">-0.032</td>
+<td align="center">fatheduc</td>
+<td align="center">5.330*</td>
+<td align="center">0.132***</td>
+<td align="center">-0.020</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="center"></td>
-<td align="center">(3.044)</td>
-<td align="center">(0.023)</td>
-<td align="center">(0.029)</td>
+<td align="center">(2.243)</td>
+<td align="center">(0.018)</td>
+<td align="center">(0.021)</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">motheduc</td>
+<td align="center">5.160</td>
+<td align="center">0.098***</td>
+<td align="center">-0.057*</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(2.735)</td>
+<td align="center">(0.021)</td>
+<td align="center">(0.027)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 <td align="center">IQ</td>
-<td align="center">2.170***</td>
-<td align="center">0.070***</td>
-<td align="center">-0.009</td>
+<td align="center">2.530***</td>
+<td align="center">0.061***</td>
+<td align="center">-0.002</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="center"></td>
-<td align="center">(0.516)</td>
+<td align="center">(0.44)</td>
+<td align="center">(0.003)</td>
 <td align="center">(0.004)</td>
-<td align="center">(0.005)</td>
+</tr>
+<tr class="odd">
+<td align="left">whole_card</td>
+<td align="center">age</td>
+<td align="center">32.700***</td>
+<td align="center">0.075***</td>
+<td align="center">0.173***</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(2.344)</td>
+<td align="center">(0.016)</td>
+<td align="center">(0.022)</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">fatheduc</td>
+<td align="center">5.330*</td>
+<td align="center">0.132***</td>
+<td align="center">-0.020</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(2.243)</td>
+<td align="center">(0.018)</td>
+<td align="center">(0.021)</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">motheduc</td>
+<td align="center">5.160</td>
+<td align="center">0.098***</td>
+<td align="center">-0.057*</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(2.735)</td>
+<td align="center">(0.021)</td>
+<td align="center">(0.027)</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">IQ</td>
+<td align="center">2.530***</td>
+<td align="center">0.061***</td>
+<td align="center">-0.002</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">(0.44)</td>
+<td align="center">(0.003)</td>
+<td align="center">(0.004)</td>
 </tr>
 </tbody>
 </table>
 <p>Multivariate Comparison of Subgroups of the Card Sample : South and White Sample Models</p>
-<p>Now looking, for example, at the <code>motheduc</code> coefficient in the second comparison, we can see that there is a significant negative effect of the mother’s education getting married. At the same time, there is no significant effect for white respondents. This means that a model based on the whole sample could lead to wrong conclusions for this coefficient. On the other hand father’s education seems to have a similar effect on both groups.</p>
-<p>Overall the comparison shows differences between the sub-groups in some cases. Suppose those cases play a role in the overall analyses of a research project. Splitting the data and reporting different results depending on the group could make sense in that case. On the other hand, if we only want to look at the <code>wage</code> model, there seem to be fewer differences in our example, and splitting the data frame into different groups might be unnecessary.</p>
+<p>Overall the comparison shows no differences between the sub-groups and the whole survey. Suppose those models play a role in the overall analyses of a research project, one would come to similar results using any survey. In other words, for those multivariate models, we would not find any bias, had we only sampled parts of the population. Notheless, there could be other models, where bias can be prevalant.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="further-use-cases">Further Use-Cases<a class="anchor" aria-label="anchor" href="#further-use-cases"></a>
 </h2>
 <p>As we have shown, the package can be handy in finding differences between groups, which could come in handy, for example, as robustness checks in a research paper. However, group comparisons are only one possible use case. Other examples could be comparing survey respondents to non-respondents (e.g., by comparing information known in the sample frame in probability surveys) or comparing two survey modes when a sample was gathered using differing modes.</p>
-<p>In a preprint (Rohr et al., 2023), we used the package (which was created and designed in this context) to compare several non-probability and probability surveys against a benchmark survey.</p>
+<p>In a recent paper (Rohr et al., 2024), we used the package (which was created and designed in this context) to compare several non-probability and probability surveys against a benchmark survey.</p>
 </div>
 <div class="section level2">
 <h2 id="components-of-the-package">Components of the package<a class="anchor" aria-label="anchor" href="#components-of-the-package"></a>
@@ -1028,6 +1036,7 @@
 <li><p><code><a href="reference/multi_compare.html">multi_compare()</a></code> can be used to make a multivariate comparison and get an object usable in the other bivariate comparison functions or plot the results directly. It is suitable to compare any glm() model between the data frame and the benchmark</p></li>
 <li><p><code><a href="reference/plot_multi_compare.html">plot_multi_compare()</a></code> can be used to plot the results of the <code><a href="reference/multi_compare.html">multi_compare()</a></code> function.</p></li>
 <li><p><code><a href="reference/multi_compare_table.html">multi_compare_table()</a></code> can be used to get a table for the results of the <code><a href="reference/multi_compare.html">multi_compare()</a></code> function.</p></li>
+<li><p><code><a href="reference/multi_compare_merge.html">multi_compare_merge()</a></code> can combine objects of the multi_compare() function, to plot them together.</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -1035,14 +1044,14 @@
 </h3>
 <ul>
 <li><p><code><a href="reference/dataequalizer.html">dataequalizer()</a></code> can be used to reduce one data frame to only columns named similarly in another data frame and a list of variables given to the function.</p></li>
-<li><p><code>descriptive_table</code> can be used to get a descriptive table for a dataset, including weighting.</p></li>
+<li><p><code>descriptive_table</code> can be used to get a descriptive table for a data frame, including weighting.</p></li>
 </ul>
 </div>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Rohr, B., Silber, H., Felderer, B. (2024), “Comparing the accuracy of univariate, bivariate, and multivariate estimates across probability and non-probability surveys with populations benchmarks”, SocArXiv, Available at <a href="https://doi.org/10.31235/osf.io/n6ehf" class="external-link uri">https://doi.org/10.31235/osf.io/n6ehf</a></p>
+<p>Rohr, B., Silber, H., &amp; Felderer, B. (2024). Comparing the Accuracy of Univariate, Bivariate, and Multivariate Estimates across Probability and Nonprobability Surveys with Population Benchmarks. Sociological Methodology, 00811750241280963. <a href="https://doi.org/10.1177/00811750241280963" class="external-link uri">https://doi.org/10.1177/00811750241280963</a></p>
 </div>
 </div>
 
@@ -1076,12 +1085,7 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://github.com/BjoernRohr/sampcompR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/BjoernRohr/sampcompR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-</ul>
-</div>
+
 
   </aside>
 </div>
