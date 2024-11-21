@@ -376,11 +376,10 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000,n_bench=N
       bench_list[[i]]<- dataequalizer(target_df = df_list[[i]], source_df = bench_list[[i]],
                                       variables = variables, silence = silence)}
    if(is_named_vector(bench_list[[i]])){
-     
-     bench_list[[i]]<- bench_list[[i]][names(bench_list[[i]])%in%variables]
-     df_list[[i]]<-df_list[[i]][,names(bench_list[[i]])]
-     bench_list[[i]]<- bench_list[[i]][names(bench_list[[i]])%in% names(df_list[[i]])]
-     
+     vars<-variables[variables%in%names(bench_list[[i]])]
+     vars<-vars[vars%in%names(df_list[[i]])]
+     bench_list[[i]]<- bench_list[[i]][vars]
+     df_list[[i]]<-df_list[[i]][vars]
    }
    
    if(is.null(weight)==FALSE){
@@ -475,7 +474,8 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000,n_bench=N
                                         parallel=parallel, max_samp=length(dfs),
                                         n_bench=n_bench[[.x]]),
                     .options = furrr::furrr_options(seed = NULL))
-#browser()
+  
+  #browser()
   # for (i in 1:length(dfs)){
   #   if (ncol(df_list[[i]])>0) {
   #   if (i==1) {
@@ -721,6 +721,7 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
     svy_boot2<-svy_boot[[length(svy_boot)]]
     if(is_named_vector(y)==FALSE){means_bench2<-means_bench[[length(means_bench)]]}
     if(is_named_vector(y)){means_bench2<-means_bench}
+
     abs<-FALSE
     
       if (func_name %in% c("abs_rel_mean", "abs_rel_prop",
