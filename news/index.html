@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">sampcompR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,31 +33,35 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="sampcompr-development-version">sampcompR (development version)<a class="anchor" aria-label="anchor" href="#sampcompr-development-version"></a></h2>
 <div class="section level3">
-<h3 id="changes-in-version-development-version">Changes in version 0.2.5 (2024-14-11)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version"></a></h3>
+<h3 id="changes-in-version-development-version">Changes in version 0.2.6 (2024-14-11)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version"></a></h3>
+<ul><li>As the wooldridge package was archived on CRAN, and our examples rely on the card data of wooldridge, we added the card data to our package</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changes-in-version-development-version-1">Changes in version 0.2.5 (2024-14-11)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-1"></a></h3>
 <ul><li>Added the possibility to input benchmarks as a named vector of means in univariate comparison</li>
 <li>Fixed small errors in the uni_compare_table functions that occurred when only one benchmark and survey were compared.</li>
 <li>Changed example to show bias comparison (estimating bias if only white respondents or if only north respondents would have been recruited)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-version-development-version-1">Changes in version 0.2.4 (2024-10-11)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-1"></a></h3>
+<h3 id="changes-in-version-development-version-2">Changes in version 0.2.4 (2024-10-11)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-2"></a></h3>
 <ul><li>Added parameters that allow to bootstrap both benchmark and survey</li>
 <li>Added parameter to allow to choose between percentile or normal bootstrap confidence intervals and p-values based on those intervals.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-version-development-version-2">Changes in version 0.2.3 (2024-19-08)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-2"></a></h3>
+<h3 id="changes-in-version-development-version-3">Changes in version 0.2.3 (2024-19-08)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-3"></a></h3>
 <ul><li>Additional small Fix for a test</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-version-development-version-3">Changes in version 0.2.2 (2024-22-07)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-3"></a></h3>
+<h3 id="changes-in-version-development-version-4">Changes in version 0.2.2 (2024-22-07)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-4"></a></h3>
 <ul><li>Small Fix for test on CRAN for MacOS</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-version-development-version-4">Changes in version 0.2.1 (2024-14-07)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-4"></a></h3>
+<h3 id="changes-in-version-development-version-5">Changes in version 0.2.1 (2024-14-07)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-5"></a></h3>
 <ul><li><p>We added biv_per_variable() a function to calculate the average bias per variable for the bivariate comparison, and an average bias per variable across comparisons.</p></li>
 <li><p>We added multi_per_variable() a function to calculate the average bias per coefficient and per model, for the multivariate comparison, and an average biases per coefficient and per model across comparisons.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="changes-in-version-development-version-5">Changes in version 0.2.0 (2024-08-07)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-5"></a></h3>
+<h3 id="changes-in-version-development-version-6">Changes in version 0.2.0 (2024-08-07)<a class="anchor" aria-label="anchor" href="#changes-in-version-development-version-6"></a></h3>
 <ul><li><p>We implemented better bootstrapping, that will use weighting in every bootstrap iteration, for all main functions (, , .</p></li>
 <li><p>The functions are much faster during bootstrapping now.</p></li>
 <li><p>The possibility to weight the dataset to the benchmark using  and .</p></li>

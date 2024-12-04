@@ -15,7 +15,7 @@ values."><meta property="og:image" content="https://bjoernrohr.github.io/sampcom
 
     <a class="navbar-brand me-2" href="../index.html">sampcompR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -250,7 +250,7 @@ only one character is provided, the same variable is used to weigh every
 <dt id="arg-strata-strata-bench">strata, strata_bench<a class="anchor" aria-label="anchor" href="#arg-strata-strata-bench"></a></dt>
 <dd><p>A character vector determining strata variables
 used to weigh the <code>dfs</code> or <code>benchmarks</code> with the help of the
-<code>survey</code> package. They have to be part of the respective data frame.
+<code>survey</code> package.They have to be part of the respective data frame.
 If only one character is provided, the same variable is used to weight every
 <code>df</code> or <code>benchmark</code>.</p></dd>
 
@@ -302,11 +302,11 @@ Statistics, 35(1), 93–115. https://doi.org/10.2478/jos-2019-0005</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get Data for comparison</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/" class="external-link">wooldridge</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">card</span><span class="op">&lt;-</span><span class="fu">wooldridge</span><span class="fu">::</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/reference/card.html" class="external-link">card</a></span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">north</span><span class="op">&lt;-</span><span class="fu">wooldridge</span><span class="fu">::</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/reference/card.html" class="external-link">card</a></span><span class="op">[</span><span class="fu">wooldridge</span><span class="fu">::</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/reference/card.html" class="external-link">card</a></span><span class="op">$</span><span class="va">south</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">white</span><span class="op">&lt;-</span><span class="fu">wooldridge</span><span class="fu">::</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/reference/card.html" class="external-link">card</a></span><span class="op">[</span><span class="fu">wooldridge</span><span class="fu">::</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/reference/card.html" class="external-link">card</a></span><span class="op">$</span><span class="va">black</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"card"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">north</span><span class="op">&lt;-</span><span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">south</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">white</span><span class="op">&lt;-</span><span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">black</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## use the function to plot the data </span></span></span>
 <span class="r-in"><span><span class="va">univar_comp</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu">uni_compare</span><span class="op">(</span>dfs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"north"</span>,<span class="st">"white"</span><span class="op">)</span>,</span></span>

@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">sampcompR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,14 +88,13 @@
 <p>In our example, we will use the <code>card</code> data frame from the <code>wooldrige</code> package as a base and split it into different sub-data frames. To keep our examples simple, we will not use design weights, although design weights can make a huge difference.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install and load some additional packages for this readme</span></span>
-<span><span class="co">#install.packages("wooldridge","magrittr","knitr","kableExtra")</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/" class="external-link">wooldridge</a></span><span class="op">)</span></span>
+<span><span class="co">#install.packages("magrittr","knitr","kableExtra")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/" class="external-link">kableExtra</a></span><span class="op">)</span></span>
 <span></span>
-<span></span>
-<span><span class="va">whole_card</span><span class="op">&lt;-</span><span class="fu">wooldridge</span><span class="fu">::</span><span class="va"><a href="https://justinmshea.github.io/wooldridge/reference/card.html" class="external-link">card</a></span> <span class="co"># the full survey</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"card"</span><span class="op">)</span></span>
+<span><span class="va">whole_card</span><span class="op">&lt;-</span><span class="va">card</span> <span class="co"># the full survey</span></span>
 <span></span>
 <span><span class="co"># we recode the married variable to a dummy, idicating of the respondents are married or not, which will be needed later. </span></span>
 <span><span class="va">whole_card</span><span class="op">$</span><span class="va">married</span><span class="op">[</span><span class="va">whole_card</span><span class="op">$</span><span class="va">married</span><span class="op">!=</span><span class="fl">1</span><span class="op">]</span><span class="op">&lt;-</span><span class="fl">0</span></span>
@@ -997,7 +996,7 @@
 </tbody>
 </table>
 <p>Multivariate Comparison of Subgroups of the Card Sample : South and White Sample Models</p>
-<p>Overall the comparison shows no differences between the sub-groups and the whole survey. Suppose those models play a role in the overall analyses of a research project, one would come to similar results using any survey. In other words, for those multivariate models, we would not find any bias, had we only sampled parts of the population. Notheless, there could be other models, where bias can be prevalant.</p>
+<p>Overall the comparison shows no differences between the sub-groups and the whole survey. Suppose those models play a role in the overall analyses of a research project, one would come to similar results using any survey. In other words, for those multivariate models, we would not find any bias, had we only sampled parts of the population. Nonetheless, there could be other models, where bias can be prevalent.</p>
 </div>
 </div>
 <div class="section level2">
