@@ -24,7 +24,7 @@ create a visualization.
 \examples{
 
 ## Get Data for comparison
-card<-wooldridge::card
+data("card")
 
 north <- card[card$south==0,]
 white <- card[card$black==0,]

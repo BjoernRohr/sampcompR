@@ -1,6 +1,6 @@
 Package: sampcompR
 Title: Comparing and Visualizing Differences Between Surveys
-Version: 0.2.5
+Version: 0.2.6
 Authors@R: 
     c(person("Bjoern", "Rohr",  email= "bjoern.rohr@gesis.org", role = c("aut", "cre","cph")),
     person("Barbara", "Felderer", email= "barbara.felderer@gesis.org", role = c("aut")))
@@ -9,6 +9,7 @@ License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
+Depends: R (>= 2.10)
 Imports: 
     boot,
     data.table,
@@ -29,10 +30,9 @@ Imports:
     survey,
     svrep,
     tibble,
-    tidyr,
+    tidyr
 Suggests: 
     testthat (>= 3.0.0),
-    wooldridge,
     jtools,
     utils,
     parallel,

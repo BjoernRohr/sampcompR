@@ -1142,8 +1142,8 @@ summary_glm_compare<-function (glm_comp_object, print_p=FALSE, print_se=FALSE){
 #' ## Make a comparison specifiying dependent and independent variables.
 #' 
 #' ## Get Data for comparison
-#' require(wooldridge)
-#' card<-wooldridge::card
+#' 
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' 
@@ -1159,7 +1159,7 @@ summary_glm_compare<-function (glm_comp_object, print_p=FALSE, print_se=FALSE){
 #' 
 #' #Example 2
 #' ## Make a comparison with a formula_list
-#' card<-wooldridge::card
+#' data("card")
 #'
 #' north <- card[card$south==0,]
 #'
@@ -1860,7 +1860,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 # #' @examples
 # #' 
 # #' ## Get Data for comparison
-# #' card<-wooldridge::card
+# #' data("card")
 # #' 
 # #' south <- card[card$south==1,]
 # #' north <- card[card$south==0,]
@@ -2329,7 +2329,7 @@ return(dependent)
 #' @examples
 #' 
 #' ## Get Data for comparison
-#' card<-wooldridge::card
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' white <- card[card$black==0,]

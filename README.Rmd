@@ -63,14 +63,13 @@ In our example, we will use the `card` data frame from the `wooldrige` package a
 
 ```{r getting the data for comparison}
 # install and load some additional packages for this readme
-#install.packages("wooldridge","magrittr","knitr","kableExtra")
-library(wooldridge)
+#install.packages("magrittr","knitr","kableExtra")
 library(magrittr)
 library(knitr)
 library(kableExtra)
 
-
-whole_card<-wooldridge::card # the full survey
+data("card")
+whole_card<-card # the full survey
 
 # we recode the married variable to a dummy, idicating of the respondents are married or not, which will be needed later. 
 whole_card$married[whole_card$married!=1]<-0

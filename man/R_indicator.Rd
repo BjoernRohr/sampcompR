@@ -58,8 +58,8 @@ The calculated R-indicator is based on Shlomo et al., (2012).
 }
 \examples{
 
-require(wooldridge)
-card<-wooldridge::card
+
+data("card")
 
 # For the purpose of this example, we assume that only respondents living in 
 # the south or only white respondents have participated in the survey.

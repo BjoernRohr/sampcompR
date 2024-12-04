@@ -2,13 +2,12 @@
 local_test_data_uni1 <- function(env = parent.frame(), summet="avg1",
                                  nboots=20, funct="rel_mean") {
   
-  if (!requireNamespace("wooldridge", quietly = TRUE))
-    install.packages("wooldridge")
+  data("card")
   
-  black<<-wooldridge::card[wooldridge::card$black==1,]
-  north<<-wooldridge::card[wooldridge::card$south==0,]
-  white<<-wooldridge::card[wooldridge::card$black==0,]
-  south<<-wooldridge::card[wooldridge::card$south==1,]
+  black<<-card[card$black==1,]
+  north<<-card[card$south==0,]
+  white<<-card[card$black==0,]
+  south<<-card[card$south==1,]
   
   set.seed(1)
   
@@ -38,13 +37,12 @@ local_test_data_uni1 <- function(env = parent.frame(), summet="avg1",
 
 local_test_data_uni2 <- function(env = parent.frame()) {
   
-  if (!requireNamespace("wooldridge", quietly = TRUE))
-    install.packages("wooldridge")
+  data("card")
   
-  black<<-wooldridge::card[wooldridge::card$black==1,]
-  north<<-wooldridge::card[wooldridge::card$south==0,]
-  white<<-wooldridge::card[wooldridge::card$black==0,]
-  south<<-wooldridge::card[wooldridge::card$south==1,]
+  black<<-card[card$black==1,]
+  north<<-card[card$south==0,]
+  white<<-card[card$black==0,]
+  south<<-card[card$south==1,]
   
   
   
@@ -70,11 +68,9 @@ local_test_data_uni2 <- function(env = parent.frame()) {
 
 local_test_data_uni3 <- function(env = parent.frame()) {
   
-  if (!requireNamespace("wooldridge", quietly = TRUE))
-    install.packages("wooldridge")
   
-  card1<<-wooldridge::card
-  card2<<-wooldridge::card
+  card1<<-card
+  card2<<-card
   
   ### analyze data ###
   sampcompR::R_indicator(dfs= c("card1","card2"),

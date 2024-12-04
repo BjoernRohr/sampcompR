@@ -22,7 +22,7 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
                                breaks=breaks, colors=NULL, remove_nas="pairwise", nboots=0,
                                parallel = FALSE,adjustment_weighting="raking", 
                                adjustment_vars=NULL,raking_targets=NULL,post_targets=NULL,
-                               boot_all=FALSE,percentile_ci=TRUE) {
+                               boot_all=FALSE,percentile_ci=TRUE,number=i) {
 
 
   ### Build title
@@ -203,7 +203,6 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
   
   fischer_cor_df<- suppressWarnings(psych::fisherz(cor_matrix_df$r))
   fischer_cor_bench<- suppressWarnings(psych::fisherz(cor_matrix_bench$r))
-  
   
   
   fischer_z_test<-suppressWarnings(psych::paired.r(cor_matrix_df$r,cor_matrix_bench$r,n=cor_matrix_df$n, n2=cor_matrix_bench$n))
@@ -509,8 +508,8 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
 #' @examples
 #' 
 #' ## Get Data for comparison
-#' require(wooldridge)
-#' card<-wooldridge::card
+#' 
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' white <- card[card$black==0,]
@@ -624,7 +623,7 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = TRU
                                adjustment_vars=adjustment_vars[[i]],
                                raking_targets=raking_targets[[i]],
                                post_targets=post_targets[[i]],boot_all=boot_all,
-                               percentile_ci=percentile_ci)
+                               percentile_ci=percentile_ci,number=i)
     message(paste("survey",i,"of",length(dfs),"is compared"))
     
     #return(help[[i]])###
@@ -928,8 +927,8 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = TRU
 # #' @examples
 # #' 
 # #' ## Get Data for comparison
-# #' require(wooldridge)
-# #' card<-wooldridge::card
+# #' 
+# #' data("card")
 # #' 
 # #' south <- card[card$south==1,]
 # #' north <- card[card$south==0,]
@@ -1607,7 +1606,7 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
     
     
     
-    if(isFALSE(boot_all)) p_diff<-furrr::future_map(1:length(boot_r),~boot_pvalues(boot_r[[.x]],r=bench_cor[.x],benchmark=benchmark,percentile_ci=percentile_ci,r1=r[.x],r1_bench=r_bench[.x]))
+    if(isFALSE(boot_all)) p_diff<-furrr::future_map(1:length(boot_r),~boot_pvalues(boot_r[[.x]],r=bench_cor[.x],benchmark=benchmark,percentile_ci=percentile_ci,r1=r[.x],r1_bench=bench_cor[.x]))
     if(isTRUE(boot_all)) p_diff<-furrr::future_map(1:length(boot_r),~boot_pvalues(boot_r[[.x]],r=boot_r_bench[[.x]],benchmark=benchmark,percentile_ci=percentile_ci, r1=as.numeric(r[.x]), r1_bench=as.numeric(r_bench[.x])))
     
     

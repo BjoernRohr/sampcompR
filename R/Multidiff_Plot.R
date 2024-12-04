@@ -763,8 +763,8 @@
 # #' @examples
 # #' 
 # #' ## Get Data for comparison
-# #' require(wooldridge)
-# #' card<-wooldridge::card
+# #' 
+# #' data("card")
 # #' 
 # #' south <- card[card$south==1,]
 # #' north <- card[card$south==0,]
@@ -1454,8 +1454,8 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
 #' @examples
 #' 
 #' ## Get Data for comparison
-#' require(wooldridge)
-#' card<-wooldridge::card
+#' 
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' white <- card[card$black==0,]
@@ -1950,8 +1950,8 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
 # #' @examples
 # #' 
 # #' ## Get Data for comparison
-# #' require(wooldridge)
-# #' card<-wooldridge::card
+# #' 
+# #' data("card")
 # #' 
 # #' south <- card[card$south==1,]
 # #' north <- card[card$south==0,]

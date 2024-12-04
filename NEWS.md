@@ -1,5 +1,9 @@
 # sampcompR (development version)
 
+## Changes in version 0.2.6 (2024-14-11)
+
+* As the wooldridge package was archived on CRAN, and our examples rely on the card data of wooldridge, we added the card data to our package
+
 ## Changes in version 0.2.5 (2024-14-11)
 
 * Added the possibility to input benchmarks as a named vector of means in univariate comparison

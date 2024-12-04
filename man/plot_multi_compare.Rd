@@ -126,8 +126,8 @@ at \code{variant}.
 \examples{
 
 ## Get Data for comparison
-require(wooldridge)
-card<-wooldridge::card
+
+data("card")
 
 north <- card[card$south==0,]
 white <- card[card$black==0,]

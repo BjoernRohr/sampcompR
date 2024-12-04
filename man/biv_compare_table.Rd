@@ -45,8 +45,8 @@ can be outputted as HTML or LaTex Table, for example with the help of the
 \examples{
 
 ## Get Data for comparison
-require(wooldridge)
-card<-wooldridge::card
+
+data("card")
 
 north <- card[card$south==0,]
 white <- card[card$black==0,]

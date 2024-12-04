@@ -62,14 +62,13 @@ weights can make a huge difference.
 
 ``` r
 # install and load some additional packages for this readme
-#install.packages("wooldridge","magrittr","knitr","kableExtra")
-library(wooldridge)
+#install.packages("magrittr","knitr","kableExtra")
 library(magrittr)
 library(knitr)
 library(kableExtra)
 
-
-whole_card<-wooldridge::card # the full survey
+data("card")
+whole_card<-card # the full survey
 
 # we recode the married variable to a dummy, idicating of the respondents are married or not, which will be needed later. 
 whole_card$married[whole_card$married!=1]<-0
@@ -557,8 +556,8 @@ Overall the comparison shows no differences between the sub-groups and
 the whole survey. Suppose those models play a role in the overall
 analyses of a research project, one would come to similar results using
 any survey. In other words, for those multivariate models, we would not
-find any bias, had we only sampled parts of the population. Notheless,
-there could be other models, where bias can be prevalant.
+find any bias, had we only sampled parts of the population. Nonetheless,
+there could be other models, where bias can be prevalent.
 
 ## Further Use-Cases
 

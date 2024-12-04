@@ -37,8 +37,8 @@
 #' @examples
 #' 
 #' ## Get Data for comparison
-#' require(wooldridge)
-#' card<-wooldridge::card
+#' 
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' white <- card[card$black==0,]
@@ -463,8 +463,8 @@ uni_compare_table2<-function(uni_compare_object, conf_adjustment=FALSE,names=NUL
 #' @examples
 #' 
 #' ## Get Data for comparison
-#' require(wooldridge)
-#' card<-wooldridge::card
+#' 
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' white <- card[card$black==0,]
@@ -651,8 +651,8 @@ biv_compare_table<-function(biv_compare_object, type="diff", comparison_number=1
 #' @examples
 #' 
 #' ## Get Data for comparison
-#' require(wooldridge)
-#' card<-wooldridge::card
+#' 
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' white <- card[card$black==0,]
@@ -910,8 +910,7 @@ descriptive_table<-function(dfs,variables,varlabels=NULL, weight=NULL,
 #' 
 #' @examples
 #' 
-#' require(wooldridge)
-#' card<-wooldridge::card
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' white <- card[card$black==0,]
@@ -1048,8 +1047,7 @@ biv_per_variable<-function(biv_compare_object, ndigits = 1,varlabels=NULL,label_
 #' 
 #' @examples
 #' 
-#' require(wooldridge)
-#' card<-wooldridge::card
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' white <- card[card$black==0,]

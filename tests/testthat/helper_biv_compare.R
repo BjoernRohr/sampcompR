@@ -1,13 +1,12 @@
 
 local_test_data_biv1 <- function(env = parent.frame(), remove_nas="all") {
   
-  if (!requireNamespace("wooldridge", quietly = TRUE))
-    install.packages("wooldridge")
+  data("card")
   
-  black<<-wooldridge::card[wooldridge::card$black==1,]
-  north<<-wooldridge::card[wooldridge::card$south==0,]
-  white<<-wooldridge::card[wooldridge::card$black==0,]
-  south<<-wooldridge::card[wooldridge::card$south==1,]
+  black<<-card[card$black==1,]
+  north<<-card[card$south==0,]
+  white<<-card[card$black==0,]
+  south<<-card[card$south==1,]
   
   
   set.seed(1)
@@ -35,13 +34,12 @@ local_test_data_biv1 <- function(env = parent.frame(), remove_nas="all") {
 
 local_test_data_biv2 <- function(env = parent.frame()) {
   
-  if (!requireNamespace("wooldridge", quietly = TRUE))
-    install.packages("wooldridge") 
+  data("card")
   
-  black<<-wooldridge::card[wooldridge::card$black==1,]
-  north<<-wooldridge::card[wooldridge::card$south==0,]
-  white<<-wooldridge::card[wooldridge::card$black==0,]
-  south<<-wooldridge::card[wooldridge::card$south==1,]
+  black<<-card[card$black==1,]
+  north<<-card[card$south==0,]
+  white<<-card[card$black==0,]
+  south<<-card[card$south==1,]
   
   
   set.seed(1)

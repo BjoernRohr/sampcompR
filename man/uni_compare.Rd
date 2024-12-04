@@ -153,7 +153,7 @@ only one character is provided, the same variable is used to weigh every
 
 \item{strata, strata_bench}{A character vector determining strata variables
 used to weigh the \code{dfs} or \code{benchmarks} with the help of the
-\code{survey} package. They have to be part of the respective data frame.
+\code{survey} package.They have to be part of the respective data frame.
 If only one character is provided, the same variable is used to weight every
 \code{df} or \code{benchmark}.}
 
@@ -190,11 +190,11 @@ values.
 \examples{
 
 ## Get Data for comparison
-require(wooldridge)
-card<-wooldridge::card
 
-north<-wooldridge::card[wooldridge::card$south==0,]
-white<-wooldridge::card[wooldridge::card$black==0,]
+data("card")
+
+north<-card[card$south==0,]
+white<-card[card$black==0,]
 
 ## use the function to plot the data 
 univar_comp<-sampcompR::uni_compare(dfs = c("north","white"),

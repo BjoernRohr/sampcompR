@@ -153,8 +153,8 @@ differing methods. All \code{\link[stats]{glm}} Models can be compared.
 ## Make a comparison specifiying dependent and independent variables.
 
 ## Get Data for comparison
-require(wooldridge)
-card<-wooldridge::card
+
+data("card")
 
 north <- card[card$south==0,]
 
@@ -170,7 +170,7 @@ plot_multi_compare("multi_data1")
 
 #Example 2
 ## Make a comparison with a formula_list
-card<-wooldridge::card
+data("card")
 
 north <- card[card$south==0,]
 

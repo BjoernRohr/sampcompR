@@ -1629,8 +1629,8 @@ MEAN_PERC_DIST <- function(x, y, i,
 #' @examples
 #' 
 #' ## Get Data for comparison
-#' require(wooldridge)
-#' card<-wooldridge::card
+#' 
+#' data("card")
 #' 
 #' south <- card[card$south==1,]
 #' north <- card[card$south==0,]
@@ -2258,8 +2258,8 @@ chi_square_df<- function(dfs,benchmarks, name_dfs=NULL, name_benchmarks=NULL, va
 #' 
 #' @examples
 #' 
-#' require(wooldridge)
-#' card<-wooldridge::card
+#' 
+#' data("card")
 #' 
 #' # For the purpose of this example, we assume that only respondents living in 
 #' # the south or only white respondents have participated in the survey.
@@ -2332,7 +2332,6 @@ R_indicator<-function(dfs,response_identificators,variables,
 
 R_indicator_func<-function(df,response_identificator,variables,
                            id=NULL,weight=NULL,strata=NULL, get_r2=FALSE){
-  
   
   
   ### turn df into data.frame

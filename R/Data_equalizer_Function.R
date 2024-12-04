@@ -34,7 +34,7 @@
 #' 
 #' @examples
 #' ## Get Data to equalize 
-#' card<-wooldridge::card
+#' data("card")
 #' 
 #' ##reduce data frame
 #' card2<-card[c("id","age","educ","fatheduc","motheduc","IQ","wage")]
