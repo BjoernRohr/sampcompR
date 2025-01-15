@@ -1519,7 +1519,7 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
       if(sum(is.na(boot_object)) > 0 & is.null(iteration)==FALSE){
         
         warning(paste(sum(is.na(boot_object)), "of the", length(boot_object),
-                      "bootstraps contain zero combined cases for the variable pair of:",
+                      "bootstraps contain not enough combined cases for the variable pair of:",
                       row[iteration],"and",col[iteration],".\n"))
       }
       if(benchmark==TRUE & sum(is.na(boot_object))==length(boot_object)) return("NaN")
@@ -1532,7 +1532,7 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
       
       
       ### get p_values up to 0.00001
-      while(in_interval){
+      while(in_interval & alpha<1){
         alpha <- alpha + 0.001
         #if(iteration==69)browser()
         if(is.null(r) & percentile_ci==TRUE) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
@@ -1566,7 +1566,7 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
       alpha<-alpha-0.001
       in_interval<-TRUE
       
-      while(in_interval){
+      while(in_interval & alpha<1){
         alpha <- alpha + 0.00001
         if(is.null(r)==TRUE & percentile_ci==TRUE) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
         

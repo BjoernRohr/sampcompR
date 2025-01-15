@@ -3255,7 +3255,7 @@ boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
   if(sum(is.na(boot_object)) > 0 & is.null(col_numb)==FALSE & model_less==0){
     
     warning(paste(sum(is.na(boot_object)), "of the", length(boot_object),
-                  "bootstraps contain zero combined cases for the variable pair of:",
+                  "bootstraps contain not enough combined cases for the variable pair of:",
                   row[row_numb],"and",col[col_numb],".\n"))
   }}
   
@@ -3267,7 +3267,7 @@ boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
 
   
   ### get p_values up to 0.00001
-  while(in_interval){
+  while(in_interval & alpha<1){
     alpha <- alpha + 0.001
     if(is.null(ref)& percentile_ci==FALSE) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
     if(is.null(ref)==TRUE & percentile_ci==FALSE){
@@ -3297,7 +3297,7 @@ boot_pvalues3_multi<-function(boot_object,reference=0,ref=NULL,
   alpha<-alpha-0.001
   in_interval<-TRUE
   
-  while(in_interval){
+  while(in_interval & alpha<1){
     alpha <- alpha + 0.00001
     if(is.null(ref)==TRUE & percentile_ci==TRUE) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
     if(is.null(ref)==TRUE & percentile_ci==FALSE){
