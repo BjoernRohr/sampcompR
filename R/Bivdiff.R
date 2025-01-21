@@ -320,7 +320,7 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
   if (is.null(varlabels)) varlabels<- unique(comp_matrix_df$x)
 
 
-  ### build biger out matrix ###
+  ### build bigger out matrix ###
 
 
   cor_matrix_df[[1]][upper.tri(cor_matrix_df[[1]], diag= TRUE)]<-NA
@@ -1121,9 +1121,9 @@ empty_finder <- function(df,samp_names){
       for (k in 1:length (samps)) {
         
         if ((length(df$value[df[,1]==varnames[i] & df[,2]==varnames[j] & df$samp==samps[k]])==0) &
-            (any((df[,1]==varnames[i] & df[,2]==varnames[j] & is.na(df[,3]) & df$samp!=samps[k])))==FALSE) df<-rbind(df, c(varnames[i],varnames[j],"X",NA,NA,samps[k],sampnames[k]))
+            (any((df[,1]==varnames[i] & df[,2]==varnames[j] & is.na(df[,3]) & df$samp!=samps[k])))==FALSE) df<-rbind(df, c(varnames[i],varnames[j],"X",NA,NA,NA,NA,NA,samps[k],sampnames[k]))
         if ((length(df$value[df[,1]==varnames[i] & df[,2]==varnames[j] & df$samp==samps[k]])==0) &
-            (any((df[,1]==varnames[i] & df[,2]==varnames[j] & df$samp!=samps[k])))==TRUE) df<-rbind(df, c(varnames[i],varnames[j],NA,NA,NA,samps[k],sampnames[k]))
+            (any((df[,1]==varnames[i] & df[,2]==varnames[j] & df$samp!=samps[k])))==TRUE) df<-rbind(df, c(varnames[i],varnames[j],NA,NA,NA,NA,NA,NA,samps[k],sampnames[k]))
       }
       
     }
