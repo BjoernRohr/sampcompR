@@ -1,5 +1,10 @@
 # sampcompR (development version)
 
+## Changes in version 0.2.7 (2025-21-01)
+
+* fixed a small error in biv_compare that occurred when sample size was very small and ended in an Error message.
+* Added absolute relative bias to biv_compare output
+
 ## Changes in version 0.2.6 (2024-14-11)
 
 * As the wooldridge package was archived on CRAN, and our examples rely on the card data of wooldridge, we added the card data to our package
