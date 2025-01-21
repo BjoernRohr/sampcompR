@@ -287,12 +287,20 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
     edge_matrix<- comp_matrix_df2[is.na(comp_matrix_df2$value),]
   }
 
+  ### add r and bench_r to df
+  
+  comp_matrix_df$corr<-reshape2::melt(cor_matrix_df$r)$value
+  comp_matrix_df$corr_bench<-reshape2::melt(cor_matrix_bench$r)$value
+  
   #### add difference to data frame
 
   difference_r<-(cor_matrix_df$r-cor_matrix_bench$r)
   difference_r<-reshape2::melt(difference_r)
   comp_matrix_df$difference_r<-difference_r$value
 
+  ### add absolute relative difference to data frame
+  comp_matrix_df$abs_rel_difference_r<-reshape2::melt((cor_matrix_df$r-cor_matrix_bench$r)/cor_matrix_bench$r)$value
+  
   ### change gradient ###
 
   alpha_matrix<-(abs(cor_matrix_df$r-cor_matrix_bench$r)/2/5)+0.8
