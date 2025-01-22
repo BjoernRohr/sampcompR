@@ -204,7 +204,6 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
   fischer_cor_df<- suppressWarnings(psych::fisherz(cor_matrix_df$r))
   fischer_cor_bench<- suppressWarnings(psych::fisherz(cor_matrix_bench$r))
   
-  
   fischer_z_test<-suppressWarnings(psych::paired.r(cor_matrix_df$r,cor_matrix_bench$r,n=cor_matrix_df$n, n2=cor_matrix_bench$n))
   fischer_z_test$p[round(cor_matrix_df$r,digits=3) %in%"-1" & round(cor_matrix_bench$r,digits=3) %in% "-1"]<-1
   fischer_z_test$p[fischer_z_test$p=="NaN"]<-NA
@@ -1547,7 +1546,7 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
         if(is.null(r) & percentile_ci==TRUE) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
         if(is.null(r) & percentile_ci==FALSE){
           SE=stats::sd(boot_object,na.rm = T)
-          if(alpha=="2") #browser()#return(1)
+          #if(alpha=="2") #browser()#return(1)
           cis<-c(r1 + stats::qnorm(1-alpha/2) * SE,
                  r1 - stats::qnorm(1-alpha/2) * SE)}
 
