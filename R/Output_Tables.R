@@ -931,7 +931,8 @@ biv_per_variable<-function(biv_compare_object, ndigits = 1,varlabels=NULL,label_
   main_object<-biv_compare_object$comparison_dataframe |> 
     dplyr::filter(is.na(biv_compare_object$comparison_dataframe$value)==F) |> 
     dplyr::mutate(different=dplyr::case_when(value=="Same"~0,
-                               value!="Same"~1))
+                                             value=="X"~NA,
+                                             value!="Same" & value!="X"~1))
   
   
   if(is.null(biv_compare_object$varlabels)){
@@ -983,14 +984,14 @@ biv_per_variable<-function(biv_compare_object, ndigits = 1,varlabels=NULL,label_
     #bias<-cbind(bias,map_dbl(1:length(variables),~mean(bias[.x,],na.rm=T)))
     bias<-format(round(x=bias*100,digits = ndigits),nsmall = ndigits)
     bias[bias!=" NaN"]<-paste0(bias[bias!=" NaN"],"%")
-    bias[bias==" NaN"]<-""
+    bias[bias==" NaN"]<-"-"
     
     if(is.null(varlabels)==FALSE){
       l_varlabels<-ifelse(length(variables)<=length(varlabels),length(variables),length(varlabels))
       variables<-as.character(variables)
       variables[1:l_varlabels]<-varlabels[1:l_varlabels]
     }
-      
+     
     bias<-cbind(as.character(variables),bias)
     if(is.null(biv_compare_object$plots_label)==FALSE) {
       if(is.null(label_df)==FALSE){
@@ -998,6 +999,7 @@ biv_per_variable<-function(biv_compare_object, ndigits = 1,varlabels=NULL,label_
         l_label_df<-ifelse(length(plots_label)<=length(label_df),length(plots_label),length(label_df))
         biv_compare_object$plots_label[1:l_label_df]<-label_df[1:l_label_df]
       }
+      
       colnames(bias)<-c("Variables",unique(biv_compare_object$plots_label),"Average Bias")}
     
     if(is.null(biv_compare_object$plots_label)){

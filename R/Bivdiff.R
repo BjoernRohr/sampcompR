@@ -780,7 +780,8 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = TRU
   plot_list$colors<-colors2
   plot_list$breaks <-breaks 
   plot_list$shape<-plot_list[[1]]$shape
-  plot_list$plots_label<-as.character(unique(plot_list[[1]]$samp_name))
+  #plot_list$plots_label<-as.character(unique(plot_list[[1]]$samp_name))
+  plot_list$plots_label<-plots_label
   
   if (is.null(plot_title)==FALSE) plot_list$plot_title<-plot_title
   if (is.null(plot_title)) plot_list$plot_title<-NA
@@ -1546,7 +1547,7 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
         if(is.null(r) & percentile_ci==TRUE) cis<-c(stats::quantile(boot_object, probs=(1-(alpha/2)),na.rm=TRUE),stats::quantile(boot_object, probs=(alpha/2),na.rm=TRUE))
         if(is.null(r) & percentile_ci==FALSE){
           SE=stats::sd(boot_object,na.rm = T)
-          if(alpha=="2") browser()#return(1)
+          if(alpha=="2") #browser()#return(1)
           cis<-c(r1 + stats::qnorm(1-alpha/2) * SE,
                  r1 - stats::qnorm(1-alpha/2) * SE)}
 
