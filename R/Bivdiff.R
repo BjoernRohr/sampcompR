@@ -299,7 +299,7 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
   comp_matrix_df$difference_r<-difference_r$value
 
   ### add absolute relative difference to data frame
-  comp_matrix_df$abs_rel_difference_r<-reshape2::melt((cor_matrix_df$r-cor_matrix_bench$r)/cor_matrix_bench$r)$value
+  comp_matrix_df$abs_rel_difference_r<-reshape2::melt(abs((cor_matrix_df$r-cor_matrix_bench$r)/cor_matrix_bench$r))$value
   
   ### change gradient ###
 
