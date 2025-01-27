@@ -941,6 +941,29 @@ plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
   if(is.null(colors)==TRUE) colors=plot_list$colors
   if (is.null(breaks)) breaks<-plot_list$breaks
 
+  if(is.null(p_value)==F){
+    help<- plot_list[[1]]
+    if(is.null(breaks)) breaks<-plot_list$breaks
+    help$p<- as.numeric(help$p)
+    help$bench_p<- as.numeric(help$bench_p)
+    help$p_diff<- as.numeric(help$p_diff)
+    help$corr<- as.numeric(help$corr)
+    help$corr_bench<- as.numeric(help$corr_bench)
+    
+    
+    help$value<- ifelse(help$bench_p >= p_value & help$p >= p_value,breaks[1],
+                        ifelse(help$p_diff>=p_value,breaks[1],
+                               ifelse((abs(help$corr)<2*abs(help$corr_bench)&
+                                         abs(help$corr)*2>abs(help$corr_bench)) &
+                                        ((help$corr>0 & help$corr_bench>0)|
+                                           (help$corr<0 & help$corr_bench<0)),
+                                      breaks[2],breaks[3])))
+    
+    plot_list[[1]]$value[plot_list[[1]]$value!="X" & is.na(plot_list[[1]]$value)==F]<-
+      help$value[plot_list[[1]]$value!="X" & is.na(plot_list[[1]]$value)==F]
+
+    rm(help)
+  }
   
   ##########################################
   ### Calculate percentage of difference ###

@@ -219,7 +219,6 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
                                                                    n = ncol(fischer_z_test$p)),
                                                       ncol = ncol(fischer_z_test$p))}}
 
-  
   ### Compute Comparison Matrix
   comp_matrix<-fischer_cor_df
   comp_matrix[comp_matrix=="Inf"]<-NA
@@ -290,6 +289,12 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
   
   comp_matrix_df$corr<-reshape2::melt(cor_matrix_df$r)$value
   comp_matrix_df$corr_bench<-reshape2::melt(cor_matrix_bench$r)$value
+  
+  ### add p_values and bench_p_values to df
+  
+  comp_matrix_df$p<-reshape2::melt(cor_matrix_df$P)$value
+  comp_matrix_df$bench_p<-reshape2::melt(cor_matrix_bench$P)$value
+  comp_matrix_df$p_diff<-reshape2::melt(fischer_z_test$p)$value
   
   #### add difference to data frame
 
@@ -650,7 +655,6 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = TRU
 
 
   }
-
 
   names(plot_list)<-c(names(plot_list[1]),paste("correlation_data_",plots_label[1:length(dfs)],sep=""))
 
@@ -1121,9 +1125,9 @@ empty_finder <- function(df,samp_names){
       for (k in 1:length (samps)) {
         
         if ((length(df$value[df[,1]==varnames[i] & df[,2]==varnames[j] & df$samp==samps[k]])==0) &
-            (any((df[,1]==varnames[i] & df[,2]==varnames[j] & is.na(df[,3]) & df$samp!=samps[k])))==FALSE) df<-rbind(df, c(varnames[i],varnames[j],"X",NA,NA,NA,NA,NA,samps[k],sampnames[k]))
+            (any((df[,1]==varnames[i] & df[,2]==varnames[j] & is.na(df[,3]) & df$samp!=samps[k])))==FALSE) df<-rbind(df, c(varnames[i],varnames[j],"X",NA,NA,NA,NA,NA,NA,NA,NA,samps[k],sampnames[k]))
         if ((length(df$value[df[,1]==varnames[i] & df[,2]==varnames[j] & df$samp==samps[k]])==0) &
-            (any((df[,1]==varnames[i] & df[,2]==varnames[j] & df$samp!=samps[k])))==TRUE) df<-rbind(df, c(varnames[i],varnames[j],NA,NA,NA,NA,NA,NA,samps[k],sampnames[k]))
+            (any((df[,1]==varnames[i] & df[,2]==varnames[j] & df$samp!=samps[k])))==TRUE) df<-rbind(df, c(varnames[i],varnames[j],NA,NA,NA,NA,NA,NA,NA,NA,NA,samps[k],sampnames[k]))
       }
       
     }
