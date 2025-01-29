@@ -862,7 +862,7 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = TRU
     ggplot2::guides(alpha="none",
                     fill  = ggplot2::guide_legend(order = 1),
                     shape = ggplot2::guide_legend(order = 2))+
-    ggplot2::facet_wrap(~ samp, labeller = ggplot2::labeller(samp = labellist),ncol = ncol_facet)
+    ggplot2::facet_wrap(~ factor(samp,levels=unique(samp),labels = labellist), labeller = ggplot2::labeller(samp = labellist),ncol = ncol_facet)
 
   if(note==TRUE) comparison_plot<-comparison_plot + ggplot2::labs(caption = plot_list[[1]]$note_text)
 

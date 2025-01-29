@@ -1058,7 +1058,7 @@ plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
 
   comparison_plot<-
     ggplot2::ggplot(plot_list[[1]], ggplot2::aes(x = plot_list[[1]]$y, y = plot_list[[1]]$x)) +
-    {if (gradient==TRUE) ggplot2::aes(alpha= gradient)}+
+    #{if (gradient==TRUE) ggplot2::aes(alpha= gradient)}+
     {if (grid != "none") ggplot2::geom_tile(colour= grid, lwd =1,linetype=1,
                                             ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
     {if (grid == "none") ggplot2::geom_tile(ggplot2::aes( fill = factor(plot_list[[1]]$value, levels = breaks)))}+
@@ -1085,10 +1085,9 @@ plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
     ggplot2::guides(alpha="none",
                     fill  = ggplot2::guide_legend(order = 1),
                     shape = ggplot2::guide_legend(order = 2))+
-    ggplot2::facet_wrap(~ samp, labeller = ggplot2::labeller(samp = labellist),ncol = ncol_facet)
+    ggplot2::facet_wrap(~ factor(samp,levels=unique(samp),labels = labellist), labeller = ggplot2::labeller(samp = labellist),ncol = ncol_facet)
 
   if(note==TRUE) comparison_plot<-comparison_plot + ggplot2::labs(caption = plot_list$note_text)
-
 
   if (diff_perc==TRUE) {
     label<-summary_df$label
@@ -1099,7 +1098,8 @@ plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
                                                              data=summary_df,
                                                              label = summary_df$label,
                                                              fill = ggplot2::alpha("white", perc_diff_transparance),
-                                                             color = ggplot2::alpha("black", 1), size= diff_perc_size, show.legend = FALSE)}
+                                                             color = ggplot2::alpha("black", 1), size= diff_perc_size, show.legend = FALSE)
+    }
 
 
 

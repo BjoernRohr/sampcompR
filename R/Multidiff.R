@@ -1800,7 +1800,7 @@ multi_compare <- function(df,benchmark,independent=NULL,dependent=NULL, formula_
 # #' \code{plot_multi_compare} plots multipe \code{multi_compare_objects} together
 # #'
 # #' @param multi_compare_objects A character vector containing the names of one or more \code{multi_compare_objects}.
-# #' Every object will be displayed seperately in \code{facet_warp} of \code{ggplot}.
+# #' Every object will be displayed seperately in \code{facet_wrap} of \code{ggplot}.
 # #' @param plots_label A character vector of the same lengths as \code{multi_compare_objects}, to name the different objects
 # #' in facet_warp of ggplot.
 # #' @param plot_title A string containing the title of the vizualization

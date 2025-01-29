@@ -1651,7 +1651,7 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
                    plot.caption=ggplot2::element_text(hjust = 0))+
     ggplot2::ggtitle(plot_title)+
     ggplot2::guides(alpha="none")+
-    ggplot2::facet_wrap(~ factor(samp),ncol = ncol_facet)
+    ggplot2::facet_wrap(~ factor(samp,levels=unique(samp)),ncol = ncol_facet)
 
 
   if(note==TRUE) comparison_plot<-comparison_plot + ggplot2::labs(caption = note_text)
