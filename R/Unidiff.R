@@ -760,9 +760,8 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   svy_boot<-svy_boot[1:(length(svy_boot)-1)]
   if(is_named_vector(y)==FALSE){means_bench<-means_bench[1:(length(means_bench)-1)]}
   
-  
   t_vec<-measure_function(svy_boot,means_bench,func = func,out = "diff",alpha=alpha)
-  
+
   
   
   if(nboots>0){
@@ -773,7 +772,7 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
     lower_ci_adjusted<-measure_function(svy_boot,means_bench,func = func,out = "lower_ci",alpha=alpha_adjusted, boot_all = boot_all, percentile_ci =percentile_ci)
     upper_ci_adjusted<-measure_function(svy_boot,means_bench,func = func,out = "upper_ci",alpha=alpha_adjusted, boot_all = boot_all, percentile_ci =percentile_ci)  
   }
-  
+
   
   
   ########################
@@ -789,6 +788,7 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   data$ci_lower<-lower_ci
   data$ci_upper<-upper_ci
   data$ci_level<- 1-alpha
+
   
   if (is.null(conf_adjustment)==FALSE){
     
@@ -809,12 +809,15 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   if(is.null(n_bench)) data$n_bench<-NA
   if(is.null(n_bench)==F) data$n_bench<-n_bench
   
+  data$estimate_bench<-purrr::map(1:length(means_bench), ~means_bench[[.x]][[1]])
+  data$estimate_df<-purrr::map(1:length(means_bench), ~svy_boot[[.x]][[1]])
+  
   if (is.null(conf_adjustment)){
-    names(data) <- c("t_vec", "se_vec", "varnames","ci_lower","ci_upper","ci_level","n_df","n_bench")}
+    names(data) <- c("t_vec", "se_vec", "varnames","ci_lower","ci_upper","ci_level","n_df","n_bench","estimate_bench","estimate_df")}
   
   if (is.null(conf_adjustment)==FALSE){
     names(data) <- c("t_vec", "se_vec", "varnames","ci_lower","ci_upper","ci_level", "ci_lower_adjusted",
-                     "ci_upper_adjusted","adjusted_ci_level","n_df","n_bench")}
+                     "ci_upper_adjusted","adjusted_ci_level","n_df","n_bench","estimate_bench","estimate_df")}
   
   
   data$se_vec <- as.numeric(data$se_vec)
