@@ -1545,6 +1545,8 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
   for (i in 1:length(multi_compare_objects)){
 
     curr_df<-get(multi_compare_objects[i])
+    
+    if(is.function(curr_df)) stop(paste("multi_compare_objects must not be named the same as a existing function"))
 
 
 

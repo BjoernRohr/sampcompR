@@ -584,7 +584,11 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = TRU
   for (i in 1:length(dfs)){
 
     curr_df<-get(dfs[i])
+    if(is.function(curr_df)) stop(paste("dfs must not be named the same as a existing function"))
+    
     curr_bench<-get(benchmarks[i])
+    if(is.function(curr_bench)) stop(paste("benchmarks must not be named the same as a existing function"))
+    
 
     if (is.null(weight)==FALSE) {
     if (is.na(weight[i])==FALSE) {

@@ -797,6 +797,9 @@ multi_glm_compare<-function(df,benchmark,independent=NULL,dependent=NULL,formula
                     sep = "", collapse = NULL))
   }
 
+  if(is.function(df)) stop(paste("df must not be named the same as a existing function"))
+  if(is.function(benchmark)) stop(paste("benchmark must not be named the same as a existing function"))
+  
   dependent<-dependent_checker(df=df,dependent = dependent, dfname = name_old_df)
   dependent<-dependent_checker(df=benchmark,dependent = dependent, dfname = name_old_benchmark)
 

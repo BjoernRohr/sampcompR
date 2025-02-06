@@ -195,7 +195,9 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000,
   ### Inputs are not a Data frame ###
   for (i in 1:length(dfs)){
     
-    if (is.data.frame(get(dfs[i])) == FALSE) stop(paste(dfs[i],"must be a character naming a data frame",
+    if (is.function(get(dfs[i]))) stop(paste("dfs must not be named the same as a existing function"))
+    
+    if (is.data.frame(get(dfs[i])) == FALSE) stop(paste(dfs[i]," must be a character naming a data frame",
                                                         sep = "", collapse = NULL))
     
     ### check if benchmarks have similar variables ###
@@ -207,6 +209,8 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000,
   
   
   for (i in 1:length(benchmarks)){
+    
+    if (is.function(get(benchmarks[i]))) stop(paste("benchmarks must not be named the same as a existing function"))
     
     if (inherits(get(benchmarks[i]),"data.frame") == FALSE &
         inherits(get(benchmarks[i]),"list")==FALSE &
@@ -341,7 +345,7 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000,
   
   for (i in 1:length(dfs)){
     df_list[[i]]<-get(dfs[i])
-    
+
   }
   
   
