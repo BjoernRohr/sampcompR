@@ -1715,7 +1715,7 @@ plot_uni_compare<-function(uni_compare_objects, name_dfs=NULL, name_benchmarks=N
   #####################
   
   if (is.null(shapes) == FALSE) {
-    uni_compare_objects$shape[1:(length(shapes))] <- shapes
+    uni_compare_objects$shapes[1:(length(shapes))] <- shapes
   }
   
   ############################
