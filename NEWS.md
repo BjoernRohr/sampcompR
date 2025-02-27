@@ -1,9 +1,10 @@
 # sampcompR (development version)
 
-## Changes in version 0.2.7 (2025-21-01)
+## Changes in version 0.2.7 (2025-27-02)
 
 * fixed a small error in biv_compare that occurred when sample size was very small and ended in an Error message.
 * Added absolute relative bias to biv_compare output
+* fix small bug in shapes of uni_compare_plot
 
 ## Changes in version 0.2.6 (2024-14-11)
 
