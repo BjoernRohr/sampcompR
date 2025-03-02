@@ -763,7 +763,7 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = TRU
   if(length(varlabels)==length(variables)) varlabels<-varlabels[variables %in% unique(plot_list[[1]]$x)]
   
   #return(list(variables,varlabels,unique(plot_title[[1]]$x)))
-  plot_list[[1]]<-plot_list[[1]] |> 
+  plot_list[[1]]<-plot_list[[1]] %>%
     dplyr::mutate(x=forcats::fct_recode(plot_list[[1]]$x, !!! stats::setNames(order, varlabels)),
            y=forcats::fct_recode(plot_list[[1]]$y, !!! stats::setNames(order, varlabels)))
   

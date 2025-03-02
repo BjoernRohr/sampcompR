@@ -413,20 +413,20 @@ heatmap_biv_compare<-function(biv_data_object,
   
   samp<-factor(biv_data_object[[1]]$samp)
   ### Calculate AAB
-  AAB<-biv_data_object[[1]] |> 
-    dplyr::mutate(samp=factor(biv_data_object[[1]]$samp)) |> 
-    dplyr::group_by(samp) |> 
+  AAB<-biv_data_object[[1]] %>% 
+    dplyr::mutate(samp=factor(biv_data_object[[1]]$samp)) %>% 
+    dplyr::group_by(samp) %>% 
     dplyr::summarise(AAB=mean(abs(as.numeric(biv_data_object[[1]]$difference_r)),na.rm=T))
   
   ### Calculate AARB
-  AARB<-biv_data_object[[1]] |> 
-    dplyr::mutate(samp=factor(biv_data_object[[1]]$samp)) |> 
-    dplyr::group_by(samp) |> 
+  AARB<-biv_data_object[[1]] %>% 
+    dplyr::mutate(samp=factor(biv_data_object[[1]]$samp)) %>% 
+    dplyr::group_by(samp) %>% 
     dplyr::summarise(AARB=mean(abs(as.numeric(biv_data_object[[1]]$abs_rel_difference_r)),na.rm=T))
   
   
   ### Calculate summary data frame
-  summary_df<-AAB |> 
+  summary_df<-AAB %>% 
     dplyr::transmute(samp = samp,
               label = paste0("AAB  ",format(round(AAB,digits=ndigits_summet),nsmall=ndigits_summet),"\nAARB ",format(round(AARB$AARB,digits=ndigits_summet),nsmall=ndigits_summet)))
   
