@@ -47,7 +47,7 @@ the new labels of variables that are used in the plot.}
 between the tiles of the heatmap.}
 
 \item{diff_perc}{If \code{TRUE} a percental measure of difference between
-\code{dfs} and benchmarks is displayed in the plot.}
+\code{dfs} and \code{benchmarks} is displayed in the plot.}
 
 \item{diff_perc_size}{A number to determine the size of the displayed percental
 difference between surveys in the plot.}

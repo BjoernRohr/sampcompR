@@ -956,16 +956,6 @@ biv_per_variable<-function(biv_compare_object, ndigits = 1,varlabels=NULL,label_
     
     mean(different,na.rm = T)
   }
-  
-  # if(by_sample==F){
-    # bias<-purrr::map_dbl(variables,~bias_per_variable_sub(main_object,.))
-    # browser()
-    # bias<-bias*100
-    # bias<-format(round(x=bias,digits=1),nsmall=1)
-    # bias<-paste0(bias,"%") |>
-    #   matrix(ncol=1)
-    # return(cbind(variables,bias))
-  # }
 
   
   
@@ -1293,4 +1283,315 @@ if(type=="complete"){
 }
 
 out
+}
+
+
+
+
+
+
+
+
+
+
+###########################################
+### Average Bias per Variable bivariate ###
+###########################################
+
+#' Returns a table based on the information of a \code{biv_compare_object} that 
+#' indicates the Average Absolute Bias (AARB) in Pearson's r or the Average Absolute 
+#' Relative Bias (AARB) in Pearson's r for every data frame It can be outputted as HTML or 
+#' LaTex Table, for example with the help of the \link[stargazer]{stargazer} 
+#' function.
+#' 
+#' @param biv_compare_object A object returned by the 
+#' \code{\link[sampcompR]{biv_compare}} function.
+#' @param ndigits Number of digits that is shown in the table.
+#' @param varlabels A character vector containing labels for the variables.
+#' @param label_df A character vector containing labels for the data frames.
+#' @param type A character string, which is \code{"AAB"} if the Average Absolute 
+#' Bias per variable should be displayed in the table, or "AARB" if the Average Absolute 
+#' Relative Bias per Variable should be displayed in the table.
+#' @param final_col A character string, indicating if the last column of the table
+#' should display an average bias per variable of over all data frames (\code{"average"}),
+#' or the difference between the first and the average bias of the first and the last
+#' data frame (\code{"difference"}).
+#' @return A matrix, that shows the Average Absolute Bias (AAB) or the Average 
+#' Absolute Relative Bias (AARB) for every individual variable. 
+#' This is given separately for every comparison data frame, as well as averaged
+#' over comparisons, or as the difference between the first and the last comparison. 
+#' 
+#' @examples
+#' 
+#' data("card")
+#' 
+#' north <- card[card$south==0,]
+#' white <- card[card$black==0,]
+#' 
+#' ## use the function to plot the data 
+#' bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
+#'                                    benchmarks = c("card","card"),
+#'                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
+#'                                    data=TRUE)
+#' 
+#' table1<-sampcompR::biv_bias_per_variable(bivar_data,type="rel_diff",
+#'                                          final_col="average",ndigits=2)
+#' noquote(table1)
+#' 
+#' table2<-sampcompR::biv_bias_per_variable(bivar_data,type = "diff",
+#'                                          final_col="difference",ndigits=2)
+#' noquote(table2)
+#' 
+#' @importFrom rlang :=
+#' @export
+biv_bias_per_variable<-function(biv_compare_object, type="rel_diff",
+                                final_col="difference",ndigits=3,
+                                varlabels=NULL,
+                                label_df=NULL){
+  samp_name<-NULL
+  x<-NULL
+  y<-NULL
+  new_diff<-NULL
+  
+  vars<-as.character(biv_compare_object$varlabels)
+  
+  if(type=="rel_diff") biv_compare_object[[1]]$new_diff<-abs(as.numeric(biv_compare_object[[1]]$abs_rel_difference_r))
+  if(type=="diff") biv_compare_object[[1]]$new_diff<-abs(as.numeric(biv_compare_object[[1]]$difference_r))
+  
+  output<-purrr::map_df(vars,~biv_bias_per_var_sub(biv_compare_object,.x))
+  output2<-purrr::map_dbl(vars,~biv_bias_per_var_sub2(biv_compare_object,.x))
+  
+  
+  if (final_col=="difference") output$"Bias Difference"<-output[,ncol(output)]-output[,1]
+  if (final_col=="average") output$"Average Bias"<-output2
+  output<-format(round(output,digits=ndigits),nsmall=ndigits)
+  output<-cbind(vars,output)
+  rownames(output)<-NULL
+  colnames(output)[1]<-"Variables"
+  
+  ### add General AARB and Rank ###
+  output3<-biv_compare_object[[1]] %>% 
+    dplyr::mutate(samp_name=factor(samp_name,levels=unique(samp_name))) %>%
+    dplyr::group_by(samp_name) %>%
+    dplyr::summarise(mean=mean(new_diff, na.rm=T)) %>% 
+    dplyr::select(samp_name,mean)
+  
+  if(final_col=="difference") output4<-output3$mean[nrow(output3)]-output3$mean[1]
+  
+  if(final_col=="average") {
+    output4<-biv_compare_object[[1]] %>% 
+      dplyr::summarise(mean=mean(new_diff, na.rm=T))
+    output4<-output4$mean
+  }
+  
+
+  
+  output3$mean<-format(round(output3$mean,digits=ndigits),nsmall=ndigits)
+  output4<-format(round(output4,digits=ndigits),nsmall=ndigits)
+  
+  ### Change Labels of variables 
+  
+  if(is.null(varlabels)==F){
+    if(length(varlabels)<length(output[,1])){
+      output[1:length(varlabels),1]<-varlabels
+    }
+    if(length(varlabels)>length(output[,1])){
+      output[,1]<-varlabels[1:length(output[,1])]
+    }
+    if(length(varlabels)==length(output[,1])){
+      output[,1]<-varlabels
+    }
+  }
+  
+  ### Change Names of Dataframes 
+  
+  if(is.null(label_df)==F){
+    col_length<-length(colnames(output)[2:(ncol(output)-1)])
+    if(length(label_df)<col_length){
+      colnames(output)[2:length(label_df)]<-label_df
+    }
+    if(length(label_df)>col_length){
+      colnames(output)[2:(col_length+1)]<-label_df[1:col_length]
+    }
+    if(length(label_df)==col_length){
+      colnames(output)[2:(col_length+1)]<-label_df
+    }
+  }
+  
+  output<-rbind(output,c("Total Average Bias ",output3$mean,output4))
+  output<-rbind(output,c("RANK",paste(rank(as.numeric(output3$mean))),"-"))
+  
+  output
+}
+
+
+
+biv_bias_per_var_sub<-function(biv_compare_object,var){
+  
+  samp_name<-NULL
+  x<-NULL
+  y<-NULL
+  new_diff<-NULL
+  
+  dep_option<-options()$dplyr.summarise.inform
+  options(dplyr.summarise.inform = FALSE)
+  out<-biv_compare_object[[1]] %>% 
+    dplyr::mutate(samp_name=factor(samp_name,levels=unique(samp_name)),
+                  !!var:=ifelse(x==var|y==var,1,0)) %>%
+    dplyr::group_by(samp_name,dplyr::across(dplyr::all_of(var))) %>%
+    dplyr::summarise(mean=mean(new_diff, na.rm=T))
+  
+  out<-suppressWarnings(dplyr::filter(out,dplyr::across(dplyr::all_of(var))==1) %>% 
+                            dplyr::select(samp_name,mean))
+ 
+  
+  options(dplyr.summarise.inform = dep_option)
+  out<-data.frame(mean=out$mean)
+  rownames(out)<-unique(biv_compare_object[[1]]$samp_name)
+  out<-as.data.frame(t(out))
+  out
+}
+
+biv_bias_per_var_sub2<-function(biv_compare_object,var){
+  
+  samp_name<-NULL
+  x<-NULL
+  y<-NULL
+  new_diff<-NULL
+  
+  out<-biv_compare_object[[1]] %>% 
+    dplyr::mutate(samp_name=factor(samp_name,levels=unique(samp_name)),
+                  !!var:=ifelse(x==var|y==var,1,0)) %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(var))) %>%
+    dplyr::summarise(mean=mean(new_diff, na.rm=T))
+  
+  out<-suppressWarnings(dplyr::filter(out,dplyr::across(dplyr::all_of(var))==1) %>% 
+                          dplyr::select(mean))
+  
+  out$mean
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+#####################
+### Missing Table ###
+#####################
+
+#' Returns a Table indicating the number and proportion of NA values for a selected
+#' set of variables.
+#'
+#' @param dfs A character vector with names of data frames for which the 
+#' missings per variable should be displayed.
+#' @param variables A character vector of variable names for which the missings 
+#' should be displyed.
+#' @param df_names Either Null or a character vector of names, to relabel the 
+#' data frames in the table with.
+#' @param varlabels Either Null, or a character vector of variable names, to 
+#' relabel the variables in the table with.
+#' @return Returns a Table indicating the number and proportion of NA values for 
+#' a selected set of variables. This can be used to get an overview of the data, 
+#' detect errors after data rangeling, or find items in a survey, with especially,
+#' high item nonresponse.
+#' 
+#' @examples
+#' ## Get Data for comparison
+#'
+#' data("card")
+#'
+#' north <- card[card$south==0,]
+#' white <- card[card$black==0,]
+#'
+#' variables<- c("age","educ","fatheduc","motheduc","wage","IQ")
+#' varlabels<-c("Age","Education","Father's Education",
+#'              "Mother's Education","Wage","IQ")
+#'
+#' missing_tab<-sampcompR::missing_table(dfs = c("north","white"),
+#'                                       variables=variables,
+#'                                       df_names = c("North","White"),
+#'                                       varlabels=varlabels)
+#' 
+#' missing_tab
+#' 
+#' 
+#' 
+#' @export
+#'
+missing_table <- function(dfs, variables, df_names=NULL, varlabels = NULL) {
+  
+  # Convert dfs into a list
+  df_list <- purrr::map(dfs, get)
+  
+  # Apply the 'missing_table_sub' function to each dataframe and store the results
+  result_list <- purrr::map2(.x = df_list, .y = dfs, missing_table_sub, variables = variables)
+  
+  # Initialize the 'results' dataframe with the first result
+  results <- result_list[[1]]
+  
+  # Merge the results of other dataframes using a loop
+  if(length(result_list)>=2){
+    for (i in 2:length(result_list)) {
+      results <- dplyr::full_join(results, result_list[[i]], by = "Variables")
+    }}
+  
+  # Remove the 'Variables' column from the final result
+  results <- results %>% dplyr::select(-"Variables")
+  
+  # Add a row at the end with the number of rows (N) for each dataframe
+  results <- results %>%
+    rbind(c(purrr::map(df_list, nrow)))
+  
+  # Set row names to 'variables', 'Max', and 'N'
+  rownames(results) <- c(variables, "Max", "N")
+  
+  # If 'varlabels' is provided, set row names to 'varlabels' instead
+  if (!is.null(varlabels)) {
+    rownames(results) <- c(varlabels, "Max", "N")
+  }
+  
+  # If 'df_names' is provided, set column names to 'df_names'
+  if (!is.null(df_names)) {
+    colnames(results) <- df_names
+  }
+  
+  # Replace NA values with "NA"
+  results[is.na(results)] <- "NA"
+  
+  results
+}
+
+
+
+# Define a function called missing_table_sub
+missing_table_sub <- function(dataframe, df_name, variables) {
+  
+  # Filter the 'variables' vector to include only those that are column names in 'dataframe'
+  variables <- variables[variables %in% colnames(dataframe)]
+  
+  # Calculate the count of missing values for selected variables in 'dataframe'
+  out <- dataframe %>%
+    dplyr::select(variables) %>%
+    dplyr::summarise(dplyr::across(variables, ~sum(is.na(.)))) %>% 
+    t() %>% 
+    as.data.frame()
+  
+  # Add a row at the end containing the maximum missing value count
+  out <- rbind(out, max(out$V1))
+  
+  V1<-NULL
+  # Modify the result dataframe to include percentages and rename columns
+  out <- out %>%
+    dplyr::mutate(V1 = paste0(V1, " (", round(V1 / (nrow(dataframe)) * 100, digits = 2), "%)"),
+           variables = c(variables, "Max")) %>%
+    stats::setNames(c(df_name, "Variables"))
+  
+  return(out)
 }
