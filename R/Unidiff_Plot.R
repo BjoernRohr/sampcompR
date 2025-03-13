@@ -1603,9 +1603,11 @@ MEAN_PERC_DIST <- function(x, y, i,
 #' plot, and if \code{summetric = NULL} the \code{summetric} specified in the 
 #' uni_compare_object is used.
 #' @param colors A vector of colors that is used in the plot for the
-#' different comparisons.
+#' different comparisons. The color has to be specified separately for every 
+#' comparison, with one value of the vector.
 #' @param shapes A vector of shapes applicable in [ggplot2::ggplot2()] that is 
-#' used in the plot for the different comparisons.
+#' used in the plot for the different comparisons. The shapes has to be specified 
+#' separately for every comparison, with one value of the vector.
 #' @param legendlabels A character string or vector of strings containing a 
 #' label for the legend.
 #' @param legendtitle A character string containing the title of the legend.
@@ -1621,6 +1623,10 @@ MEAN_PERC_DIST <- function(x, y, i,
 #' @param varlabels A character string or vector of character strings 
 #' containing the new names of the variables, also used in plot.
 #' @param ndigits The number of digits to round the numbers in the plot.
+#' @param point_size Either NULL or a number indicating the size of the dots in 
+#' the plot. If Null by default the size is specified by ggplot.
+#' @param errorbar_size Either NULL or a number indicating the size of the 
+#' errorbars in the plot. If Null by default the size is specified by ggplot.
 #'
 #' @return Plot of a \code{\link[sampcompR]{uni_compare}} object using
 #' [ggplot2::ggplot2()] which shows the difference between two or more data 
@@ -1652,9 +1658,12 @@ MEAN_PERC_DIST <- function(x, y, i,
 #' 
 
 
-plot_uni_compare<-function(uni_compare_objects, name_dfs=NULL, name_benchmarks=NULL, summetric=NULL, colors=NULL,
-                           shapes=NULL, legendlabels=NULL, legendtitle=NULL , label_x=NULL, label_y=NULL,
-                           summet_size=NULL, plot_title=NULL,conf_adjustment=FALSE, varlabels= NULL, ndigits=3) {
+plot_uni_compare<-function(uni_compare_objects, name_dfs=NULL, 
+                           name_benchmarks=NULL, summetric=NULL, colors=NULL,
+                           shapes=NULL, legendlabels=NULL, legendtitle=NULL , 
+                           label_x=NULL, label_y=NULL,summet_size=NULL, 
+                           point_size=NULL,errorbar_size=NULL,plot_title=NULL,
+                           conf_adjustment=FALSE, varlabels = NULL, ndigits=3) {
   
   
   ###########################
@@ -1717,6 +1726,8 @@ plot_uni_compare<-function(uni_compare_objects, name_dfs=NULL, name_benchmarks=N
   if (is.null(shapes) == FALSE) {
     uni_compare_objects$shapes[1:(length(shapes))] <- shapes
   }
+  
+
   
   ############################
   ### label Legend & title ###
@@ -1805,6 +1816,9 @@ plot_uni_compare<-function(uni_compare_objects, name_dfs=NULL, name_benchmarks=N
   if (is.null(uni_compare_objects$plot_title) == FALSE) Plot <- Plot + ggplot2::ggtitle(uni_compare_objects$plot_title)
   
   
+  
+  if(is.null(point_size)==F) Plot$layers[[1]]$aes_params$size<-point_size
+  if(is.null(errorbar_size)==F) Plot$layers[[2]]$aes_params$size<-errorbar_size
   
   return(Plot)
   

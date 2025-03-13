@@ -16,6 +16,8 @@ plot_uni_compare(
   label_x = NULL,
   label_y = NULL,
   summet_size = NULL,
+  point_size = NULL,
+  errorbar_size = NULL,
   plot_title = NULL,
   conf_adjustment = FALSE,
   varlabels = NULL,
@@ -40,10 +42,12 @@ plot, and if \code{summetric = NULL} the \code{summetric} specified in the
 uni_compare_object is used.}
 
 \item{colors}{A vector of colors that is used in the plot for the
-different comparisons.}
+different comparisons. The color has to be specified separately for every
+comparison, with one value of the vector.}
 
 \item{shapes}{A vector of shapes applicable in \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} that is
-used in the plot for the different comparisons.}
+used in the plot for the different comparisons. The shapes has to be specified
+separately for every comparison, with one value of the vector.}
 
 \item{legendlabels}{A character string or vector of strings containing a
 label for the legend.}
@@ -55,6 +59,12 @@ containing a label for the x-axis and y-axis.}
 
 \item{summet_size}{A number to determine the size of the displayed
 \code{summetric} in the plot.}
+
+\item{point_size}{Either NULL or a number indicating the size of the dots in
+the plot. If Null by default the size is specified by ggplot.}
+
+\item{errorbar_size}{Either NULL or a number indicating the size of the
+errorbars in the plot. If Null by default the size is specified by ggplot.}
 
 \item{plot_title}{A character string containing the title of the plot.}
 

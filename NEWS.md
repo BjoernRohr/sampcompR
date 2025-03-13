@@ -1,8 +1,11 @@
 # sampcompR (development version)
 
+## Changes in version 0.3.1 (2025-13-03)
+* Added two parameter to plot_uni_compare to adjust the size of the dots and the errorbars
+
 ## Changes in version 0.3.0 (2025-02-03)
 
-* fix small bug in shapes of uni_compare_plot
+* fix small bug in shapes of plot_uni_compare
 * add a new function, to create a heatmap of relative bias for bivariate comparison
 * add a new function, to show AAB or AARB in Pearson's r per variable as a table
 * add a new function, to calculate missings per variable and display them in a table
