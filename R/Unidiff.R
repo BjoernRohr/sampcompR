@@ -466,7 +466,6 @@ uni_compare <- function(dfs, benchmarks, variables=NULL, nboots = 2000,
   if(parallel!=FALSE){future::plan(future::multisession,workers=parallel)}
   
   
-  
   results<-furrr::future_map_dfr(.x=c(1:length(dfs)),
                                  ~subfunc_diffplotter(x = df_list[[.x]], y = bench_list[[.x]],
                                                       samp = .x, nboots = nboots, func = funct[1],
@@ -676,11 +675,10 @@ subfunc_diffplotter <- function(x, y, samp = 1, nboots = nboots, func = func, va
   #if (length(y)<=4) return(y)
   ### Check if x and y are factors and edit them to make them fit for further analyses
   x<-unfactor(df=x,func=func[1],weight=weights,strata=strata,id=ids)
-  
   if(is_named_vector(y)==FALSE){
     y<-unfactor(df=y,func=func[1],weight=weights_bench,strata=strata_bench,
                 id=ids_bench)}
-  
+
   
   ##########################################################
   ### loop to bootstrap for every Variable in data frame ###
@@ -840,7 +838,7 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=FALSE, m
                        id_bench=NULL,weight_bench=NULL,
                        strata_bench=NULL, 
                        variables){
-  
+
   if(inherits(df1,"data.frame")){
     design_df<-get_survey_design(df1, id=id,weight=weight,strata=strata)}
   
@@ -857,7 +855,8 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=FALSE, m
   
   ### ci function for single variables ###
   se_mean_diff_var<-function(variable, design_df, design_bench,
-                             conf_level =0.95,value="lower_ci", abs=FALSE, method="d_mean"){
+                             conf_level =0.95,value="lower_ci", abs=FALSE, 
+                             method="d_mean"){
     
     ### prepare relevant values for weighted and unweighted 
     
@@ -882,7 +881,8 @@ se_mean_diff<-function(df1,df2, conf_level =0.95, value="lower_ci", abs=FALSE, m
     alpha<-1-conf_level
     
     
-    if (method=="d_mean"|method=="ad_mean") {
+    if (method=="d_mean"|method=="ad_mean"|
+        method=="d_prop"|method=="ad_prop") {
       #SE<- sqrt(stats::var(var1)/length(var1)+stats::var(var2)/length(var2))
       SE<- sqrt(variance_df/n_df)
       
@@ -1568,6 +1568,7 @@ measure_function<-function(svyboot_object,mean_bench_object,func="abs_rel_mean",
 
 unfactor<-function(df, func, weight, strata,id){
   
+  df2<-NULL
   
   if(is.null(id)==FALSE) if(is.na(id)==FALSE){
     id_var<-df[,id]
@@ -1585,16 +1586,20 @@ unfactor<-function(df, func, weight, strata,id){
     df2<-as.data.frame(df[,-which(colnames(df) %in% c(strata))])
   }
   
-  
+  if(is.null(df2))df2<-df
+
   ### check, if df variables are factors ###
   if(func=="REL_MEAN"| func=="ABS_REL_MEAN"| 
-     func=="ABS_PROP_DIFF"| func=="PROP_DIFF"){
+     func=="ABS_PROP_DIFF"| func=="PROP_DIFF"|
+     func=="d_prop"|func=="d_mean"|
+     func=="ad_prop"|func=="ad_mean"|
+     func=="abs_rel_mean"|func=="rel_mean"|
+     func=="abs_rel_prop"|func=="rel_prop"){
     
     for (i in 1:ncol(df2)){
-      
       if(is.factor(df2[,i])){
         if(length(levels(df2[,i]))==2){
-          if(all(levels(df2)== c("0","1"))) df2[,i]<-as.numeric(as.character(df2[,i]))
+          if(all(levels(df2[,i])== c("0","1"))) df2[,i]<-as.numeric(as.character(df2[,i]))
           else(stop(paste(colnames(df)[i],"must be coded as 0 and 1")))
         }
         if(length(levels(df2[,i]))>2) stop(paste(colnames(df2)[i],"must be numeric, or a factor coded as 0 or 1, for the chosen function"))
@@ -1603,20 +1608,20 @@ unfactor<-function(df, func, weight, strata,id){
   }
   
   if(is.null(id)==FALSE) if(is.na(id)==FALSE){
-    df[,id]<-id_var
+    df2[,id]<-id_var
   } 
   
   if(is.null(weight)==FALSE) if(is.na(weight)==FALSE){
-    df[,weight]<-weight_var
+    df2[,weight]<-weight_var
   } 
   
   
   if(is.null(strata)==FALSE) if(is.na(strata)==FALSE){ 
-    df[,strata]<-strata_var
+    df2[,strata]<-strata_var
   }
   
   
-  df
+  df2
 }
 
 

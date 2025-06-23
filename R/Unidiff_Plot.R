@@ -2492,55 +2492,55 @@ R_indicator_func2<-function(df,benchmark,variables,
 
 
 
-unfactor<-function(df, func, weight, strata, id){
-  
-  
-  if(is.null(id)==FALSE) if(is.na(id)==FALSE){
-    id_var<-df[,id]
-    df<-df[,-which(colnames(df) %in% c(id))]
-  } 
-  
-  if(is.null(weight)==FALSE) if(is.na(weight)==FALSE){
-    weight_var<-df[,weight]
-    df<-df[,-which(colnames(df) %in% c(weight))] 
-  } 
-
-  
-  if(is.null(strata)==FALSE) if(is.na(strata)==FALSE){ 
-    strata_var<-df[,strata]
-    df<-df[,-which(colnames(df) %in% c(strata))]
-    }
-
-  ### check, if df variables are factors ###
-  if(func=="REL_MEAN"| func=="ABS_REL_MEAN"| 
-     func=="ABS_PROP_DIFF"| func=="PROP_DIFF"){
-    
-    for (i in 1:ncol(df)){
-      
-      if(is.factor(df[,i])){
-        if(length(levels(df[,i]))==2){
-          if(all(levels(df)== c("0","1"))) df[,i]<-as.numeric(as.character(df[,i]))
-          else(stop(paste(colnames(df)[i],"must be coded as 0 and 1")))
-        }
-        if(length(levels(df[,i]))>2) stop(paste(colnames(df)[i],"must be numeric, or a factor coded as 0 or 1, for the chosen function"))
-      }
-    }
-  }
-  
-  if(is.null(id)==FALSE) if(is.na(id)==FALSE){
-    df[,id]<-id_var
-  } 
-  
-  if(is.null(weight)==FALSE) if(is.na(weight)==FALSE){
-    df[,weight]<-weight_var
-  } 
-  
-  
-  if(is.null(strata)==FALSE) if(is.na(strata)==FALSE){ 
-    df[,strata]<-strata_var
-  }
-
-df
-}
+# unfactor<-function(df, func, weight, strata, id){
+#   
+#   
+#   if(is.null(id)==FALSE) if(is.na(id)==FALSE){
+#     id_var<-df[,id]
+#     df<-df[,-which(colnames(df) %in% c(id))]
+#   } 
+#   
+#   if(is.null(weight)==FALSE) if(is.na(weight)==FALSE){
+#     weight_var<-df[,weight]
+#     df<-df[,-which(colnames(df) %in% c(weight))] 
+#   } 
+# 
+#   
+#   if(is.null(strata)==FALSE) if(is.na(strata)==FALSE){ 
+#     strata_var<-df[,strata]
+#     df<-df[,-which(colnames(df) %in% c(strata))]
+#     }
+# 
+#   ### check, if df variables are factors ###
+#   if(func=="REL_MEAN"| func=="ABS_REL_MEAN"| 
+#      func=="ABS_PROP_DIFF"| func=="PROP_DIFF"){
+#     
+#     for (i in 1:ncol(df)){
+#       
+#       if(is.factor(df[,i])){
+#         if(length(levels(df[,i]))==2){
+#           if(all(levels(df)== c("0","1"))) df[,i]<-as.numeric(as.character(df[,i]))
+#           else(stop(paste(colnames(df)[i],"must be coded as 0 and 1")))
+#         }
+#         if(length(levels(df[,i]))>2) stop(paste(colnames(df)[i],"must be numeric, or a factor coded as 0 or 1, for the chosen function"))
+#       }
+#     }
+#   }
+#   
+#   if(is.null(id)==FALSE) if(is.na(id)==FALSE){
+#     df[,id]<-id_var
+#   } 
+#   
+#   if(is.null(weight)==FALSE) if(is.na(weight)==FALSE){
+#     df[,weight]<-weight_var
+#   } 
+#   
+#   
+#   if(is.null(strata)==FALSE) if(is.na(strata)==FALSE){ 
+#     df[,strata]<-strata_var
+#   }
+# 
+# df
+# }
 
 
