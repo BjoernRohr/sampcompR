@@ -1372,6 +1372,10 @@ wgt_cor<-function(df, row, col, i = NULL, weight_var = NULL, stratas = NULL, ids
     }
   }
   
+  ### turn factor dummy variables into numeric variables ###
+  df<-unfactor(df=df,func="d_mean",weight=NULL,strata=NULL,id=NULL)
+  
+  
   ### Get surveydesign ###
   df_design<- survey::svydesign(id      = ids,
                                 strata  = stratas,
