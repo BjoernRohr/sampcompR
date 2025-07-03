@@ -1305,6 +1305,7 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
 
   if (is.null(label_x)) label_x<- unique(comp_matrix_df$x)
   if (is.null(label_y)) label_y<- unique(comp_matrix_df$y)
+  
 
   #############################
   # Plot Matrix with ggplot2
@@ -1353,7 +1354,7 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
     }
 
 
-
+  
   if (plot_data==FALSE) return (comparison_plot)
   if (plot_data==TRUE) return (comp_matrix_df)
 }
@@ -1626,6 +1627,17 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
   if (is.null(plots_label)) plot_df$samp <- factor(plot_df$samp, levels = multi_compare_objects)
   if (is.null(plots_label)==FALSE) plot_df$samp <- factor(plot_df$samp, levels = plots_label)
 
+  
+  ########################################################
+  ### check if comp_matrix_df$value has all its levels ###
+  ########################################################
+  
+
+  # Get indices of missing levels
+  missing_indices <- which(!(breaks %in% unique(plot_df$value)))
+  
+  colors<-colors[-missing_indices]
+  breaks<-breaks[-missing_indices]
 
   ############
   ### plot ###
