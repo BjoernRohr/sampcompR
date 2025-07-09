@@ -47,7 +47,7 @@ A data.frame with 3010 observations on 34 variables:
 \url{https://www.cengage.com/cgi-wadsworth/course_products_wp.pl?fid=M20b&product_isbn_issn=9781111531041}
 }
 \usage{
-data('card')
+data(card)
 }
 \description{
 This data, which originates from D. Card (1995) was released in the Wooldridge R-Package. Sadly the wooldridge package (Shea 2023) was archived on CRAN on the 3rd of December 2024.

@@ -2,7 +2,7 @@ test_that("univariate comparison table: north/south weigthed, black/white not, r
 
 
    ### Test final results against the test_table
-  expect_equal(uni_compare_table(local_test_data_uni1()),
+  expect_equal(sampcompR::uni_compare_table(local_test_data_uni1()),
                matrix(c(
                  "age", "0.000", "-0.012",
                  "", "(-0.006, 0.006)", "(-0.020, -0.004)",
@@ -60,7 +60,7 @@ test_that("univariate comparison table: north/south weigthed, black/white not, d
   
   
   ### Test final results against the test_table
-  expect_equal(uni_compare_table(local_test_data_uni1(summet="rmse1",nboots = 0, funct= "d_mean")),
+  expect_equal(sampcompR::uni_compare_table(local_test_data_uni1(summet="rmse1",nboots = 0, funct= "d_mean")),
                matrix(c("age", "0.008", "-0.342",
                         "", "(-0.135, 0.151)", "(-0.568, -0.115)",
                         "educ", "0.764", "-1.704",
@@ -77,7 +77,7 @@ test_that("univariate comparison table: north/south weigthed, black/white not, a
   
   
   ### Test final results against the test_table
-  expect_equal(uni_compare_table(local_test_data_uni1(summet="rmse1",nboots = 0, funct= "rel_mean")),
+  expect_equal(sampcompR::uni_compare_table(local_test_data_uni1(summet="rmse1",nboots = 0, funct= "rel_mean")),
                matrix(c("age", "0.000", "-0.012",
                         "", "(-0.005, 0.005)", "(-0.020, -0.004)",
                         "educ", "0.058", "-0.125",
@@ -89,7 +89,7 @@ test_that("univariate comparison table: north/south weigthed, black/white not, a
                       dimnames = list(NULL, c("Variables", "north", "black")))
   )
   
-  expect_equal(uni_compare_table(local_test_data_uni1(summet="rmse1",nboots = 0, funct= "abs_rel_mean")),
+  expect_equal(sampcompR::uni_compare_table(local_test_data_uni1(summet="rmse1",nboots = 0, funct= "abs_rel_mean")),
                matrix(c("age", "0.000", "0.012",
                         "", "(-0.005, 0.005)", "(0.004, 0.020)",
                         "educ", "0.058", "0.125",
@@ -102,7 +102,7 @@ test_that("univariate comparison table: north/south weigthed, black/white not, a
   
   )
   
-  expect_equal(as.matrix(uni_compare_table(local_test_data_uni1(summet="rmse1",nboots = 0, funct= "d_mean"))),
+  expect_equal(as.matrix(sampcompR::uni_compare_table(local_test_data_uni1(summet="rmse1",nboots = 0, funct= "d_mean"))),
                matrix_data <- matrix(c("age", "0.008", "-0.342",
                                        "", "(-0.135, 0.151)", "(-0.568, -0.115)",
                                        "educ", "0.764", "-1.704",

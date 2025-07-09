@@ -10,7 +10,9 @@
 #'
 #' @docType data
 #'
-#' @usage data('card')
+#' @usage data(card)
+#' 
+#' @keywords datasets
 #'
 #' @format A data.frame with 3010 observations on 34 variables:
 #' \itemize{
@@ -53,9 +55,9 @@
 #' \url{https://www.cengage.com/cgi-wadsworth/course_products_wp.pl?fid=M20b&product_isbn_issn=9781111531041}
 #' @references 
 #'   Shea J (2023). _wooldridge: 115 Data Sets from "Introductory Econometrics: A Modern Approach, 7e" by Jeffrey M. Wooldridge_. R package version 1.4-3, <https://CRAN.R-project.org/package=wooldridge>.
-#'   
+#' @name card
 #' @examples  data("card")
 #' str(card)
-"card"
- 
- 
+#' @export
+
+load(system.file("data", "card.rda", package = "sampcompR"), envir = environment())

@@ -1,7 +1,6 @@
 
-local_test_data_biv1 <- function(env = parent.frame(), remove_nas="all") {
-  
-  data("card")
+local_test_data_biv1 <- function( remove_nas="all",tableargs=NULL) {
+
   
   black<<-card[card$black==1,]
   north<<-card[card$south==0,]
@@ -12,17 +11,18 @@ local_test_data_biv1 <- function(env = parent.frame(), remove_nas="all") {
   set.seed(1)
   
   ### analyze data ###
-  biv_data<-biv_compare(dfs = c("north","black"),
-                        benchmarks = c("south","white"),
-                        variables = c("age","educ","wage","IQ"),
-                        data=T,
-                        weight = c("weight",NA),
-                        id = c("id",NA),
-                        weight_bench = c("weight",NA),
-                        id_bench = c("id",NA), 
-                        remove_nas = remove_nas)
+  biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
+                                   benchmarks = c("south","white"),
+                                   variables = c("age","educ","wage","IQ"),
+                                   data=T,
+                                   weight = c("weight",NA),
+                                   id = c("id",NA),
+                                   weight_bench = c("weight",NA),
+                                   id_bench = c("id",NA), 
+                                   remove_nas = remove_nas)
   
-  biv_data
+  do.call(biv_compare_table,
+          c(list(biv_compare_object=biv_data),tableargs))
 }
 
 
@@ -32,9 +32,9 @@ local_test_data_biv1 <- function(env = parent.frame(), remove_nas="all") {
 
 
 
-local_test_data_biv2 <- function(env = parent.frame()) {
+local_test_data_biv2 <- function(env = parent.frame(),tableargs=NULL) {
   
-  data("card")
+  card<-sampcompR::card
   
   black<<-card[card$black==1,]
   north<<-card[card$south==0,]
@@ -45,22 +45,23 @@ local_test_data_biv2 <- function(env = parent.frame()) {
   set.seed(1)
   
   ### analyze data ###
-  biv_data<-biv_compare(dfs = c("north","black"),
-                        benchmarks = c("south","white"),
-                        variables = c("age","educ","wage","IQ"),
-                        data=T,
-                        weight = NULL,
-                        id = NULL,
-                        weight_bench = NULL,
-                        id_bench = NULL,
-                        p_adjust = "bonferroni", 
-                        remove_nas = "pairwise")
+  biv_data<-sampcompR::biv_compare(dfs = c("north","black"),
+                                   benchmarks = c("south","white"),
+                                   variables = c("age","educ","wage","IQ"),
+                                   data=T,
+                                   weight = NULL,
+                                   id = NULL,
+                                   weight_bench = NULL,
+                                   id_bench = NULL,
+                                   p_adjust = "bonferroni", 
+                                   remove_nas = "pairwise")
   
-  biv_data
+  do.call(biv_compare_table,
+          c(list(biv_compare_object=biv_data),tableargs))
 }
 
 
-biv_compare_table(local_test_data_biv2(),type="diff",comparison_number=1)
+
 
 
 

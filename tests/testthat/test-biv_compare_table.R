@@ -3,8 +3,9 @@
 ### Test 1 ###
 ##############
 
+
 test_that("biv_compare_table, type=diff, weighted df", {
-  expect_equal(biv_compare_table(local_test_data_biv1(),type="diff"), matrix(c(
+  expect_equal(local_test_data_biv1(tableargs=list(type="diff")), matrix(c(
     "", "", "", "",
     " 0.11*  ", "", "", "",
     " 0.05   ", "-0.05   ", "", "",
@@ -17,7 +18,7 @@ test_that("biv_compare_table, type=diff, weighted df", {
 ##############
 
 test_that("biv_compare_table, type=dfs, weighted data", {
-  expect_equal(biv_compare_table(local_test_data_biv1(),type="dfs"), matrix(c(
+  expect_equal(local_test_data_biv1(tableargs=list(type="dfs")), matrix(c(
     "", "", "", "",
     " 0.06*  ", "", "", "",
     " 0.35***", " 0.19***", "", "",
@@ -31,7 +32,7 @@ test_that("biv_compare_table, type=dfs, weighted data", {
 ##############
 
 test_that("biv_compare_table, type=benchmarks, weighted data", {
-  expect_equal(biv_compare_table(local_test_data_biv1(),type="benchmarks"), matrix(c(
+  expect_equal(local_test_data_biv1(tableargs=list(type="benchmarks")), matrix(c(
     "", "", "", "",
     "-0.05   ", "", "", "",
     " 0.30***", " 0.24***", "", "",
@@ -45,8 +46,8 @@ test_that("biv_compare_table, type=benchmarks, weighted data", {
 ##############
 
 test_that("biv_compare_table, type=diff, un_weighted data", {
-  expect_equal(biv_compare_table(local_test_data_biv1(),type="diff", 
-                                 comparison_number = 2), 
+  expect_equal(local_test_data_biv1(tableargs=list(type="diff",
+                                                   comparison_number = 2)), 
                matrix(c(
                  "",         "",        "",     "",
                  "-0.09   ", "",        "",     "",
@@ -63,8 +64,8 @@ test_that("biv_compare_table, type=diff, un_weighted data", {
 ##############
 
 test_that("biv_compare_table, type=diff, un_weighted data, bonferroni", {
-  expect_equal(biv_compare_table(local_test_data_biv2(),type="diff", 
-                                 comparison_number = 1), 
+  expect_equal(local_test_data_biv2(tableargs=list(type="diff",
+                                                   comparison_number = 1)), 
                table_matrix <- matrix(c(
                  "",       "",         "",      "",
                  " 0.12** ",  "",         "",      "",
@@ -85,7 +86,7 @@ test_that("biv_compare_table, type=diff, un_weighted data, bonferroni", {
 ##############
 
 test_that("biv_compare_table, type=diff, weighted df, pairwise", {
-  expect_equal(biv_compare_table(local_test_data_biv1(remove_nas="pairwise"),type="diff"), matrix(c(
+  expect_equal(local_test_data_biv1(remove_nas="pairwise",tableargs=list(type="diff")), matrix(c(
     "", "", "", "",
     " 0.12** ", "", "", "",
     " 0.09** ", "-0.15***", "", "",
@@ -98,7 +99,8 @@ test_that("biv_compare_table, type=diff, weighted df, pairwise", {
 ##############
 
 test_that("biv_compare_table, type=dfs, weighted data, pairwise", {
-  expect_equal(biv_compare_table(local_test_data_biv1(remove_nas="pairwise"),type="dfs"), matrix(c(
+  expect_equal(local_test_data_biv1(remove_nas="pairwise",
+                                    tableargs=list(type="dfs")), matrix(c(
     "", "", "", "",
     " 0.04   ", "", "", "",
     " 0.35***", " 0.19***", "", "",
@@ -112,7 +114,8 @@ test_that("biv_compare_table, type=dfs, weighted data, pairwise", {
 ##############
 
 test_that("biv_compare_table, type=benchmarks, weighted data, pairwise", {
-  expect_equal(biv_compare_table(local_test_data_biv1(remove_nas="pairwise"),type="benchmarks"), matrix(c(
+  expect_equal(local_test_data_biv1(remove_nas="pairwise",
+                                    tableargs=list(type="benchmarks")), matrix(c(
     "", "", "", "",
     "-0.08** ", "", "", "",
     " 0.26***", " 0.33***", "", "",
@@ -126,8 +129,9 @@ test_that("biv_compare_table, type=benchmarks, weighted data, pairwise", {
 ##############
 
 test_that("biv_compare_table, type=diff, un_weighted data, pairwise", {
-  expect_equal(biv_compare_table(local_test_data_biv1(remove_nas="pairwise"),type="diff", 
-                                 comparison_number = 2), 
+  expect_equal(local_test_data_biv1(remove_nas="pairwise",
+                                    tableargs=list(type="diff",
+                                                   comparison_number = 2)), 
                matrix(c(
                  "",         "",        "",     "",
                  "-0.13** ", "",        "",     "",

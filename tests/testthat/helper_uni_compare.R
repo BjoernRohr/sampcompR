@@ -2,12 +2,13 @@
 local_test_data_uni1 <- function(env = parent.frame(), summet="avg1",
                                  nboots=20, funct="rel_mean") {
   
-  data("card")
   
-  black<<-card[card$black==1,]
-  north<<-card[card$south==0,]
-  white<<-card[card$black==0,]
-  south<<-card[card$south==1,]
+  #card<-sampcompR::card
+  
+  black<-card[card$black==1,]
+  north<-card[card$south==0,]
+  white<-card[card$black==0,]
+  south<-card[card$south==1,]
   
   set.seed(1)
   
@@ -37,30 +38,30 @@ local_test_data_uni1 <- function(env = parent.frame(), summet="avg1",
 
 local_test_data_uni2 <- function(env = parent.frame()) {
   
-  data("card")
+  #card<-sampcompR::card
   
-  black<<-card[card$black==1,]
-  north<<-card[card$south==0,]
-  white<<-card[card$black==0,]
-  south<<-card[card$south==1,]
+  black<-card[card$black==1,]
+  north<-card[card$south==0,]
+  white<-card[card$black==0,]
+  south<-card[card$south==1,]
   
   
   
   
   ### analyze data ###
   set.seed(1);
-  uni_data<-uni_compare(dfs = c("north","black"),
-                        benchmarks = c("south","white"),
-                        nboots = 20,
-                        variables = c("age","educ"),
-                        funct = "d_mean",
-                        data=T,
-                        summetric = "rmse2",
-                        weight = NULL,
-                        id = NULL,
-                        weight_bench = NULL,
-                        id_bench = NULL,
-                        percentile_ci = F)
+  uni_data<-sampcompR::uni_compare(dfs = c("north","black"),
+                                   benchmarks = c("south","white"),
+                                   nboots = 20,
+                                   variables = c("age","educ"),
+                                   funct = "d_mean",
+                                   data=T,
+                                   summetric = "rmse2",
+                                   weight = NULL,
+                                   id = NULL,
+                                   weight_bench = NULL,
+                                   id_bench = NULL,
+                                   percentile_ci = F)
   
   uni_data
 }
@@ -68,6 +69,7 @@ local_test_data_uni2 <- function(env = parent.frame()) {
 
 local_test_data_uni3 <- function(env = parent.frame()) {
   
+  #card<-sampcompR::card
   
   card1<<-card
   card2<<-card
