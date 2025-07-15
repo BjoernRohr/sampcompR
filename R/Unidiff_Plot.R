@@ -1615,6 +1615,9 @@ MEAN_PERC_DIST <- function(x, y, i,
 #' containing a label for the x-axis and y-axis.
 #' @param summet_size A number to determine the size of the displayed 
 #' \code{summetric} in the plot.
+#' @param summet_position A character string, to choose the position of 
+#' \code{summetric}. Can either be "top_right"(default),
+#' "bottom_right", "bottom_left", or "top_left".
 #' @param plot_title A character string containing the title of the plot.
 #' @param conf_adjustment If \code{conf_adjustment = TRUE} the confidence level 
 #' of the confidence interval will be
@@ -1662,6 +1665,7 @@ plot_uni_compare<-function(uni_compare_objects, name_dfs=NULL,
                            name_benchmarks=NULL, summetric=NULL, colors=NULL,
                            shapes=NULL, legendlabels=NULL, legendtitle=NULL , 
                            label_x=NULL, label_y=NULL,summet_size=NULL, 
+                           summet_position="top_right",
                            point_size=NULL,errorbar_size=NULL,plot_title=NULL,
                            conf_adjustment=FALSE, varlabels = NULL, ndigits=3) {
   
@@ -1809,9 +1813,28 @@ plot_uni_compare<-function(uni_compare_objects, name_dfs=NULL,
     ggplot2::theme(axis.text.y = ggplot2::element_text( vjust =0.33, hjust=0))
 
   if (is.null(uni_compare_objects$label_summet) == FALSE) {
-    Plot <- Plot + ggplot2::geom_label(ggplot2::aes(x = Inf, y = Inf, hjust = 1, vjust = 1, label = uni_compare_objects$label_summetric),
-                                       fill = ggplot2::alpha("white", 0.02), color = ggplot2::alpha("black", 0.1), size=uni_compare_objects$summet_size
-    )
+    
+    if(summet_position=="top_right"){
+      Plot <- Plot + ggplot2::geom_label(ggplot2::aes(x = Inf, y = Inf, hjust = 1, vjust = 1, label = uni_compare_objects$label_summetric),
+                                         fill = ggplot2::alpha("white", 0.02), color = ggplot2::alpha("black", 0.1), size=uni_compare_objects$summet_size)
+    }
+    
+    if(summet_position=="top_left"){
+      Plot <- Plot + ggplot2::geom_label(ggplot2::aes(x = -Inf, y = Inf, hjust = 0, vjust = 1, label = uni_compare_objects$label_summetric),
+                                         fill = ggplot2::alpha("white", 0.02), color = ggplot2::alpha("black", 0.1), size=uni_compare_objects$summet_size)
+    }
+    
+    if(summet_position=="bottom_right"){
+      Plot <- Plot + ggplot2::geom_label(ggplot2::aes(x = Inf, y = -Inf, hjust = 1, vjust = 0, label = uni_compare_objects$label_summetric),
+                                         fill = ggplot2::alpha("white", 0.02), color = ggplot2::alpha("black", 0.1), size=uni_compare_objects$summet_size)
+    }
+    
+    if(summet_position=="bottom_left"){
+      Plot <- Plot + ggplot2::geom_label(ggplot2::aes(x = -Inf, y = -Inf, hjust = 0, vjust = 0, label = uni_compare_objects$label_summetric),
+                                         fill = ggplot2::alpha("white", 0.02), color = ggplot2::alpha("black", 0.1), size=uni_compare_objects$summet_size)
+    }
+    
+
   }
   if (is.null(uni_compare_objects$plot_title) == FALSE) Plot <- Plot + ggplot2::ggtitle(uni_compare_objects$plot_title)
   

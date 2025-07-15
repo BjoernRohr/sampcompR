@@ -16,6 +16,7 @@ plot_uni_compare(
   label_x = NULL,
   label_y = NULL,
   summet_size = NULL,
+  summet_position = "top_right",
   point_size = NULL,
   errorbar_size = NULL,
   plot_title = NULL,
@@ -59,6 +60,10 @@ containing a label for the x-axis and y-axis.}
 
 \item{summet_size}{A number to determine the size of the displayed
 \code{summetric} in the plot.}
+
+\item{summet_position}{A character string, to choose the position of
+\code{summetric}. Can either be "top_right"(default),
+"bottom_right", "bottom_left", or "top_left".}
 
 \item{point_size}{Either NULL or a number indicating the size of the dots in
 the plot. If Null by default the size is specified by ggplot.}

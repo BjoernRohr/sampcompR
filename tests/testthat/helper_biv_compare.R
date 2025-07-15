@@ -1,5 +1,5 @@
 
-local_test_data_biv1 <- function( remove_nas="all",tableargs=NULL) {
+local_test_data_biv1 <- function(env = parent.frame(), remove_nas="all",tableargs=NULL) {
 
   
   black<<-card[card$black==1,]
