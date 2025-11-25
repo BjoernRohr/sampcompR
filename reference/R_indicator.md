@@ -70,7 +70,26 @@ frame.
 
 ## Note
 
-The calculated R-indicator is based on Shlomo et al., (2012).
+The calculated R-indicator is based on Shlomo et al., (2012). The
+calculation of its standard error is based on functions provided by
+Shouten & Schlomo (2015), and on Github
+(https://github.com/addinall/RISQ)
+
+The related subfunctions (getVarianceRSampleBased, weightedVar &
+getTrace) are licensed under the MIT License (MIT)
+
+Copyright (c) 2015 addinall
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
 
 ## References
 
@@ -78,6 +97,9 @@ The calculated R-indicator is based on Shlomo et al., (2012).
   indicator of the representativeness of survey response. Journal of
   Statistical Planning and Inference, 142(1), 201–211.
   https://doi.org/10.1016/j.jspi.2011.07.008
+
+- Shouten B. & Shlomo, N. (2015) RISQ manual 2.1,
+  https://hummedia.manchester.ac.uk/institutes/cmist/risq/RISQ-manual-v21.pdf
 
 ## Examples
 
