@@ -1,5 +1,9 @@
 # sampcompR (development version)
 
+## Changes in version 0.3.2 (2025-25-11)
+* Fixed calculation of standard error of the R-Indicator in the R_indicator Function
+* Changed to calculate R-Indicator based on family = binomial("logit)" instead of quasibinomial("logit")
+
 ## Changes in version 0.3.1.2 (2025-03-07)
 * Fixed a small bug where multivariate biases got the wrong color, when one type
 of bias was not present

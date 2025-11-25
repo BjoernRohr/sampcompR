@@ -139,8 +139,8 @@ test_that("univariate comparison table: north/south weigthed, black/white not, a
 test_that("Test R_Indicator", {
   expect_equal(local_test_data_uni3(),
                list(
-                 card1 = c("R-Indicator" = 0.8610737759, "SE" = 0.0001926046),
-                 card2 = c("R-Indicator" = 0.715819853, "SE" = 0.001614479)
+                 card1 = c("R-Indicator" = 0.8610737759, "SE" = 0.023338106),
+                 card2 = c("R-Indicator" = 0.715819853, "SE" = 0.020088395)
                ))
   
 })

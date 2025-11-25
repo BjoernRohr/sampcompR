@@ -2346,7 +2346,7 @@ R_indicator<-function(dfs,response_identificators,variables,
     if(length(strata)<length(dfs)) strata<-c(rep(strata[1],length(dfs)))
   }
   
-
+  
   
   
   results<-list()
@@ -2399,8 +2399,7 @@ R_indicator_func<-function(df,response_identificator,variables,
   if(is.null(strata)==FALSE) strata <- df[,strata]
   df$insample<-df[,response_identificator]
   
-  #df<-df[stats::complete.cases(df[,c(variables,"insample")]),]
- 
+  
   
   df_design <- survey::svydesign(
     data = df,
@@ -2411,11 +2410,23 @@ R_indicator_func<-function(df,response_identificator,variables,
   
   formula<-stats::as.formula(paste("insample ~",paste(variables, collapse = " + ")))
   
-  model<-survey::svyglm(design=df_design, formula =formula,family = stats::quasibinomial("logit"))
+  model<-survey::svyglm(design=df_design, formula =formula,family = stats::binomial("logit"))
+  vcov_model<-suppressWarnings(stats::glm(data=df, formula =formula,family = stats::binomial("logit"),weights = weights))
   
-  
-  #Response_propensity <- stats::predict(model,type = "response")
   Response_propensity <-model$fitted.values
+  
+  sigma<- stats::vcov(vcov_model)
+  x <- stats::model.matrix(model$formula, df)[,colnames(sigma)]
+  link <- stats::predict(model, type = 'link')
+  z = (exp(link) / (1 + exp(link))^2) *x
+  
+  var_R<-getVarianceRSampleBased(Response_propensity,
+                                 z,
+                                 sigma,
+                                 df_design)
+  
+  
+  
   
   estimated_pop_variance<- survey::svyvar(x= Response_propensity, design=df_design)
   
@@ -2425,12 +2436,68 @@ R_indicator_func<-function(df,response_identificator,variables,
   
   mcfadden <- function(model){1- (model$deviance/model$null.deviance)}
   
-  output<-c(r_indicator,survey::SE(estimated_pop_std_dev))
+  output<-c(r_indicator,sqrt(var_R))
   if(get_r2==TRUE) output<-c(output, mcfadden(model))
   if(get_r2==FALSE) names(output)<-c("R-Indicator","SE")
   if(get_r2==TRUE) names(output)<-c("R-Indicator","SE", "Pseudo R2")
   output
 }
+
+
+
+
+
+getVarianceRSampleBased <-
+  function(prop,
+           z,
+           sigma,
+           design){
+    
+    weights <- weights(design)
+    nSample <- length(weights)
+    nPopulation <- sum(weights)
+    
+    
+    propMean <- stats::weighted.mean(prop, weights)
+    propVar <- weightedVar(prop, weights, method = 'ML')
+    propZ <- cbind(prop, z)
+    
+    
+    A <- stats::cov.wt(propZ, wt = weights, method = 'ML')$cov[-1, 1]
+    B <- stats::cov.wt(z, wt = weights, method = 'ML')$cov
+    #C <- design$getVarTotal(design, (prop - propMean)^2)
+    C<- stats::vcov(survey::svytotal((prop - propMean)^2, design = design))
+    if(design$has.strata==F & !any(weights!=1))C<-0
+    
+    variance <- numeric()
+    variance[1] <- 4 * t(A) %*% sigma %*% A
+    variance[2] <- 2 * getTrace(B %*% sigma %*% B %*% sigma)
+    variance[3] <- C / nPopulation^2
+    variance <- sum(variance) / propVar
+    return (variance)
+  }
+
+
+weightedVar <-
+  function(x,
+           weights = rep(1, length(x)),
+           method = c('unbiased', 'ML')) {
+    
+    xMean <- stats::weighted.mean(x, weights)
+    xVar <- sum(weights * (x - xMean)^2)
+    xVar <- switch(match.arg(method),
+                   'unbiased' = xVar / (sum(weights) - 1),
+                   'ML'       = xVar / sum(weights))
+    
+    return (xVar)
+  }
+
+
+getTrace <-
+  function(m){
+    return (sum(m[col(m) == row(m)]))
+  }
+
 
 
 
