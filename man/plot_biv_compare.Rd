@@ -100,7 +100,7 @@ the correlations are either in opposite directions,or one is double the size of 
 
 ## Get Data for comparison
 
-data("card")
+\donttest{data("card")
 
 north <- card[card$south==0,]
 white <- card[card$black==0,]
@@ -112,5 +112,6 @@ bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
                                    data=TRUE)
                         
 sampcompR::plot_biv_compare(bivar_data)
+}
 
 }

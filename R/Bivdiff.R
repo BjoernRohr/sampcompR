@@ -527,12 +527,12 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
 #' white <- card[card$black==0,]
 #' 
 #' ## use the function to plot the data 
-#' bivar_comp<-sampcompR::biv_compare(dfs = c("north","white"),
+#' \donttest{bivar_comp<-sampcompR::biv_compare(dfs = c("north","white"),
 #'                                    benchmarks = c("card","card"),
 #'                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
 #'                                    data=FALSE)
 #' bivar_comp
-#' 
+#' }
 #' 
 #' @export
 
@@ -952,12 +952,12 @@ biv_compare<-function (dfs, benchmarks, variables=NULL, corrtype="r", data = TRU
 # #' white <- card[card$black==0,]
 # #' 
 # #' ## use the function to plot the data 
-# #' bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
+# #' \donttest{bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
 # #'                                    benchmarks = c("south","black"),
 # #'                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
 # #'                                    data=TRUE)
 # #'                         
-# #' sampcompR::plot_biv_compare(bivar_data)
+# #' sampcompR::plot_biv_compare(bivar_data)}
 # #'
 # #' @export
 # 
