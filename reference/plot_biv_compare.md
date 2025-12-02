@@ -163,4 +163,5 @@ bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
                         
 sampcompR::plot_biv_compare(bivar_data)
 #> Error: object 'bivar_data' not found
+
 ```
