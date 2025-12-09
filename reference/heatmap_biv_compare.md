@@ -147,6 +147,7 @@ in Pearson's r estimates between the data frames and the benchmarks.
 ``` r
 ## Get Data for comparison
 
+if (FALSE) { # \dontrun{
 data("card")
 
 north <- card[card$south==0,]
@@ -157,17 +158,12 @@ bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
                                    benchmarks = c("card","card"),
                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
                                    data=TRUE)
-#> Error in get(dfs[i]): object 'north' not found
 
 Absolute_Bias_Plot<-sampcompR::heatmap_biv_compare(bivar_data,value = "AAB")
-#> Error: object 'bivar_data' not found
 Absolute_Bias_Plot
-#> Error: object 'Absolute_Bias_Plot' not found
 
 Absolute_Relative_Bias_Plot<-sampcompR::heatmap_biv_compare(bivar_data,value = "AARB")
-#> Error: object 'bivar_data' not found
 Absolute_Relative_Bias_Plot
-#> Error: object 'Absolute_Relative_Bias_Plot' not found
-
+} # }
 
 ```

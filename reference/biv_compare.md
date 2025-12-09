@@ -292,12 +292,11 @@ north <- card[card$south==0,]
 white <- card[card$black==0,]
 
 ## use the function to plot the data 
+if (FALSE) { # \dontrun{
 bivar_comp<-sampcompR::biv_compare(dfs = c("north","white"),
                                    benchmarks = c("card","card"),
                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
                                    data=FALSE)
-#> Error in get(dfs[i]): object 'north' not found
 bivar_comp
-#> Error: object 'bivar_comp' not found
-
+} # }
 ```

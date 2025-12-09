@@ -63,6 +63,7 @@ comparison.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 data("card")
 
 north <- card[card$south==0,]
@@ -73,17 +74,12 @@ bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
                                    benchmarks = c("card","card"),
                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
                                    data=TRUE)
-#> Error in get(dfs[i]): object 'north' not found
 
 table1<-sampcompR::biv_bias_per_variable(bivar_data,type="rel_diff",
                                          final_col="average",ndigits=2)
-#> Error: object 'bivar_data' not found
 noquote(table1)
-#> Error: object 'table1' not found
 
 table2<-sampcompR::biv_bias_per_variable(bivar_data,type = "diff",
                                          final_col="difference",ndigits=2)
-#> Error: object 'bivar_data' not found
-noquote(table2)
-#> Error: object 'table2' not found
+noquote(table2)} # }
 ```

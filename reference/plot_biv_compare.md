@@ -149,6 +149,7 @@ respondents. Leaving default breaks and colors,
 ``` r
 ## Get Data for comparison
 
+if (FALSE) { # \dontrun{
 data("card")
 
 north <- card[card$south==0,]
@@ -159,9 +160,7 @@ bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
                                    benchmarks = c("card","card"),
                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
                                    data=TRUE)
-#> Error in get(dfs[i]): object 'north' not found
                         
 sampcompR::plot_biv_compare(bivar_data)
-#> Error: object 'bivar_data' not found
-
+} # }
 ```

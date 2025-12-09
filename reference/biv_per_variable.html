@@ -85,6 +85,7 @@ over comparisons.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"card"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">north</span> <span class="op">&lt;-</span> <span class="va">card</span><span class="op">[</span><span class="va">card</span><span class="op">$</span><span class="va">south</span><span class="op">==</span><span class="fl">0</span>,<span class="op">]</span></span></span>
@@ -95,124 +96,9 @@ over comparisons.</p>
 <span class="r-in"><span>                                   benchmarks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"card"</span>,<span class="st">"card"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                   variables<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>,<span class="st">"educ"</span>,<span class="st">"fatheduc"</span>,<span class="st">"motheduc"</span>,<span class="st">"wage"</span>,<span class="st">"IQ"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                   data<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(dfs[i]):</span> object 'north' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">table</span><span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu">biv_per_variable</span><span class="op">(</span><span class="va">bivar_data</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'bivar_data' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/noquote.html" class="external-link">noquote</a></span><span class="op">(</span><span class="va">table</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function (..., exclude = if (useNA == "no") c(NA, NaN), useNA = c("no", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "ifany", "always"), dnn = list.names(...), deparse.level = 1) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     list.names &lt;- function(...) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         l &lt;- as.list(substitute(list(...)))[-1L]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         if (length(l) == 1L &amp;&amp; is.list(..1) &amp;&amp; !is.null(nm &lt;- names(..1))) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             return(nm)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         nm &lt;- names(l)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         fixup &lt;- if (is.null(nm)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             seq_along(l)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         else nm == ""</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         dep &lt;- vapply(l[fixup], function(x) switch(deparse.level + </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             1, "", if (is.symbol(x)) as.character(x) else "", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             deparse(x, nlines = 1)[1L]), "")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         if (is.null(nm)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             dep</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         else {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             nm[fixup] &lt;- dep</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             nm</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     miss.use &lt;- missing(useNA)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     miss.exc &lt;- missing(exclude)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     useNA &lt;- if (miss.use &amp;&amp; !miss.exc &amp;&amp; !match(NA, exclude, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         nomatch = 0L)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         "ifany"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     else match.arg(useNA)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     doNA &lt;- useNA != "no"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!miss.use &amp;&amp; !miss.exc &amp;&amp; doNA &amp;&amp; match(NA, exclude, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         nomatch = 0L)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         warning("'exclude' containing NA and 'useNA' != \"no\"' are a bit contradicting")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     args &lt;- list(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (length(args) == 1L &amp;&amp; is.list(args[[1L]])) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         args &lt;- args[[1L]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         if (length(dnn) != length(args)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             dnn &lt;- paste(dnn[1L], seq_along(args), sep = ".")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!length(args)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("nothing to tabulate")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     bin &lt;- 0L</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     lens &lt;- NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     dims &lt;- integer()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     pd &lt;- 1L</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     dn &lt;- NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     for (a in args) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         if (is.null(lens)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             lens &lt;- length(a)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         else if (length(a) != lens) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             stop("all arguments must have the same length")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         fact.a &lt;- is.factor(a)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         if (doNA) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             aNA &lt;- anyNA(a)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         if (!fact.a) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             a0 &lt;- a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             op &lt;- options(warn = 2)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             on.exit(options(op))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             a &lt;- factor(a, exclude = exclude)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             options(op)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         add.na &lt;- doNA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         if (add.na) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ifany &lt;- (useNA == "ifany")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             anNAc &lt;- anyNA(a)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             add.na &lt;- if (!ifany || anNAc) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ll &lt;- levels(a)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 if (add.ll &lt;- !anyNA(ll)) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   ll &lt;- c(ll, NA)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 else if (!ifany &amp;&amp; !anNAc) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 else TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             else FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         if (add.na) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             a &lt;- factor(a, levels = ll, exclude = NULL)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         else ll &lt;- levels(a)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         a &lt;- as.integer(a)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         if (fact.a &amp;&amp; !miss.exc) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ll &lt;- ll[keep &lt;- which(match(ll, exclude, nomatch = 0L) == </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 0L)]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             a &lt;- match(a, keep)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         else if (!fact.a &amp;&amp; add.na) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             if (ifany &amp;&amp; !aNA &amp;&amp; add.ll) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ll &lt;- ll[!is.na(ll)]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 is.na(a) &lt;- match(a0, c(exclude, NA), nomatch = 0L) &gt; </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   0L</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             else {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 is.na(a) &lt;- match(a0, exclude, nomatch = 0L) &gt; </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   0L</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         nl &lt;- length(ll)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         dims &lt;- c(dims, nl)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         if (prod(dims) &gt; .Machine$integer.max) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             stop("attempt to make a table with &gt;= 2^31 elements")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         dn &lt;- c(dn, list(ll))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         bin &lt;- bin + pd * (a - 1L)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         pd &lt;- pd * nl</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     names(dn) &lt;- dnn</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     bin &lt;- bin[!is.na(bin)]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (length(bin)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         bin &lt;- bin + 1L</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     y &lt;- array(tabulate(bin, pd), dims, dimnames = dn)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     class(y) &lt;- "table"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55cb619963d0&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:base&gt;</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/noquote.html" class="external-link">noquote</a></span><span class="op">(</span><span class="va">table</span><span class="op">)</span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
