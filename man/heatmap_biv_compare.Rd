@@ -99,7 +99,8 @@ between the data frames and the benchmarks.
 
 ## Get Data for comparison
 
-\donttest{data("card")
+\dontrun{
+data("card")
 
 north <- card[card$south==0,]
 white <- card[card$black==0,]

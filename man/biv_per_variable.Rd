@@ -37,6 +37,7 @@ function.
 }
 \examples{
 
+\dontrun{
 data("card")
 
 north <- card[card$south==0,]
@@ -49,6 +50,6 @@ bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
                                    data=TRUE)
 
 table<-sampcompR::biv_per_variable(bivar_data)
-noquote(table)
+noquote(table)}
 
 }

@@ -464,6 +464,7 @@ uni_compare_table2<-function(uni_compare_object, conf_adjustment=FALSE,names=NUL
 #' 
 #' ## Get Data for comparison
 #' 
+#' \dontrun{
 #' data("card")
 #' 
 #' north <- card[card$south==0,]
@@ -476,7 +477,7 @@ uni_compare_table2<-function(uni_compare_object, conf_adjustment=FALSE,names=NUL
 #'                                    data=TRUE)
 #'                         
 #' table<-sampcompR::biv_compare_table(bivar_data, type="diff", comparison_number=1)
-#' noquote(table)
+#' noquote(table)}
 #' 
 #'
 #' @export
@@ -910,6 +911,7 @@ descriptive_table<-function(dfs,variables,varlabels=NULL, weight=NULL,
 #' 
 #' @examples
 #' 
+#' \dontrun{
 #' data("card")
 #' 
 #' north <- card[card$south==0,]
@@ -922,7 +924,7 @@ descriptive_table<-function(dfs,variables,varlabels=NULL, weight=NULL,
 #'                                    data=TRUE)
 #' 
 #' table<-sampcompR::biv_per_variable(bivar_data)
-#' noquote(table)
+#' noquote(table)}
 #' 
 #' @export
 
@@ -1323,6 +1325,7 @@ out
 #' 
 #' @examples
 #' 
+#' \dontrun{
 #' data("card")
 #' 
 #' north <- card[card$south==0,]
@@ -1340,7 +1343,7 @@ out
 #' 
 #' table2<-sampcompR::biv_bias_per_variable(bivar_data,type = "diff",
 #'                                          final_col="difference",ndigits=2)
-#' noquote(table2)
+#' noquote(table2)}
 #' 
 #' @importFrom rlang :=
 #' @export

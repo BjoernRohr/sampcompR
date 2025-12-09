@@ -100,7 +100,8 @@ the correlations are either in opposite directions,or one is double the size of 
 
 ## Get Data for comparison
 
-\donttest{data("card")
+\dontrun{
+data("card")
 
 north <- card[card$south==0,]
 white <- card[card$black==0,]

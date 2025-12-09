@@ -527,7 +527,8 @@ biv_comp_subfunction<-function(df, benchmark, data = TRUE, corrtype="r",plot_tit
 #' white <- card[card$black==0,]
 #' 
 #' ## use the function to plot the data 
-#' \donttest{bivar_comp<-sampcompR::biv_compare(dfs = c("north","white"),
+#' \dontrun{
+#' bivar_comp<-sampcompR::biv_compare(dfs = c("north","white"),
 #'                                    benchmarks = c("card","card"),
 #'                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
 #'                                    data=FALSE)

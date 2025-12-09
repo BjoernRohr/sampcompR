@@ -46,6 +46,7 @@ can be outputted as HTML or LaTex Table, for example with the help of the
 
 ## Get Data for comparison
 
+\dontrun{
 data("card")
 
 north <- card[card$south==0,]
@@ -58,7 +59,7 @@ bivar_data<-sampcompR::biv_compare(dfs = c("north","white"),
                                    data=TRUE)
                         
 table<-sampcompR::biv_compare_table(bivar_data, type="diff", comparison_number=1)
-noquote(table)
+noquote(table)}
 
 
 }

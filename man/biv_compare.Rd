@@ -208,7 +208,8 @@ north <- card[card$south==0,]
 white <- card[card$black==0,]
 
 ## use the function to plot the data 
-\donttest{bivar_comp<-sampcompR::biv_compare(dfs = c("north","white"),
+\dontrun{
+bivar_comp<-sampcompR::biv_compare(dfs = c("north","white"),
                                    benchmarks = c("card","card"),
                                    variables= c("age","educ","fatheduc","motheduc","wage","IQ"),
                                    data=FALSE)

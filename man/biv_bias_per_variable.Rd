@@ -51,6 +51,7 @@ function.
 }
 \examples{
 
+\dontrun{
 data("card")
 
 north <- card[card$south==0,]
@@ -68,6 +69,6 @@ noquote(table1)
 
 table2<-sampcompR::biv_bias_per_variable(bivar_data,type = "diff",
                                          final_col="difference",ndigits=2)
-noquote(table2)
+noquote(table2)}
 
 }

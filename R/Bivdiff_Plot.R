@@ -69,7 +69,8 @@
 #' 
 #' ## Get Data for comparison
 #' 
-#' \donttest{data("card")
+#' \dontrun{
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' white <- card[card$black==0,]
@@ -343,7 +344,8 @@ plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
 #' 
 #' ## Get Data for comparison
 #' 
-#' \donttest{data("card")
+#' \dontrun{
+#' data("card")
 #' 
 #' north <- card[card$south==0,]
 #' white <- card[card$black==0,]
