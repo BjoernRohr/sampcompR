@@ -187,6 +187,6 @@ noquote(table)
 #>     class(y) <- "table"
 #>     y
 #> }
-#> <bytecode: 0x55766846f3d0>
+#> <bytecode: 0x55ac6aa2a508>
 #> <environment: namespace:base>
 ```
