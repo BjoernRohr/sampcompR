@@ -90,11 +90,10 @@ combine_dfs<-function(df,benchmark,dependent,independent,
     ### normalize the weights if they are present ###
     if (is.null(weight)==FALSE) dataframe1$df_weights<- dataframe1$df_weights/(sum(dataframe1$df_weights)/nrow(dataframe1))
     if (is.null(weight_bench)==FALSE) dataframe2$df_weights<- dataframe2$df_weights/(sum(dataframe2$df_weights)/nrow(dataframe2))
-    
-    
+
     if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(id)) dataframe1$id_df<-id_df<-1:nrow(dataframe1)
     if (is.null(weight_bench)==FALSE & is.null(weight)) dataframe1$df_weights<-1
-    if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(strata)==FALSE) dataframe1$strata<-dataframe1[,strata]
+    #if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(strata)==FALSE) dataframe1$strata_df<-dataframe1[,"strata"]
     if ((is.null(weight)==FALSE | is.null(weight_bench)==FALSE) & is.null(strata_bench)==FALSE & is.null(strata)) {
       dataframe1$strata_df<-1
     }

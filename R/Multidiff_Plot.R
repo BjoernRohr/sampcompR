@@ -844,7 +844,7 @@
 # #' If plot_title is not provided.
 # #' @param plot_title A title of the Plot.
 # #' @param p_value A probability used as a minimum p-value for some variants
-# #' @param breaks Legend labels. If variant == "one", 3 are needed, in variant "two"
+# #' @param breaks Legend labels. If variant = "one", 3 are needed, in variant "two"
 # #' and "three", 4 breaks are needed
 # #' @param matrix If True a matrix will be outputted, instead of a heatmap, containing the same information
 # #' @param colors A vector of strings, containing the colors for the plot. Depending on the
@@ -904,11 +904,11 @@
 #   ### prepare breaks ###
 #   if(is.null(breaks)){
 #     if(variant=="one") breaks <- c("Same", "Different", "High Difference")
-#     if(variant=="two") breaks <- c("Same", "Diff in Direrction","Diff in Significance", "Significant Difference")
-#     if(variant=="three") breaks <- c("Same", "Diff in Strength", "Diff in Direrction","Diff in Significance")
+#     if(variant=="two") breaks <- c("Same", "Diff in Direction","Diff in Significance", "Significant Difference")
+#     if(variant=="three") breaks <- c("Same", "Diff in Strength", "Diff in Direction","Diff in Significance")
 #     if(variant=="four") breaks<- c("Same", "Diff in Significance")
 #     if(variant=="five") breaks<- c("Same", "Diff in Direction")
-#     if(variant=="six") breaks<- c("Same", "Diff in Stength")
+#     if(variant=="six") breaks<- c("Same", "Diff in Strength")
 #   }
 # 
 # 
@@ -988,7 +988,7 @@
 # 
 #   if (variant=="two"){
 #     if (matrix == FALSE & is.null(colors)) colors <- c("green", "yellow","orange", "red")
-#     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", "Diff in direrction","Diff in sig", "Strong Diff")
+#     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", "Diff in direction","Diff in sig", "Strong Diff")
 #     note_text<-"Note: Same (green) means no difference of any type. \nDiff in direction (yellow) means no significant difference between coefs, but they differ in direction. \nDiff in Significance (orange) means no significant difference but one is significant < or > 0 while the other is not. \nSignificant Difference (red) means, both coeficients differ significant from each other. \nLevel of Significance is p < 0.05"
 #     if (is.null (mar)) {mar= c(12.5, 6, 2, 7.5)}
 #     if (is.null (mar)==FALSE){mar=mar}
@@ -996,7 +996,7 @@
 # 
 #   if (variant=="three"){
 #     if (matrix == FALSE & is.null(colors)) colors <- c("green", "yellow","orange", "red")
-#     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", "Diff in strength", "Diff in Direrction","Diff in significance")
+#     #if (matrix == FALSE & is.null(breaks)) breaks <- c("Same", "Diff in strength", "Diff in Direction","Diff in significance")
 #     note_text<-"Note: Same (green) means there is no meaningful difference of any type. \nDiff in Strength (yellow) means that one coef is > double the value of the other. \nDiff in Direction (orange) means that one coef is positive while the other is negative \nDiff in Significance (red) means that one is significant < or > 0 while the other is not. \nLevel of Significance is p < 0.05"
 #     if (is.null (mar)) {mar= c(12.5, 6, 2, 5.5)}
 #     if (is.null (mar)==FALSE){mar=mar}
@@ -1086,7 +1086,7 @@
 # #'
 # #' \item{'variant = "three"'} {The plot will show whether coefficients in the regression models differ from
 # #' each other on various aspects. Whether one is significant, while the other is not (Diff in Significance),
-# #' whether they differ in direction (Diff in Direrction) or whether one is double the size of the other (Diff in Strength).
+# #' whether they differ in direction (Diff in Direction) or whether one is double the size of the other (Diff in Strength).
 # #' When variables meet the criteria for multiple categories they will classified in the latest fitting category.}
 # #'
 # #' \item{'variant = "four"'} {The plot will show if the coefficient in the df is significant,
@@ -1154,8 +1154,8 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
   ### prepare breaks ###
   if(is.null(breaks)){
     if(variant=="one") breaks <- c("Same", "Small Difference", "Large Difference")
-    if(variant=="two") breaks <- c("Same", "Diff in Direrction","Diff in Significance", "Significant Difference")
-    if(variant=="three") breaks <- c("Same", "Diff in Strength", "Diff in Direrction","Diff in Significance")
+    if(variant=="two") breaks <- c("Same", "Diff in Direction","Diff in Significance", "Significant Difference")
+    if(variant=="three") breaks <- c("Same", "Diff in Strength", "Diff in Direction","Diff in Significance")
     if(variant=="four") breaks<- c("Same", "Diff in Significance")
     if(variant=="five") breaks<- c("Same", "Diff in Direction")
     if(variant=="six") breaks<- c("Same", "Diff in Stength")
@@ -1494,8 +1494,8 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
 
   if(is.null(breaks)){
     if(variant=="one") breaks <- c("Same", "Small Diff", "Large Diff")
-    if(variant=="two") breaks <- c("Same", "Diff in Direrction","Diff in Significance", "Significant Difference")
-    if(variant=="three") breaks <- c("Same", "Diff in Strength", "Diff in Direrction","Diff in Significance")
+    if(variant=="two") breaks <- c("Same", "Diff in Direction","Diff in Significance", "Significant Difference")
+    if(variant=="three") breaks <- c("Same", "Diff in Strength", "Diff in Direction","Diff in Significance")
     if(variant=="four") breaks<- c("Same", "Diff in Significance")
     if(variant=="five") breaks<- c("Same", "Diff in Direction")
     if(variant=="six") breaks<- c("Same", "Diff in Stength")
