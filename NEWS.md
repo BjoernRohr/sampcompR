@@ -1,5 +1,9 @@
 # sampcompR (development version)
 
+## Changes in 0.3.3 (2025-28-05)
+* Fixed a bug in multivariate comparison where function broke during weighting
+* Relabled some default plot labels
+
 ## Changes in version 0.3.2 (2025-25-11)
 * Fixed calculation of standard error of the R-Indicator in the R_indicator Function
 * Changed to calculate R-Indicator based on family = binomial("logit)" instead of quasibinomial("logit")
