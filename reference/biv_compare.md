@@ -284,6 +284,7 @@ respondents. Leaving default breaks and colors,
 ## Examples
 
 ``` r
+
 ## Get Data for comparison
 
 data("card")

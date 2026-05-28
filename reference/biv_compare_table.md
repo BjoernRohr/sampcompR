@@ -56,6 +56,7 @@ A correlation matrix, or difference matrix based on information of a
 ## Examples
 
 ``` r
+
 ## Get Data for comparison
 
 if (FALSE) { # \dontrun{

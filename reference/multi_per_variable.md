@@ -60,6 +60,7 @@ separately for every comparison, as well as averaged over comparisons.
 ## Examples
 
 ``` r
+
 data("card")
 
 north <- card[card$south==0,]
@@ -218,6 +219,6 @@ noquote(table)
 #>     class(y) <- "table"
 #>     y
 #> }
-#> <bytecode: 0x55ac6aa2a508>
+#> <bytecode: 0x557f286d21f0>
 #> <environment: namespace:base>
 ```

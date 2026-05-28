@@ -56,6 +56,7 @@ function.
 ## Examples
 
 ``` r
+
 ## Get Data for comparison
 
 data("card")
@@ -187,6 +188,6 @@ noquote(table)
 #>     class(y) <- "table"
 #>     y
 #> }
-#> <bytecode: 0x55ac6aa2a508>
+#> <bytecode: 0x557f286d21f0>
 #> <environment: namespace:base>
 ```

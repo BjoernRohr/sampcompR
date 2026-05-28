@@ -280,6 +280,7 @@ https://doi.org/10.2478/jos-2019-0005
 ## Examples
 
 ``` r
+
 ## Get Data for comparison
 
 data("card")

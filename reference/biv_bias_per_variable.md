@@ -63,6 +63,7 @@ comparison.
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 data("card")
 

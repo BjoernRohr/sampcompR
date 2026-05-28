@@ -187,6 +187,7 @@ information on interpretation look at `variant`.
 ## Examples
 
 ``` r
+
 ## Get Data for comparison
 
 data("card")

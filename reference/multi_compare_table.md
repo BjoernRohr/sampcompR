@@ -58,6 +58,7 @@ function.
 ## Examples
 
 ``` r
+
 ## Get Data for comparison
 
 data("card")

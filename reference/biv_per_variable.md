@@ -45,6 +45,7 @@ averaged over comparisons.
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 data("card")
 

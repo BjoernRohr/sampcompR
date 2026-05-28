@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Comparing and Visualizing Differences Between Surveys • sampcompR</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Comparing and Visualizing Differences Between Surveys">
 <meta name="description" content="Easily analyze and visualize differences between samples (e.g., benchmark comparisons, nonresponse comparisons in surveys) on three levels. The comparisons can be univariate, bivariate or multivariate. On univariate level the variables of interest of a survey and a comparison survey (i.e. benchmark) are compared, by calculating one of several difference measures (e.g., relative difference in mean), and an average difference between the surveys. On bivariate level a function can calculate significant differences in correlations for the surveys. And on multivariate levels a function can calculate significant differences in model coefficients between the surveys of comparison. All of those differences can be easily plotted and outputted as a table. For more detailed information on the methods and example use see Rohr, B., Silber, H., &amp; Felderer, B. (2024). Comparing the Accuracy of Univariate, Bivariate, and Multivariate Estimates across Probability and Nonprobability Surveys with Population Benchmarks. Sociological Methodology &lt;doi:10.1177/00811750241280963&gt;.">
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">sampcompR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,83 +146,83 @@
 <span><span class="co">#&gt; generated.</span></span></code></pre></div>
 <p><strong>Table 1</strong></p>
 <table class="table">
-<thead><tr class="header">
+<thead><tr>
 <th align="left">Variables</th>
 <th align="center">north</th>
 <th align="center">white</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td align="left">age</td>
 <td align="center">0.002</td>
 <td align="center">0.003</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center">(-0.003, 0.007)</td>
 <td align="center">(-0.002, 0.007)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">educ</td>
 <td align="center">0.033</td>
 <td align="center">0.030</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center">( 0.025, 0.042)</td>
 <td align="center">( 0.022, 0.038)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">fatheduc</td>
 <td align="center">0.063</td>
 <td align="center">0.053</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center">( 0.046, 0.080)</td>
 <td align="center">( 0.038, 0.068)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">motheduc</td>
 <td align="center">0.054</td>
 <td align="center">0.049</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center">( 0.041, 0.067)</td>
 <td align="center">( 0.037, 0.061)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">wage</td>
 <td align="center">0.096</td>
 <td align="center">0.068</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center">( 0.074, 0.117)</td>
 <td align="center">( 0.049, 0.087)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">IQ</td>
 <td align="center">0.021</td>
 <td align="center">0.026</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center">( 0.014, 0.029)</td>
 <td align="center">( 0.020, 0.032)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">Average Error</td>
 <td align="center">0.045</td>
 <td align="center">0.038</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">RANK</td>
 <td align="center">2</td>
 <td align="center">1</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">N</td>
 <td align="center">1358 - 1795</td>
 <td align="center">1764 - 2307</td>
@@ -266,7 +266,7 @@
 <col width="10%">
 <col width="7%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th align="left"></th>
 <th align="center">age</th>
 <th align="center">educ</th>
@@ -276,7 +276,7 @@
 <th align="center">IQ</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td align="left">age</td>
 <td align="center"></td>
 <td align="center"></td>
@@ -285,7 +285,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">educ</td>
 <td align="center">0.05</td>
 <td align="center"></td>
@@ -294,7 +294,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">fatheduc</td>
 <td align="center">-0.02</td>
 <td align="center">-0.07*</td>
@@ -303,7 +303,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">motheduc</td>
 <td align="center">-0.04</td>
 <td align="center">-0.09***</td>
@@ -312,7 +312,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">wage</td>
 <td align="center">0.05</td>
 <td align="center">-0.11***</td>
@@ -321,7 +321,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">IQ</td>
 <td align="center">0.01</td>
 <td align="center">-0.01</td>
@@ -351,7 +351,7 @@
 <col width="15%">
 <col width="6%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th align="left"></th>
 <th align="center">age</th>
 <th align="center">educ</th>
@@ -361,7 +361,7 @@
 <th align="center">IQ</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td align="left">age</td>
 <td align="center"></td>
 <td align="center"></td>
@@ -370,7 +370,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">educ</td>
 <td align="center">0.04</td>
 <td align="center"></td>
@@ -379,7 +379,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">fatheduc</td>
 <td align="center">-0.08**</td>
 <td align="center">0.41***</td>
@@ -388,7 +388,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">motheduc</td>
 <td align="center">-0.08**</td>
 <td align="center">0.36***</td>
@@ -397,7 +397,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">wage</td>
 <td align="center">0.35***</td>
 <td align="center">0.19***</td>
@@ -406,7 +406,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">IQ</td>
 <td align="center">-0.05</td>
 <td align="center">0.50***</td>
@@ -429,7 +429,7 @@
 <col width="15%">
 <col width="6%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th align="left"></th>
 <th align="center">age</th>
 <th align="center">educ</th>
@@ -439,7 +439,7 @@
 <th align="center">IQ</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td align="left">age</td>
 <td align="center"></td>
 <td align="center"></td>
@@ -448,7 +448,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">educ</td>
 <td align="center">-0.01</td>
 <td align="center"></td>
@@ -457,7 +457,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">fatheduc</td>
 <td align="center">-0.06**</td>
 <td align="center">0.47***</td>
@@ -466,7 +466,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">motheduc</td>
 <td align="center">-0.04*</td>
 <td align="center">0.45***</td>
@@ -475,7 +475,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">wage</td>
 <td align="center">0.30***</td>
 <td align="center">0.30***</td>
@@ -484,7 +484,7 @@
 <td align="center"></td>
 <td align="center"></td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left">IQ</td>
 <td align="center">-0.06**</td>
 <td align="center">0.51***</td>
@@ -623,7 +623,7 @@
 <span><span class="va">multi_table3</span> <span class="op">&lt;-</span><span class="fu">sampcompR</span><span class="fu">::</span><span class="fu"><a href="reference/multi_compare_table.html">multi_compare_table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"final_multi1"</span>,<span class="st">"final_multi2"</span><span class="op">)</span>,type<span class="op">=</span><span class="st">"benchmarks"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Table 5</strong></p>
 <table class="table">
-<thead><tr class="header">
+<thead><tr>
 <th align="left">data_frames</th>
 <th align="center">variables</th>
 <th align="center">wage</th>
@@ -631,112 +631,112 @@
 <th align="center">married</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td align="left">north</td>
 <td align="center">age</td>
 <td align="center">-0.855</td>
 <td align="center">-0.024</td>
 <td align="center">0.005</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(3.257)</td>
 <td align="center">(0.025)</td>
 <td align="center">(0.033)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">fatheduc</td>
 <td align="center">-0.293</td>
 <td align="center">-0.024</td>
 <td align="center">-0.004</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(3.682)</td>
 <td align="center">(0.028)</td>
 <td align="center">(0.035)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">motheduc</td>
 <td align="center">2.350</td>
 <td align="center">0.012</td>
 <td align="center">0.009</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(4.379)</td>
 <td align="center">(0.033)</td>
 <td align="center">(0.043)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">IQ</td>
 <td align="center">0.480</td>
 <td align="center">-0.007</td>
 <td align="center">0.000</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(0.691)</td>
 <td align="center">(0.005)</td>
 <td align="center">(0.006)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">white</td>
 <td align="center">age</td>
 <td align="center">-0.951</td>
 <td align="center">-0.012</td>
 <td align="center">-0.001</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(3.02)</td>
 <td align="center">(0.023)</td>
 <td align="center">(0.032)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">fatheduc</td>
 <td align="center">0.128</td>
 <td align="center">-0.014</td>
 <td align="center">0.015</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(3.287)</td>
 <td align="center">(0.025)</td>
 <td align="center">(0.032)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">motheduc</td>
 <td align="center">0.203</td>
 <td align="center">0.010</td>
 <td align="center">-0.025</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(3.915)</td>
 <td align="center">(0.029)</td>
 <td align="center">(0.039)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">IQ</td>
 <td align="center">0.361</td>
 <td align="center">-0.009</td>
 <td align="center">0.007</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(0.652)</td>
@@ -748,7 +748,7 @@
 <p>Multivariate Comparison of Subgroups of the Card Sample : Interaction Models</p>
 <p><strong>Table 6</strong></p>
 <table class="table">
-<thead><tr class="header">
+<thead><tr>
 <th align="left">data_frames</th>
 <th align="center">variables</th>
 <th align="center">wage</th>
@@ -756,112 +756,112 @@
 <th align="center">married</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td align="left">north</td>
 <td align="center">age</td>
 <td align="center">33.600***</td>
 <td align="center">0.099***</td>
 <td align="center">0.168***</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.539)</td>
 <td align="center">(0.019)</td>
 <td align="center">(0.026)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">fatheduc</td>
 <td align="center">5.620</td>
 <td align="center">0.156***</td>
 <td align="center">-0.016</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.949)</td>
 <td align="center">(0.022)</td>
 <td align="center">(0.028)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">motheduc</td>
 <td align="center">2.810</td>
 <td align="center">0.085**</td>
 <td align="center">-0.066</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(3.518)</td>
 <td align="center">(0.026)</td>
 <td align="center">(0.034)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">IQ</td>
 <td align="center">2.050***</td>
 <td align="center">0.068***</td>
 <td align="center">-0.002</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(0.545)</td>
 <td align="center">(0.004)</td>
 <td align="center">(0.005)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">white</td>
 <td align="center">age</td>
 <td align="center">33.700***</td>
 <td align="center">0.087***</td>
 <td align="center">0.174***</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.21)</td>
 <td align="center">(0.016)</td>
 <td align="center">(0.023)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">fatheduc</td>
 <td align="center">5.200*</td>
 <td align="center">0.147***</td>
 <td align="center">-0.035</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.415)</td>
 <td align="center">(0.018)</td>
 <td align="center">(0.023)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">motheduc</td>
 <td align="center">4.950</td>
 <td align="center">0.088***</td>
 <td align="center">-0.032</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.894)</td>
 <td align="center">(0.021)</td>
 <td align="center">(0.028)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">IQ</td>
 <td align="center">2.170***</td>
 <td align="center">0.070***</td>
 <td align="center">-0.009</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(0.491)</td>
@@ -873,7 +873,7 @@
 <p>Multivariate Comparison of Subgroups of the Card Sample : North and Black Sample Models</p>
 <p><strong>Table 7</strong></p>
 <table class="table">
-<thead><tr class="header">
+<thead><tr>
 <th align="left">data_frames</th>
 <th align="center">variables</th>
 <th align="center">wage</th>
@@ -881,112 +881,112 @@
 <th align="center">married</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td align="left">whole_card</td>
 <td align="center">age</td>
 <td align="center">32.700***</td>
 <td align="center">0.075***</td>
 <td align="center">0.173***</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.344)</td>
 <td align="center">(0.016)</td>
 <td align="center">(0.022)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">fatheduc</td>
 <td align="center">5.330*</td>
 <td align="center">0.132***</td>
 <td align="center">-0.020</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.243)</td>
 <td align="center">(0.018)</td>
 <td align="center">(0.021)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">motheduc</td>
 <td align="center">5.160</td>
 <td align="center">0.098***</td>
 <td align="center">-0.057*</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.735)</td>
 <td align="center">(0.021)</td>
 <td align="center">(0.027)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">IQ</td>
 <td align="center">2.530***</td>
 <td align="center">0.061***</td>
 <td align="center">-0.002</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(0.44)</td>
 <td align="center">(0.003)</td>
 <td align="center">(0.004)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left">whole_card</td>
 <td align="center">age</td>
 <td align="center">32.700***</td>
 <td align="center">0.075***</td>
 <td align="center">0.173***</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.344)</td>
 <td align="center">(0.016)</td>
 <td align="center">(0.022)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">fatheduc</td>
 <td align="center">5.330*</td>
 <td align="center">0.132***</td>
 <td align="center">-0.020</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.243)</td>
 <td align="center">(0.018)</td>
 <td align="center">(0.021)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">motheduc</td>
 <td align="center">5.160</td>
 <td align="center">0.098***</td>
 <td align="center">-0.057*</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(2.735)</td>
 <td align="center">(0.021)</td>
 <td align="center">(0.027)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td align="left"></td>
 <td align="center">IQ</td>
 <td align="center">2.530***</td>
 <td align="center">0.061***</td>
 <td align="center">-0.002</td>
 </tr>
-<tr class="even">
+<tr>
 <td align="left"></td>
 <td align="center"></td>
 <td align="center">(0.44)</td>

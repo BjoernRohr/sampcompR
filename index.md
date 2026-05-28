@@ -60,6 +60,7 @@ our examples simple, we will not use design weights, although design
 weights can make a huge difference.
 
 ``` r
+
 # install and load some additional packages for this readme
 #install.packages("magrittr","knitr","kableExtra")
 library(magrittr)
@@ -93,6 +94,7 @@ Now that we have data frames we want to compare that are gathered
 similarly, we will start with a univariate comparison.
 
 ``` r
+
 library(sampcompR)
 
 univar_data<-sampcompR::uni_compare(dfs = c("north","white"),
@@ -136,6 +138,7 @@ the resulting table to other functions (e.g., the kable() function in
 RMarkdown).
 
 ``` r
+
 uni_output_table<-sampcompR::uni_compare_table(univar_data)
 #> Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
 #> dplyr 1.1.0.
@@ -188,6 +191,7 @@ calculate the bivariate difference between the data frames and plot the
 results.
 
 ``` r
+
 biv_data<-sampcompR::biv_compare(dfs = c("north","white"),
                                  benchmarks = c("whole_card","whole_card"),
                                  variables= c("age","educ","fatheduc",
@@ -233,6 +237,7 @@ the `biv_compare_object` into the `biv_compare_table` function of our
 package.
 
 ``` r
+
 # Difference correlation matrix of the first comparison
 table_biv1<-sampcompR::biv_compare_table(biv_data,type = "diff",comparison_number=1) 
 ```
@@ -260,6 +265,7 @@ correlation matrices for both surveys. Here we only look at the tables
 for comparing `north` versus the whole sample respondents as an example.
 
 ``` r
+
 # North correlation matrix of the first comparison
 table_biv2<-sampcompR::biv_compare_table(biv_data,type = "dfs",comparison_number=1) 
 
@@ -325,6 +331,7 @@ respondents are from. After this, for every coefficient, a similar
 classification is used, as in the bivariate comparison:
 
 ``` r
+
 
 # designate dependent variables 
 dependent_ols<-c("wage","educ")
@@ -403,6 +410,7 @@ a logit regression, which now follows.
 
 ``` r
 
+
 # logit dependent variable
 
 
@@ -475,6 +483,7 @@ We also add the objects into the provided table function to look at the
 differences closer.
 
 ``` r
+
 ### difference table
 multi_table1 <- sampcompR::multi_compare_table(c("final_multi1","final_multi2"),type="diff")
 multi_table2 <-sampcompR::multi_compare_table(c("final_multi1","final_multi2"),type="dfs")

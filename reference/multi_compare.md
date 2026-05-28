@@ -215,6 +215,7 @@ function to reprint the summary or to visualize the results.
 ## Examples
 
 ``` r
+
 #Example 1
 ## Make a comparison specifiying dependent and independent variables.
 

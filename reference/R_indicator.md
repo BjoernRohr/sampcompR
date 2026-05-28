@@ -105,6 +105,7 @@ in all copies or substantial portions of the Software.
 
 ``` r
 
+
 data("card")
 
 # For the purpose of this example, we assume that only respondents living in 
