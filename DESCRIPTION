@@ -1,6 +1,6 @@
 Package: sampcompR
 Title: Comparing and Visualizing Differences Between Surveys
-Version: 0.3.3
+Version: 0.3.4
 Authors@R: 
     c(person("Bjoern", "Rohr",  email= "bjoern.rohr@gesis.org", role = c("aut", "cre","cph")),
     person("Barbara", "Felderer", email= "barbara.felderer@gesis.org", role = c("aut")))
@@ -8,7 +8,6 @@ Description: Easily analyze and visualize differences between samples (e.g., ben
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Depends: R (>= 4.1.0)
 Imports: 
     boot,
@@ -40,3 +39,4 @@ Suggests:
     stargazer
 Config/testthat/edition: 3
 URL: https://bjoernrohr.github.io/sampcompR/
+Config/roxygen2/version: 8.0.0
