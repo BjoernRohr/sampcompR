@@ -100,6 +100,9 @@ plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
   if(is.null(colors)==TRUE) colors=plot_list$colors
   if (is.null(breaks)) breaks<-plot_list$breaks
   
+  names(colors)[1:3]<-breaks
+  colors[4]<-""
+  
   if(is.null(p_value)==F){
     help<- plot_list[[1]]
     if(is.null(breaks)) breaks<-plot_list$breaks
@@ -210,29 +213,35 @@ plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
   # if (is.null(plots_label)) plots_label<-"dfs"
   # if (length(plots_label)<length(unique(plot_list[[1]]$samp_name))) plots_label<-c(plots_label,unique(plot_list[[1]]$samp_name)[(length(plots_label)+1:length(unique(plot_list[[1]]$samp_name)))])
   # 
+
+  plot_list[[1]]$samp<-as.factor(plot_list[[1]]$samp)
+  x_df<-plot_list[[1]][plot_list[[1]]$shape=="X",, drop = FALSE]
+  x_df<-x_df[!is.na(x_df$samp),]
   
   ######################
   ###     Plots      ###
   ######################
-  
   comparison_plot<-
     ggplot2::ggplot(plot_list[[1]], ggplot2::aes(x = plot_list[[1]]$y, y = plot_list[[1]]$x)) +
     #{if (gradient==TRUE) ggplot2::aes(alpha= gradient)}+
-    {if (grid != "none") ggplot2::geom_tile(colour= grid, lwd =1,linetype=1,
+    {if (grid != "none") ggplot2::geom_tile(colour= grid, lwd =1,linetype=1, show.legend=T, 
                                             ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
-    {if (grid == "none") ggplot2::geom_tile(ggplot2::aes( fill = factor(plot_list[[1]]$value, levels = breaks)))}+
+    {if (grid == "none") ggplot2::geom_tile(ggplot2::aes( fill = factor(plot_list[[1]]$value, levels = breaks)), show.legend=T)}+
     # {if (grid != "white" & grid != "none") ggplot2::geom_tile(data = na_df, colour = "white", lwd=1,linetype=1,
     #                                                           ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
     # {if (grid != "white" & grid != "none") ggplot2::geom_tile(data = edge_df, colour = grid, lwd=1,linetype=1,
     #                                                           ggplot2::aes(fill = factor(plot_list[[1]]$value, levels = breaks)))}+
     #ggplot2::geom_point(data= subset(plot_list[[1]], value=="X"), ggplot2::aes(x = y, y = x), show.legend = TRUE)+
     {if(missings_x==TRUE) 
-      ggplot2::geom_point(show.legend = FALSE, na.rm = TRUE, ggplot2::aes(shape= factor(plot_list$shape, levels="X", labels=c("Missing"))))}+
+      ggplot2::geom_point(show.legend = FALSE, na.rm = TRUE, inherit.aes = F,
+                          data= x_df,
+                          ggplot2::aes(x = y, y = x),
+                          shape= 4)}+
     ggplot2::coord_fixed()+
-    ggplot2::scale_fill_manual(values= colors, name="", na.translate = FALSE)+
+    ggplot2::scale_fill_manual(values= colors, limits=breaks, name="", na.translate = FALSE)+
     ggplot2::scale_y_discrete(name="", limits = rev(levels(plot_list[[1]]$x)), labels= varlabels, breaks=unique(plot_list[[1]]$x))+
     ggplot2::scale_x_discrete(name="", limits = levels(plot_list[[1]]$y), labels= varlabels, breaks=unique(plot_list[[1]]$y))+
-    ggplot2::scale_shape_manual(name="", values = c("Missing"=4))+
+    #ggplot2::scale_shape_manual(name="",na.translate = FALSE)+
     ggplot2::theme_classic()+
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.33, hjust=0),
                    axis.text.y = ggplot2::element_text(vjust = 0.33, hjust=0),
@@ -242,9 +251,9 @@ plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
                    plot.caption=ggplot2::element_text(hjust = 0))+
     ggplot2::ggtitle(plot_title)+
     ggplot2::guides(alpha="none",
-                    fill  = ggplot2::guide_legend(order = 1),
-                    shape = ggplot2::guide_legend(order = 2))+
-    ggplot2::facet_wrap(~ factor(samp,levels=unique(samp),labels = labellist), labeller = ggplot2::labeller(samp = labellist),ncol = ncol_facet)
+                    fill  = ggplot2::guide_legend(order = 1))+
+    ggplot2::facet_wrap(~ samp, labeller = ggplot2::labeller(samp = labellist),ncol = ncol_facet,drop = TRUE)
+  
   
   if(note==TRUE) comparison_plot<-comparison_plot + ggplot2::labs(caption = plot_list$note_text)
   

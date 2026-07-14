@@ -1644,7 +1644,6 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
   ############
   ### plot ###
   ############
-
   comparison_plot<-
     ggplot2::ggplot(data=plot_df, ggplot2::aes(x = plot_df[,"y"], y = plot_df[,"x"], fill = factor(plot_df[,"value"], levels = breaks))) +
     {if (gradient==TRUE) ggplot2::aes(alpha= as.numeric(gradient))}+
