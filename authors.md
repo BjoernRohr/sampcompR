@@ -9,13 +9,13 @@
 ## Citation
 
 Rohr B, Felderer B (2026). *sampcompR: Comparing and Visualizing
-Differences Between Surveys*. R package version 0.3.3,
+Differences Between Surveys*. R package version 0.3.4,
 <https://bjoernrohr.github.io/sampcompR/>.
 
     @Manual{,
       title = {sampcompR: Comparing and Visualizing Differences Between Surveys},
       author = {Bjoern Rohr and Barbara Felderer},
       year = {2026},
-      note = {R package version 0.3.3},
+      note = {R package version 0.3.4},
       url = {https://bjoernrohr.github.io/sampcompR/},
     }

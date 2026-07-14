@@ -2,7 +2,17 @@
 
 ## sampcompR (development version)
 
-### Changes in 0.3.3 (2025-28-05)
+### Changes in 0.3.4 (2026-14-07)
+
+- Fixed a bug in plot_multi_compare where labels where legend was not
+  always correctly printed
+- Fixed a bug in plot_multi_compare, where the difference summary in the
+  upper right corner was not always correctly printed for some
+  “variants”.
+- Fixed a bug where plot_biv_compare where labels where legend was not
+  always correctly printed
+
+### Changes in 0.3.3 (2026-28-05)
 
 - Fixed a bug in multivariate comparison where function broke during
   weighting
