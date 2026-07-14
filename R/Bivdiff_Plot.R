@@ -235,7 +235,7 @@ plot_biv_compare<-function (biv_data_object, plot_title=NULL, plots_label=NULL,
     {if(missings_x==TRUE) 
       ggplot2::geom_point(show.legend = FALSE, na.rm = TRUE, inherit.aes = F,
                           data= x_df,
-                          ggplot2::aes(x = y, y = x),
+                          ggplot2::aes(x = "y", y = "x"),
                           shape= 4)}+
     ggplot2::coord_fixed()+
     ggplot2::scale_fill_manual(values= colors, limits=breaks, name="", na.translate = FALSE)+
