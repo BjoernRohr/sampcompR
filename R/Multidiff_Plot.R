@@ -1285,7 +1285,6 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
 
   diff_summary
 
-
   ###########################
   # prepare data for ggplot
   ###########################
@@ -1335,19 +1334,19 @@ multi_reg_plotter<-function(multi_reg_object, df_lab=NULL, benchmark_lab=NULL, p
 
   if (diff_perc==TRUE) {
     if (diff_perc_position== "top_left") {
-    comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = -Inf, y = Inf, hjust = 0, vjust = 1, label = diff_summary$label),
+    comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = -Inf, y = Inf, hjust = 0, vjust = 1, label = diff_summary),
                                                              fill = ggplot2::alpha("white", perc_diff_transparance), color = ggplot2::alpha("black", 1), size= diff_perc_size)}
 
     if (diff_perc_position== "top_right") {
-      comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = Inf, y = Inf, hjust = 1, vjust = 1, label = diff_summary$label),
+      comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = Inf, y = Inf, hjust = 1, vjust = 1, label = diff_summary),
                                                                fill = ggplot2::alpha("white", perc_diff_transparance), color = ggplot2::alpha("black", 1), size= diff_perc_size)}
 
     if (diff_perc_position== "bottom_left") {
-      comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = -Inf, y = -Inf, hjust = 0, vjust = 0, label = diff_summary$label),
+      comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = -Inf, y = -Inf, hjust = 0, vjust = 0, label = diff_summary),
                                                                fill = ggplot2::alpha("white", perc_diff_transparance), color = ggplot2::alpha("black", 1), size= diff_perc_size)}
 
     if (diff_perc_position== "bottom_right") {
-      comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = Inf, y = -Inf, hjust = 1, vjust = 0, label = diff_summary$label),
+      comparison_plot <- comparison_plot + ggplot2::geom_label(ggplot2::aes(x = Inf, y = -Inf, hjust = 1, vjust = 0, label = diff_summary),
                                                                fill = ggplot2::alpha("white", perc_diff_transparance), color = ggplot2::alpha("black", 1), size= diff_perc_size)}
 
 
@@ -1636,8 +1635,11 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
   # Get indices of missing levels
   missing_indices <- which(!(breaks %in% unique(plot_df$value)))
   
-  colors<-colors[-missing_indices]
-  breaks<-breaks[-missing_indices]
+  names(colors)<-breaks
+  # colors<-colors[-missing_indices]
+  # breaks<-breaks[-missing_indices]
+
+
 
   ############
   ### plot ###
@@ -1646,7 +1648,7 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
   comparison_plot<-
     ggplot2::ggplot(data=plot_df, ggplot2::aes(x = plot_df[,"y"], y = plot_df[,"x"], fill = factor(plot_df[,"value"], levels = breaks))) +
     {if (gradient==TRUE) ggplot2::aes(alpha= as.numeric(gradient))}+
-    ggplot2::geom_tile(colour= grid, lwd =1,linetype=1)+
+    ggplot2::geom_tile(colour= grid, lwd =1,linetype=1,show.legend = T)+
     {if(nrow(plot_df[plot_df$value=="X",])>0 & missings_x==TRUE) ggplot2::geom_point(data=plot_df[plot_df$value=="X",],
                                                                   x=plot_df[plot_df$value=="X",]$y,
                                                                   y=plot_df[plot_df$value=="X",]$x,
@@ -1654,7 +1656,7 @@ plot_multi_compare<-function(multi_compare_objects,plots_label=NULL, plot_title=
                                                                   shape=4, show.legend = FALSE)}+
     #ggplot2::geom_point(data=subset(plot_df,value=="X"),shape=4, show.legend = FALSE)+
     ggplot2::coord_fixed()+
-    ggplot2::scale_fill_manual(values= colors, name="", na.translate = FALSE)+
+    ggplot2::scale_fill_manual(values= colors, limits=breaks,name="", na.translate = FALSE,drop=F)+
     ggplot2::scale_y_discrete(name="", limits = rev(levels(plot_df$x)), labels= label_x, breaks=unique(plot_df$x))+
     ggplot2::scale_x_discrete(name="", limits = levels(plot_df$y), labels= label_y, breaks=unique(plot_df$y))+
     ggplot2::theme_classic()+
@@ -1820,6 +1822,10 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
       percental_difference_b3<-sum(results_object$sum_weight[results_object$value == breaks[3] & is.na(results_object$value)==FALSE
                                                              & results_object$samp==samps[i] & results_object$value != "X"])/
         sum(results_object$sum_weight[is.na(results_object$value)==FALSE & results_object$samp==samps[i] & results_object$value != "X"])}
+    if (length(breaks)>3) {
+      percental_difference_b4<-sum(results_object$sum_weight[results_object$value == breaks[4] & is.na(results_object$value)==FALSE
+                                                             & results_object$samp==samps[i] & results_object$value != "X"])/
+        sum(results_object$sum_weight[is.na(results_object$value)==FALSE & results_object$samp==samps[i] & results_object$value != "X"])}
 
     
     
@@ -1836,8 +1842,9 @@ difference_summary2<-function(results_object,breaks,sum_weights_indep=NULL,sum_w
     diff_summary<-paste0(breaks[1],"  ",pad_with_spaces(format((round((percental_difference_b1), digits = 3)*100),nsmall=1))," %\n",
                         breaks[2],"  ",pad_with_spaces(format((round(percental_difference_b2, digits = 3)*100),nsmall=1))," %")
     if (length(breaks)>2) diff_summary<-paste0(diff_summary, "\n",breaks[3], "  ", pad_with_spaces(format((round(percental_difference_b3, digits = 3)*100),nsmall=1))," %")
-
+    if (length(breaks)>3) diff_summary<-paste0(diff_summary, "\n",breaks[4], "  ", pad_with_spaces(format((round(percental_difference_b4, digits = 4)*100),nsmall=1))," %")
     summary_df[i,]<- c(samps[i], diff_summary)
+    
   }
 
   return(summary_df)
