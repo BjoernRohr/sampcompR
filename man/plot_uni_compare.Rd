@@ -46,7 +46,7 @@ uni_compare_object is used.}
 different comparisons. The color has to be specified separately for every
 comparison, with one value of the vector.}
 
-\item{shapes}{A vector of shapes applicable in \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} that is
+\item{shapes}{A vector of shapes applicable in \code{\link[ggplot2:ggplot2]{ggplot2::ggplot2()}} that is
 used in the plot for the different comparisons. The shapes has to be specified
 separately for every comparison, with one value of the vector.}
 
@@ -85,7 +85,7 @@ containing the new names of the variables, also used in plot.}
 }
 \value{
 Plot of a \code{\link[sampcompR]{uni_compare}} object using
-\code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} which shows the difference between two or more data
+\code{\link[ggplot2:ggplot2]{ggplot2::ggplot2()}} which shows the difference between two or more data
 frames.
 }
 \description{

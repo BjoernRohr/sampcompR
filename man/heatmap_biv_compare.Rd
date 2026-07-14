@@ -84,7 +84,7 @@ displayed in the legend of the heatmap.}
 \item{plot_title}{A character string containing the title of the plot.}
 }
 \value{
-A object generated with the help of \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}}, used to visualize
+A object generated with the help of \code{\link[ggplot2:ggplot2]{ggplot2::ggplot2()}}, used to visualize
 a heatmap of the bivariate differences between the data frames and benchmarks.
 }
 \description{

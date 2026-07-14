@@ -75,7 +75,7 @@ displayed in the plot.}
 \item{ncol_facet}{Number of columns used in faced_wrap() for the plots.}
 }
 \value{
-A object generated with the help of \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}}, used to visualize
+A object generated with the help of \code{\link[ggplot2:ggplot2]{ggplot2::ggplot2()}}, used to visualize
 the differences between the data frames and benchmarks.
 }
 \description{

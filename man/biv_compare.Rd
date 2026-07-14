@@ -173,7 +173,7 @@ the \code{\link[survey]{postStratify}} function, to post-stratify the \code{dfs}
 If False, they will be calculated using the normal method.}
 }
 \value{
-A object generated with the help of \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} visualizes
+A object generated with the help of \code{\link[ggplot2:ggplot2]{ggplot2::ggplot2()}} visualizes
 the differences between the data frames and benchmarks. If \code{data = TRUE}
 instead of the plot a list will be returned containing information of the
 analyses. This \code{biv_compare} object can be used in

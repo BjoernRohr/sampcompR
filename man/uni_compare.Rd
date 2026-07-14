@@ -104,7 +104,7 @@ legend.}
 \item{colors}{A vector of colors, that is used in the plot for the
 different comparisons.}
 
-\item{shapes}{A vector of shapes applicable in \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}}, that is
+\item{shapes}{A vector of shapes applicable in \code{\link[ggplot2:ggplot2]{ggplot2::ggplot2()}}, that is
 used in the plot for the different comparisons.}
 
 \item{summetric}{If \code{"avg1"}, \code{"mse1"}, \code{"rmse1"}, or \code{"R"}
@@ -176,7 +176,7 @@ be used in the function. If it is \code{FALSE}, only one core will be used and
 otherwise the given number of cores will be used.}
 }
 \value{
-A plot based on \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} (or data frame if data==TRUE)
+A plot based on \code{\link[ggplot2:ggplot2]{ggplot2::ggplot2()}} (or data frame if data==TRUE)
 which shows the difference between two or more data frames on predetermined variables,
 named identical in both data frames.
 }
